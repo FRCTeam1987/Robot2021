@@ -53,6 +53,7 @@ public class AimBot extends CommandBase {
     final boolean isOnTarget = isOnTarget();
     m_isOnTarget.periodic(isOnTarget);
     if (isOnTarget) {
+      DriverStation.reportWarning("AimBot: Is On Target", false);
       m_drive.driveTank(0, 0);
       return;
     }

@@ -31,7 +31,9 @@ import frc.robot.commands.drive.DetermineGalacticColor;
 import frc.robot.commands.drive.RecordPath;
 import frc.robot.commands.drive.TeleopDriveConfigurable;
 import frc.robot.commands.drive.ZeroSensors;
+import frc.robot.commands.hangargames.EightBallTrench;
 import frc.robot.commands.hangargames.FarAuto;
+import frc.robot.commands.hangargames.NewAuto;
 import frc.robot.commands.shooter.ConfigClose;
 import frc.robot.commands.shooter.ConfigFar;
 import frc.robot.commands.shooter.HoodLock;
@@ -153,7 +155,7 @@ public class RobotContainer {
 
   private void configureDefaultCommands() {
     m_drive.setDefaultCommand(new TeleopDriveConfigurable(m_drive, driver));
-    // m_spindexer.setDefaultCommand(new Agitate(m_spindexer));
+    m_spindexer.setDefaultCommand(new Agitate(m_spindexer));
   }
   
   private void configureShuffleboard() {
@@ -246,6 +248,8 @@ public class RobotContainer {
     chooser.addOption("Path B Red", GalacticSearch.PathBRed(m_drive, m_collector, m_spindexer));
     chooser.addOption("Path B Blue", GalacticSearch.PathBBlue(m_drive, m_collector, m_spindexer));
     chooser.addOption("FarAuto", new FarAuto(m_drive, m_collector, m_spindexer, m_shooter, limeLight));
+    chooser.addOption("NewAuto", new NewAuto(m_drive, m_collector, m_spindexer, m_shooter, limeLight));
+    chooser.addOption("8 Ball Trench", new EightBallTrench(m_drive, m_collector, m_spindexer, m_shooter, limeLight));
 
     ConditionalCommand powerPortRunner = new ConditionalCommand(
       new SequentialCommandGroup(

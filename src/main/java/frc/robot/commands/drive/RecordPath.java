@@ -48,6 +48,7 @@ public class RecordPath extends CommandBase {
     m_path.clear();
     m_path.add(m_drive.getPose().getTranslation());
     m_beginRotation = m_drive.getPose().getRotation();
+    System.out.println("Recording...");
   }
 
   // Called every time the scheduler runs while the command is scheduled.

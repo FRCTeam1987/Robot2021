@@ -36,7 +36,7 @@ public final class Constants {
     public static final class Values {
       public static final DoubleSolenoid.Value cylinderExtend = DoubleSolenoid.Value.kForward;
       public static final DoubleSolenoid.Value cylinderRetract = DoubleSolenoid.Value.kReverse;
-      public static final double motorIn = 0.75;
+      public static final double motorIn = 0.65;
       public static final double motorOut = -0.75;
       public static final double motorStop = 0.0;
     }
@@ -59,12 +59,12 @@ public final class Constants {
       public static final double vVoltsSecondsPerMeter = 1.99; //1.99 // kV
       public static final double aVoltsSecondsSquaredPerMeter = 0.0922; //0.226 // kA
       public static final double maxVolts = 10;
-      public static final double maxSpeedMetersPerSecond = 2.65; // 2.7 //=-2.5; //Galactic 1.75 - Barrel - 2.5 is constant - 2.75 is max - start slightly left of center //2.75 slalom speed, bounce: 2.75, barrel: 2.7, slalom: 2.25
-      public static final double maxAccelerationMetersPerSecondSquared = 2.5; // 2.515 //=-2.25; // Bounce Path speed - 5.0; //2.5; bounce: 2.95, barrel: 2.7, slalom: 2.0
+      public static final double maxSpeedMetersPerSecond = 2.5; // 2.7 //=-2.5; //Galactic 1.75 - Barrel - 2.5 is constant - 2.75 is max - start slightly left of center //2.75 slalom speed, bounce: 2.75, barrel: 2.7, slalom: 2.25
+      public static final double maxAccelerationMetersPerSecondSquared = 2.25; // 2.515 //=-2.25; // Bounce Path speed - 5.0; //2.5; bounce: 2.95, barrel: 2.7, slalom: 2.0
       public static final double ramseteB = 2.0;
       public static final double ramseteZeta = 0.7;  // 0.15
       public static final double pVelocity = 0.175; // 0.15, 0.075
-      public static final double maxCentripetalMetersPerSecondSquared = 2.5; // 2.515 //=-2.0; bounce: 2.95, barrel: 2.7, slalom: 2.0
+      public static final double maxCentripetalMetersPerSecondSquared = 2.25; // 2.515 //=-2.0; bounce: 2.95, barrel: 2.7, slalom: 2.0
     }
     public static final class Values {
       public static final int encoderTicksPerRevolution = 2048;
@@ -249,6 +249,7 @@ public final class Constants {
         kDistanceToShooterSpeedClose.put(new InterpolatingDouble(2.95), new InterpolatingDouble(4100.0));  // hood config far
         kDistanceToShooterSpeedClose.put(new InterpolatingDouble(2.25), new InterpolatingDouble(3950.0));
         kDistanceToShooterSpeedClose.put(new InterpolatingDouble(1.0), new InterpolatingDouble(3750.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(0.75), new InterpolatingDouble(3850.0));
         kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-2.0), new InterpolatingDouble(3650.0));
         kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-3.0), new InterpolatingDouble(3575.0));
         kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-4.0), new InterpolatingDouble(3650.0));
