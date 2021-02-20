@@ -10,8 +10,11 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.collector.CollectorInOut;
 import frc.robot.commands.drive.TeleopDrive;
+import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -38,6 +41,7 @@ public class RobotContainer {
     new TalonFX(Constants.Drive.Can.rightSlave),
     new AHRS()
   );
+  private final Collector m_collector = new Collector();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -47,6 +51,7 @@ public class RobotContainer {
     configureButtonBindings();
 
     configureDefaultCommands();
+    configureShuffleboard();
   }
 
   /**
@@ -70,4 +75,10 @@ public class RobotContainer {
   private void configureDefaultCommands() {
     m_drive.setDefaultCommand(new TeleopDrive(m_drive, driver));
   }
+  
+  private void configureShuffleboard() {
+    SmartDashboard.putData("Extend Collector", new CollectorInOut(m_collector, Constants.Collector.Values.cylinderExtend));
+    SmartDashboard.putData("Retract Collector", new CollectorInOut(m_collector, Constants.Collector.Values.cylinderRetract));
+  }
+
 }

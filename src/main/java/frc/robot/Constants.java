@@ -25,7 +25,9 @@ public final class Constants {
     }
     public static final class Solenoid {
       public static final int extend = 0;
-      public static final int retract = 1;
+      public static final int retract = 7;
+
+
     }
     public static final class Values {
       public static final DoubleSolenoid.Value cylinderExtend = DoubleSolenoid.Value.kForward;
