@@ -10,14 +10,22 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.commands.ExampleCommand;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import frc.robot.commands.collector.CollectorInOut;
+import frc.robot.commands.drive.DrivePathHelpers;
 import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.subsystems.Collector;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
+
+import java.util.List;
+
 import frc.robot.subsystems.Drive;
-import frc.robot.subsystems.ExampleSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -26,10 +34,8 @@ import edu.wpi.first.wpilibj2.command.Command;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-
-  private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
+  private Trajectory slalomTrajectory;
+  private Trajectory bounceLeg1, bounceLeg2;
 
   private final XboxController driver;
 
@@ -43,6 +49,8 @@ public class RobotContainer {
   );
   private final Collector m_collector = new Collector();
 
+  private final SendableChooser<Command> chooser = new SendableChooser<>();
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     driver = new XboxController(Constants.OI.Xbox.driverID);
@@ -52,6 +60,10 @@ public class RobotContainer {
 
     configureDefaultCommands();
     configureShuffleboard();
+
+    slalomTrajectory = DrivePathHelpers.createTrajectoryFromPathWeaverJsonFile("output/Slalom.wpilib.json");
+    bounceLeg1 = DrivePathHelpers.createTrajectoryFromPathWeaverJsonFile("output/Leg1.wpilib.json");
+    bounceLeg2 = DrivePathHelpers.createTrajectoryFromPathWeaverJsonFile("output/Leg2.wpilib.json");
   }
 
   /**
@@ -68,8 +80,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    return chooser.getSelected();
   }
 
   private void configureDefaultCommands() {
@@ -79,6 +90,23 @@ public class RobotContainer {
   private void configureShuffleboard() {
     SmartDashboard.putData("Extend Collector", new CollectorInOut(m_collector, Constants.Collector.Values.cylinderExtend));
     SmartDashboard.putData("Retract Collector", new CollectorInOut(m_collector, Constants.Collector.Values.cylinderRetract));
+
+    chooser.addOption("Manual", DrivePathHelpers.createOnBoardDrivePathCommand(
+      m_drive,
+      new Pose2d(0, 0, new Rotation2d(0)), // Start Pose
+      List.of(
+        new Translation2d(1.0, 1.0),
+        new Translation2d(2.0, 1.0),
+        new Translation2d(3.0, 0.0)
+      ),
+      new Pose2d(4.0, 1.0, new Rotation2d(Math.PI/2.0)), // End Pose
+      false));
+    chooser.addOption("Slalom", DrivePathHelpers.createDrivePathCommand(m_drive, slalomTrajectory));
+    chooser.addOption("Bounce", new SequentialCommandGroup(
+      DrivePathHelpers.createDrivePathCommand(m_drive, bounceLeg1),
+      DrivePathHelpers.createDrivePathCommand(m_drive, bounceLeg2)
+    ));
+    SmartDashboard.putData("Auto", chooser);
   }
 
 }
