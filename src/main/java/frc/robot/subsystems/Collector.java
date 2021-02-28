@@ -4,24 +4,53 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Collector extends SubsystemBase {
   /** Creates a new Collector. */
 
-private DoubleSolenoid solenoid; 
+  private final DoubleSolenoid solenoid;
+  private final CANSparkMax rollerMaster;
+  private final CANSparkMax rollerSlave;
 
   public Collector() {
-    // Default DoubleSolenoid PCM_ID is 0
     solenoid = new DoubleSolenoid(Constants.Collector.Solenoid.extend, Constants.Collector.Solenoid.retract);
+    rollerMaster = new CANSparkMax(Constants.Collector.Can.motorMaster, MotorType.kBrushless);
+    rollerSlave = new CANSparkMax(Constants.Collector.Can.motorSlave, MotorType.kBrushless);
+
+    rollerMaster.restoreFactoryDefaults();
+    rollerSlave.restoreFactoryDefaults();
+
+    // rollerSlave.follow(rollerMaster, true);  // TODO test this
+    addChild("solenoid", solenoid);
+  }
+
+  public void extend() {
+    solenoid.set(Constants.Collector.Values.cylinderExtend);
+  }
+
+  public void retract() {
+    solenoid.set(Constants.Collector.Values.cylinderRetract);
   }
 
   public void setInOut(DoubleSolenoid.Value direction) {
     this.solenoid.set(direction);
   }
 
+  public void setRollerPercent(final double speed) {
+    rollerMaster.set(speed);
+    rollerSlave.set(-speed);
+  }
+
+  public void stop() {
+    setRollerPercent(0);
+  }
 
   @Override
   public void periodic() {

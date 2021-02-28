@@ -8,8 +8,8 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-// import frc.robot.lib.EncoderHelpers;
 import frc.robot.lib.EncoderHelpers;
 
 public class Drive extends SubsystemBase {
@@ -27,17 +26,18 @@ public class Drive extends SubsystemBase {
   private final TalonFX m_leftSlave;
   private final WPI_TalonFX m_rightMaster;
   private final TalonFX m_rightSlave;
-  private final AHRS m_gyro;
+  // private final AHRS m_gyro;
+  private final ADXRS450_Gyro m_gyro;
   private final DifferentialDrive m_drive;
   private final DifferentialDriveOdometry m_odometry;
 
   /** Creates a new Drive. */
-  public Drive(final WPI_TalonFX leftMaster, final TalonFX leftSlave, final WPI_TalonFX rightMaster, final TalonFX rightSlave, final AHRS ahrs) {
+  public Drive(final WPI_TalonFX leftMaster, final TalonFX leftSlave, final WPI_TalonFX rightMaster, final TalonFX rightSlave, final ADXRS450_Gyro gyro) {
     m_leftMaster = leftMaster;
     m_leftSlave = leftSlave;
     m_rightMaster = rightMaster;
     m_rightSlave = rightSlave;
-    m_gyro = ahrs;
+    m_gyro = gyro;
     // m_gyro.setAngleAdjustment(180.0);
 
     m_leftMaster.configFactoryDefault();
@@ -53,7 +53,12 @@ public class Drive extends SubsystemBase {
     zeroSensors();
     setCoast();
 
-    m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
+    m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
+
+    addChild("left master", m_leftMaster);
+    addChild("right master", m_rightMaster);
+    addChild("gyro", m_gyro);
+    addChild("diff drive", m_drive);
   }
 
   /**
@@ -124,7 +129,7 @@ public class Drive extends SubsystemBase {
    * @return The robot's heading in degrees, from -180 to 180;
    */
   public double getHeading() {
-    return m_gyro.getRotation2d().getDegrees();
+    return -m_gyro.getRotation2d().getDegrees();
   }
 
   /**
@@ -189,7 +194,7 @@ public class Drive extends SubsystemBase {
    */
   public void resetOdometry(final Pose2d pose) {
     zeroEncoders();
-    m_odometry.resetPosition(pose, m_gyro.getRotation2d());
+    m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
   }
 
   /**
@@ -234,7 +239,8 @@ public class Drive extends SubsystemBase {
   @Override
   public void periodic() {
     m_odometry.update(
-      m_gyro.getRotation2d(), // new Rotation2d(Math.IEEEremainder(-m_gyro.getAngle(), 360)),
+      Rotation2d.fromDegrees(getHeading()),
+      // m_gyro.getRotation2d(), // new Rotation2d(Math.IEEEremainder(-m_gyro.getAngle(), 360)),
       getDistanceLeft(),
       getDistanceRight()
     );
@@ -242,8 +248,8 @@ public class Drive extends SubsystemBase {
 
     SmartDashboard.putNumber("Left Distance", getDistanceLeft());
     SmartDashboard.putNumber("Right Distance", getDistanceRight());
-    SmartDashboard.putNumber("Rotation 2D", m_gyro.getRotation2d().getDegrees());
-    SmartDashboard.putNumber("angle", Math.IEEEremainder(-m_gyro.getAngle(), 360));
+    SmartDashboard.putNumber("Rotation 2D", Rotation2d.fromDegrees(getHeading()).getDegrees());
+    SmartDashboard.putNumber("angle", Math.IEEEremainder(m_gyro.getAngle(), 360));
     SmartDashboard.putNumber("Pose X", m_odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("Pose Y", m_odometry.getPoseMeters().getY());
     SmartDashboard.putNumber("Pose Rotation", m_odometry.getPoseMeters().getRotation().getDegrees());
