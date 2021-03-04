@@ -4,9 +4,12 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class Spindexer extends SubsystemBase {
 
@@ -20,8 +23,14 @@ public class Spindexer extends SubsystemBase {
     m_omni = omni;
     m_compliant = compliant;
     m_bigBlock.configFactoryDefault();
+    m_bigBlock.setNeutralMode(NeutralMode.Coast);
+    m_bigBlock.configOpenloopRamp(0.1);
     m_omni.configFactoryDefault();
+    m_omni.setNeutralMode(NeutralMode.Coast);
+    m_omni.configOpenloopRamp(0.1);
     m_compliant.configFactoryDefault();
+    m_compliant.setNeutralMode(NeutralMode.Coast);
+    m_compliant.configOpenloopRamp(0.1);
 
     addChild("big block", m_bigBlock);
     addChild("omni", m_omni);
@@ -30,6 +39,14 @@ public class Spindexer extends SubsystemBase {
 
   public void setBigBlock(final double speed) {
     m_bigBlock.set(speed);
+  }
+
+  public double getBigBlockCurrent() {
+    return m_bigBlock.getStatorCurrent();
+  }
+
+  public double getBigBlockVoltage() {
+    return m_bigBlock.getMotorOutputVoltage();
   }
 
   public void setCompliant(final double speed) {
@@ -49,5 +66,9 @@ public class Spindexer extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if (getBigBlockCurrent() > Constants.Spindexer.bigBlockJamCurrent && Math.abs(getBigBlockVoltage()) > 2) {
+      DriverStation.reportError("Spindexer Jam - Current: " + getBigBlockCurrent() + ", Voltage: " + getBigBlockVoltage(), false);
+      setBigBlock(0);
+    }
   }
 }

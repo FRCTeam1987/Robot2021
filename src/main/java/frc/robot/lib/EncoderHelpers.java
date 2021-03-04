@@ -4,6 +4,8 @@
 
 package frc.robot.lib;
 
+import frc.robot.Constants;
+
 /** Add your docs here. */
 public class EncoderHelpers {
 
@@ -21,6 +23,14 @@ public class EncoderHelpers {
 
   public static double ctreVelocityToRps(final double ctreVelocity, final double ticksPerRevolution, final double postEncoderGearing) {
     return (ctreVelocity * 10.0) / (ticksPerRevolution * postEncoderGearing);
+  }
+
+  public static double rpmToCtreVelocity(final double rpm, final double ticksPerRevolution) {
+    return rpmToCtreVelocity(rpm, ticksPerRevolution, 1);
+  }
+
+  public static double rpmToCtreVelocity(final double rpm, final double ticksPerRevolution, final double postEncoderGearing) {
+    return rpm * ticksPerRevolution / Constants.milliPerMin; //1,000ms per sec, but robot cares about per 100ms, so then 60 sec/min
   }
 
   public static int wheelRotationsToTicks(final double wheelRotations, final int ticksPerRevolution, final double reduction) {

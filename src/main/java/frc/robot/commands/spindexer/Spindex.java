@@ -7,13 +7,13 @@ package frc.robot.commands.spindexer;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Spindexer;
 
-public class SpinTest extends InstantCommand {
+public class Spindex extends InstantCommand {
 
   private final double m_speed;
   private final Spindexer m_spindexer;
 
   /** Creates a new SpinTest. */
-  public SpinTest(final Spindexer spindexer, final double speed) {
+  public Spindex(final Spindexer spindexer, final double speed) {
     m_speed = speed;
     m_spindexer = spindexer;
     addRequirements(m_spindexer);

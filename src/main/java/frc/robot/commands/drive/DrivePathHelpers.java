@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
@@ -118,8 +119,8 @@ public class DrivePathHelpers {
       new RamseteCommand(
         trajectory,
         drive::getPose,
-        // disabledRamseteController,
-        ramseteController,
+        disabledRamseteController,
+        // ramseteController,
         feedForward,
         kinematics,
         drive::getWheelSpeeds,
@@ -140,6 +141,18 @@ public class DrivePathHelpers {
         drive.setCoast();
       },
       drive
+    );
+  }
+
+  public static Command driveStraightCommand(final Drive drive, final double distance) {
+    return createOnBoardDrivePathCommand(
+      drive,
+      new Pose2d(0.0, 0.0, new Rotation2d(0)),
+      List.of(
+        new Translation2d(distance / 2, 0.0)
+      ),
+      new Pose2d(distance, 0.0, new Rotation2d(0)),
+      distance < 0
     );
   }
 }

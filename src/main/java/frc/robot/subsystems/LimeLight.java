@@ -16,10 +16,7 @@ public class LimeLight extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
-
   }
-
 
   public double getYAxis(){
     return NetworkTableInstance.getDefault().getTable(LIMELIGHT).getEntry("ty").getDouble(0);
@@ -29,10 +26,9 @@ public class LimeLight extends SubsystemBase {
     return NetworkTableInstance.getDefault().getTable(LIMELIGHT).getEntry("tx").getDouble(0);
   }
 
-  public double getVisibility(){
+  public double getVisible(){
     return NetworkTableInstance.getDefault().getTable(LIMELIGHT).getEntry("tv").getDouble(0);
   }
-
 
   public void turnOnLEDs(){
     NetworkTableInstance.getDefault().getTable(LIMELIGHT).getEntry("ledMode").setNumber(3);
@@ -40,6 +36,5 @@ public class LimeLight extends SubsystemBase {
 
   public void turnOffLEDs(){
     NetworkTableInstance.getDefault().getTable(LIMELIGHT).getEntry("ledMode").setNumber(1);
-
   }
 }

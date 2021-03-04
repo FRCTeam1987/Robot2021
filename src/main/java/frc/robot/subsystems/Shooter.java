@@ -11,49 +11,44 @@ import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
-import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Util;
+import frc.robot.lib.EncoderHelpers;
 
 public class Shooter extends SubsystemBase {
 
-  private final WPI_TalonFX master;
-  private final TalonFX slave;
-  private double rpmSetPoint;
+  private final WPI_TalonFX m_master;
+  private final TalonFX m_slave;
+  private double m_rpmSetPoint;
 
   /** Creates a new Shooter. */
   public Shooter(final WPI_TalonFX master, final TalonFX slave) {
-    this.master = master;
-    this.slave = slave;
+    m_master = master;
+    m_slave = slave;
 
-
-    this.master.configFactoryDefault();
-    this.master.configOpenloopRamp(0.5);
+    m_master.configFactoryDefault();
+    m_master.configOpenloopRamp(0.5);
     // master.setInverted(true);
-    this.master.setNeutralMode(NeutralMode.Coast);
-    this.master.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
-    this.master.configClosedloopRamp(0.5);
-    this.master.config_kF(0, 0.0513); //get started umf (increases the actual base rpm exponentially or something) was.052 old BAT, new bat .0498, then was .055 for 3550 rpm, then .052
-    this.master.config_kP(0, 0.25); //p = push and oscillating once it gets there
-    this.master.config_kI(0, 0.0);
-    this.master.config_kD(0, 0.0); //d =  dampening for the oscillation
+    m_master.setNeutralMode(NeutralMode.Coast);
+    m_master.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
+    m_master.configClosedloopRamp(0.5);
+    m_master.configOpenloopRamp(0.1);
+    m_master.config_kF(0, 0.0513); //get started umf (increases the actual base rpm exponentially or something) was.052 old BAT, new bat .0498, then was .055 for 3550 rpm, then .052
+    m_master.config_kP(0, 0.25); //p = push and oscillating once it gets there
+    m_master.config_kI(0, 0.0);
+    m_master.config_kD(0, 0.0); //d =  dampening for the oscillation
 
-    this.slave.configFactoryDefault();
-    this.slave.follow(master);
-    this.slave.setInverted(TalonFXInvertType.OpposeMaster);
+    m_slave.configFactoryDefault();
+    m_slave.follow(master);
+    m_slave.setInverted(TalonFXInvertType.OpposeMaster);
 
     stop();
 
     addChild("master", master);
   }
 
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
   public boolean canSeeTarget(double visibility) {
     return visibility == 1;
   }
@@ -82,29 +77,46 @@ public class Shooter extends SubsystemBase {
    * @return True if the flywheel is running at a RPM close to the setpoint. False otherwise.
    */
   public boolean isInRPMTolerance() {
-    return Util.isWithinTolerance(getRPM(), rpmSetPoint, Constants.Shooter.rpmTolerance);
+    return Util.isWithinTolerance(getRPM(), m_rpmSetPoint, Constants.Shooter.rpmTolerance);
   }
 
   public double getRPM(){
-    return master.getSensorCollection().getIntegratedSensorVelocity() / Constants.Shooter.ticksPerRotation * Constants.Shooter.milliPerMin * Constants.Shooter.reduction;
+    return m_master.getSensorCollection().getIntegratedSensorVelocity() / Constants.Shooter.ticksPerRotation * Constants.Shooter.milliPerMin * Constants.Shooter.reduction;
+  }
+
+  public double getRPMSetPoint() {
+    return m_rpmSetPoint;
+  }
+
+  public double getRPMFromLimelight() {
+    return 0;
   }
 
   public void setRPM(final double rpm) {
-    SmartDashboard.putNumber("(attemped) shooter rpm setpoint", rpm);
-    if (Util.isWithinTolerance(rpm, rpmSetPoint, Constants.Shooter.rpmTolerance)){
-      return;
-    }
+    //SmartDashboard.putNumber("(attemped) shooter rpm setpoint", rpm);
+    //if (Util.isWithinTolerance(rpm, m_rpmSetPoint, Constants.Shooter.rpmTolerance)){
+      //return;
+    //}
+    //double velocity = EncoderHelpers.rpmToCtreVelocity(rpm, Constants.falconTicksPerRevolution);
     double velocity = rpm * Constants.Shooter.ticksPerRotation / Constants.Shooter.milliPerMin; //1,000ms per sec, but robot cares about per 100ms, so then 60 sec/min 
-    master.set(TalonFXControlMode.Velocity, velocity);
-    rpmSetPoint = rpm;
-    SmartDashboard.putNumber("(actual) shooter rpm setpoint", rpm);
+    m_master.set(TalonFXControlMode.Velocity, velocity);
+    m_rpmSetPoint = rpm;
+    //SmartDashboard.putNumber("(actual) shooter rpm setpoint", rpm);
+  }
+
+  public void setPercent(double percent) {
+    m_master.set(percent);
+    m_rpmSetPoint = -9999;
   }
 
   public void stop() {
     setPercent(0);
   }
-  public void setPercent(double percent) {
-    master.set(percent);
-    rpmSetPoint = -9999;
+
+  @Override
+  public void periodic() {
+    if (SmartDashboard.getNumber("Log Level", 0) > 1) {
+      SmartDashboard.putNumber("Shooter Actual RPM", getRPM());
+    }
   }
 }
