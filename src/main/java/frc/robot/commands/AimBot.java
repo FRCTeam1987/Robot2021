@@ -11,7 +11,6 @@ import frc.robot.Util;
 import frc.robot.lib.DigitalDebouncer;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.LimeLight;
-import frc.robot.subsystems.Shooter;
 
 public class AimBot extends CommandBase {
 
