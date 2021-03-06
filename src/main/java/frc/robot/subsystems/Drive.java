@@ -9,7 +9,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -26,13 +26,12 @@ public class Drive extends SubsystemBase {
   private final TalonFX m_leftSlave;
   private final WPI_TalonFX m_rightMaster;
   private final TalonFX m_rightSlave;
-  // private final AHRS m_gyro;
-  private final ADXRS450_Gyro m_gyro;
+  private final AHRS m_gyro;
   private final DifferentialDrive m_drive;
   private final DifferentialDriveOdometry m_odometry;
 
   /** Creates a new Drive. */
-  public Drive(final WPI_TalonFX leftMaster, final TalonFX leftSlave, final WPI_TalonFX rightMaster, final TalonFX rightSlave, final ADXRS450_Gyro gyro) {
+  public Drive(final WPI_TalonFX leftMaster, final TalonFX leftSlave, final WPI_TalonFX rightMaster, final TalonFX rightSlave, final AHRS gyro) {
     m_leftMaster = leftMaster;
     m_leftSlave = leftSlave;
     m_rightMaster = rightMaster;

@@ -7,6 +7,7 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -68,8 +69,7 @@ public class RobotContainer {
     new TalonFX(Constants.Drive.Can.leftSlave),
     new WPI_TalonFX(Constants.Drive.Can.rightMaster),
     new TalonFX(Constants.Drive.Can.rightSlave),
-    // new AHRS()
-    new ADXRS450_Gyro()
+    new AHRS()
   );
   private final Collector m_collector = new Collector();
   private final Spindexer m_spindexer = new Spindexer(
@@ -193,6 +193,15 @@ public class RobotContainer {
         ),
         new Pose2d(-6.2, 2.2, new Rotation2d(0)),
         true);
+
+    chooser.addOption("Small S", DrivePathHelpers.createOnBoardDrivePathCommand(m_drive,
+      new Pose2d(0.0, 0.0, new Rotation2d(0)),
+      List.of(
+        new Translation2d(1.0, 0.0),
+        new Translation2d(1.5, 0.5),
+        new Translation2d(2.0, -0.5)
+      ),
+      new Pose2d(2.5, 0.0, new Rotation2d(0)), false));
       
     chooser.addOption("Manual", new SequentialCommandGroup(
       new ShootTest(m_spindexer, m_shooter, 0.75),
