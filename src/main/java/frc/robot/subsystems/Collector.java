@@ -8,6 +8,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -24,7 +25,9 @@ public class Collector extends SubsystemBase {
     rollerSlave = new CANSparkMax(Constants.Collector.Can.motorSlave, MotorType.kBrushless);
 
     rollerMaster.restoreFactoryDefaults();
+    rollerMaster.setSecondaryCurrentLimit(25);
     rollerSlave.restoreFactoryDefaults();
+    rollerSlave.setSecondaryCurrentLimit(25);
 
     // rollerSlave.follow(rollerMaster, true);  // TODO test this
     addChild("solenoid", solenoid);
@@ -54,5 +57,6 @@ public class Collector extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    SmartDashboard.putNumber("roller current", rollerMaster.getOutputCurrent());
   }
 }

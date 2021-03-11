@@ -22,6 +22,7 @@ import frc.robot.commands.collector.StartCollect;
 import frc.robot.commands.collector.StopCollect;
 import frc.robot.commands.drive.DrivePathHelpers;
 import frc.robot.commands.drive.DriveTank;
+import frc.robot.commands.drive.FindTrackWidth;
 import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.commands.shooter.ShootLimeLight;
 import frc.robot.commands.shooter.ShootRPM;
@@ -57,7 +58,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
 
   private Trajectory slalomTrajectory;
-  private Trajectory bounce1, bounce2, slalom1;
+  private Trajectory bounce1, bounce2, slalom1, barrelRun;
 
   private final XboxController driver;
   private final JoystickButton buttonCollector;
@@ -93,7 +94,7 @@ public class RobotContainer {
     bounce1 = DrivePathHelpers.createTrajectoryFromPathWeaverJsonFile("output/Bounce1.wpilib.json");
     bounce2 = DrivePathHelpers.createTrajectoryFromPathWeaverJsonFile("output/Bounce4.wpilib.json");
     slalom1 = DrivePathHelpers.createTrajectoryFromPathWeaverJsonFile("output/Slalom1.wpilib.json");
-
+    barrelRun = DrivePathHelpers.createTrajectoryFromPathWeaverJsonFile("output/BarrelRun.wpilib.json");
 
  
     // Configure the button bindings
@@ -166,6 +167,7 @@ public class RobotContainer {
     SmartDashboard.putData("Drive Straight 1", new SequentialCommandGroup(DrivePathHelpers.driveStraightCommand(m_drive, 1.0)));
     SmartDashboard.putData("Drive Straight -1", new SequentialCommandGroup(DrivePathHelpers.driveStraightCommand(m_drive, -1.0)));
     SmartDashboard.putNumber("Log Level", 0);
+    SmartDashboard.putData("Find Track Width", new FindTrackWidth(m_drive));
 
     Command part1 = DrivePathHelpers.createOnBoardDrivePathCommand(
       m_drive,
@@ -197,12 +199,21 @@ public class RobotContainer {
     chooser.addOption("Small S", DrivePathHelpers.createOnBoardDrivePathCommand(m_drive,
       new Pose2d(0.0, 0.0, new Rotation2d(0)),
       List.of(
-        new Translation2d(1.0, 0.0),
-        new Translation2d(1.5, 0.5),
-        new Translation2d(2.0, -0.5)
+        new Translation2d(1, 0.5),
+        new Translation2d(2, -0.5)
       ),
-      new Pose2d(2.5, 0.0, new Rotation2d(0)), false));
-      
+      new Pose2d(3, 0, new Rotation2d(0)),
+      false));
+    
+    chooser.addOption("Curve From Docs", DrivePathHelpers.createOnBoardDrivePathCommand(m_drive,
+      new Pose2d(0.0, 0.0, new Rotation2d(0)),
+      List.of(
+        new Translation2d(1, 1),
+        new Translation2d(2, -1)
+      ),
+      new Pose2d(3, 0, new Rotation2d(0)),
+      false));
+    
     chooser.addOption("Manual", new SequentialCommandGroup(
       new ShootTest(m_spindexer, m_shooter, 0.75),
       new WaitCommand(2.0),
@@ -258,16 +269,30 @@ public class RobotContainer {
 
     chooser.addOption("Slalom", DrivePathHelpers.createDrivePathCommand(m_drive, slalom1));
 
+    chooser.addOption("Barrel Run", DrivePathHelpers.createDrivePathCommand(m_drive, barrelRun));
+
     chooser.addOption("Bounce", new SequentialCommandGroup(
       DrivePathHelpers.createDrivePathCommand(m_drive, bounce1),
       DrivePathHelpers.createDrivePathCommand(m_drive, bounce2)
     ));
 
+    chooser.addOption("Shop Barrel", DrivePathHelpers.createOnBoardDrivePathCommand(
+      m_drive,
+      new Pose2d(0.0, 0.0, new Rotation2d(0)),
+      List.of(
+        new Translation2d(1.7, 0),
+        new Translation2d(2.2, 0.8)
+      ),
+      new Pose2d(0.0, 0.0, new Rotation2d(0)),
+      false
+      )
+    );
+
     SmartDashboard.putData("Auto", chooser);
   }
 
   public void disabledInit() {
-    m_drive.setCoast();
+    // m_drive.setCoast();
   }
 
 }

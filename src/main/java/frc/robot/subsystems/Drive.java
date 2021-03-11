@@ -39,11 +39,11 @@ public class Drive extends SubsystemBase {
     m_gyro = gyro;
 
     m_leftMaster.configFactoryDefault();
-    m_leftMaster.configOpenloopRamp(0.1);
+    m_leftMaster.configOpenloopRamp(0.05);
     m_leftSlave.configFactoryDefault();
     m_leftSlave.follow(m_leftMaster);
     m_rightMaster.configFactoryDefault();
-    m_rightMaster.configOpenloopRamp(0.1);
+    m_rightMaster.configOpenloopRamp(0.5);
     m_rightSlave.configFactoryDefault();
     m_rightSlave.follow(m_rightMaster);
 
@@ -130,6 +130,10 @@ public class Drive extends SubsystemBase {
       Constants.Drive.Values.wheelCircumference,
       Constants.Drive.Values.postEncoderGearing
     );
+  }
+
+  public double getAngle() {
+    return m_gyro.getAngle();
   }
 
   /**
@@ -253,14 +257,15 @@ public class Drive extends SubsystemBase {
       getDistanceRight()
     );
 
-    if (SmartDashboard.getNumber("Log Level", 0) > 1) {
-      SmartDashboard.putNumber("Left Distance", getDistanceLeft());
-      SmartDashboard.putNumber("Right Distance", getDistanceRight());
-      SmartDashboard.putNumber("Rotation 2D", Rotation2d.fromDegrees(getHeading()).getDegrees());
-      SmartDashboard.putNumber("angle", Math.IEEEremainder(m_gyro.getAngle(), 360));
-      SmartDashboard.putNumber("Pose X", m_odometry.getPoseMeters().getX());
-      SmartDashboard.putNumber("Pose Y", m_odometry.getPoseMeters().getY());
-      SmartDashboard.putNumber("Pose Rotation", m_odometry.getPoseMeters().getRotation().getDegrees());
-    }
+    // if (SmartDashboard.getNumber("Log Level", 0) > 1) {
+    //   SmartDashboard.putNumber("Left Distance", getDistanceLeft());
+    //   SmartDashboard.putNumber("Right Distance", getDistanceRight());
+    //   SmartDashboard.putNumber("Rotation 2D", Rotation2d.fromDegrees(getHeading()).getDegrees());
+      // SmartDashboard.putNumber("angle", Math.IEEEremainder(m_gyro.getAngle(), 360));
+      Pose2d currentPose = m_odometry.getPoseMeters();
+      SmartDashboard.putNumber("Pose X", currentPose.getX());
+      SmartDashboard.putNumber("Pose Y", currentPose.getY());
+      SmartDashboard.putNumber("Pose Rotation", currentPose.getRotation().getDegrees());
+    // }
   }
 }
