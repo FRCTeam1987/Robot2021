@@ -23,6 +23,7 @@ import frc.robot.commands.collector.StopCollect;
 import frc.robot.commands.drive.DrivePathHelpers;
 import frc.robot.commands.drive.DriveTank;
 import frc.robot.commands.drive.TeleopDrive;
+import frc.robot.commands.drive.TeleopDriveConfigurable;
 import frc.robot.commands.shooter.ShootLimeLight;
 import frc.robot.commands.shooter.ShootRPM;
 // import frc.robot.commands.shooter.Shoot;
@@ -135,7 +136,7 @@ public class RobotContainer {
   }
 
   private void configureDefaultCommands() {
-    m_drive.setDefaultCommand(new TeleopDrive(m_drive, driver));
+    m_drive.setDefaultCommand(new TeleopDriveConfigurable(m_drive, driver));
   }
   
   private void configureShuffleboard() {
@@ -268,6 +269,10 @@ public class RobotContainer {
 
   public void disabledInit() {
     m_drive.setCoast();
+  }
+
+  public void teleopInit() {
+    m_drive.teleopInit();
   }
 
 }
