@@ -60,6 +60,7 @@ public class ConfigurableDriveModes {
     m_driveModeChooser.addOption("Curvature - Sticks", DriveMode.CurvatureSticks);
     m_driveModeChooser.addOption("Tank - Sticks", DriveMode.TankSticks);
     m_tab.add(m_driveModeChooser);
+    m_selectedDriveMode = m_driveModeChooser.getSelected();
     m_speedLimitChooser = m_tab.add("Speed Limit", 1.0).getEntry();
     SendableRegistry.setName(m_neutralModeChooser, "Neutral Mode Selector");
     m_neutralModeChooser.setDefaultOption("Brake", NeutralMode.Brake);
@@ -105,6 +106,9 @@ public class ConfigurableDriveModes {
           xbox.getY(Hand.kRight),
           true
         );
+        return;
+      default:
+        m_differentialDrive.tankDrive(0, 0);
         return;
     }
   }

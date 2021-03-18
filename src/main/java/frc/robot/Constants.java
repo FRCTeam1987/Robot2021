@@ -66,12 +66,12 @@ public final class Constants {
       public static final double ramseteB = 2.0;
       public static final double ramseteZeta = 0.7;  // 0.15
       public static final double pVelocity = 0.175; // 0.15, 0.075
-      public static final double maxCentripetalMetersPerSecondSquared = 1.75;
+      public static final double maxCentripetalMetersPerSecondSquared = 2.0;
     }
     public static final class Values {
       public static final int encoderTicksPerRevolution = 2048;
       public static final double postEncoderGearing = 9.091;
-      public static final double trackWidth = 0.7045; // 0.693; // 12.9798;
+      public static final double trackWidth = 0.71; // 0.693; // 12.9798;
       public static final double wheelDiameter = 0.156972; // 0.1524;  // 6 in wheel in m
       public static final double wheelCircumference = Math.PI * wheelDiameter;
       public static final double minMovePercent = 0.275;

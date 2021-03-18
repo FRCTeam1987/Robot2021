@@ -116,8 +116,8 @@ public class DrivePathHelpers {
       new RamseteCommand(
         trajectory,
         drive::getPose,
-        disabledRamseteController,
-        // ramseteController,
+        // disabledRamseteController,
+        ramseteController,
         feedForward,
         kinematics,
         drive::getWheelSpeeds,

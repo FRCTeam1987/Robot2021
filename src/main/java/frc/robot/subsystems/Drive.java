@@ -8,15 +8,18 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.TalonFXSensorCollection;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-
+import com.ctre.phoenix.sensors.CANCoder;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -27,24 +30,41 @@ public class Drive extends SubsystemBase {
 
   private final WPI_TalonFX m_leftMaster;
   private final TalonFX m_leftSlave;
+  private final CANCoder m_leftEncoder;
   private final WPI_TalonFX m_rightMaster;
   private final TalonFX m_rightSlave;
+  private final CANCoder m_rightEncoder;
   private final AHRS m_gyro;
   private final DifferentialDrive m_drive;
   private final DifferentialDriveOdometry m_odometry;
   private int accuracyChallengeStep;
 
-  
-
   private final ConfigurableDriveModes m_configurableDriveModes;
 
+  private final ShuffleboardTab m_tabOdometry;
+  private final NetworkTableEntry m_tabOdometryLeftDistance;
+  private final NetworkTableEntry m_tabOdometryRightDistance;
+  private final NetworkTableEntry m_tabOdometryRightVelocity;
+  private final NetworkTableEntry m_tabOdometryLeftVelocity;
+  private final NetworkTableEntry m_tabOdometryAngle;
+  private final NetworkTableEntry m_tabOdometryPoseX;
+  private final NetworkTableEntry m_tabOdometryPoseY;
+  private final NetworkTableEntry m_tabOdometryPoseRotation;
+
+
   /** Creates a new Drive. */
-  public Drive(final WPI_TalonFX leftMaster, final TalonFX leftSlave, final WPI_TalonFX rightMaster, final TalonFX rightSlave, final AHRS gyro) {
+  public Drive(
+    final WPI_TalonFX leftMaster, final TalonFX leftSlave, final CANCoder leftEncoder,
+    final WPI_TalonFX rightMaster, final TalonFX rightSlave, final CANCoder rightEncoder,
+    final AHRS gyro
+  ) {
 
     m_leftMaster = leftMaster;
     m_leftSlave = leftSlave;
+    m_leftEncoder = leftEncoder;
     m_rightMaster = rightMaster;
     m_rightSlave = rightSlave;
+    m_rightEncoder = rightEncoder;
     m_gyro = gyro;
 
     accuracyChallengeStep = 0;
@@ -72,6 +92,16 @@ public class Drive extends SubsystemBase {
     addChild("diff drive", m_drive);
 
     m_configurableDriveModes = new ConfigurableDriveModes(m_drive, this::setNeutralMode);
+
+    m_tabOdometry = Shuffleboard.getTab("Odometry");
+    m_tabOdometryLeftDistance = m_tabOdometry.add("Left Distance", 0.0).getEntry();
+    m_tabOdometryRightDistance = m_tabOdometry.add("Right Distance", 0.0).getEntry();
+    m_tabOdometryRightVelocity = m_tabOdometry.add("Right Velocity", 0.0).getEntry();
+    m_tabOdometryLeftVelocity = m_tabOdometry.add("Left Velocity", 0.0).getEntry();
+    m_tabOdometryAngle = m_tabOdometry.add("Angle", 0.0).getEntry();
+    m_tabOdometryPoseX = m_tabOdometry.add("Pose X", 0.0).getEntry();
+    m_tabOdometryPoseY = m_tabOdometry.add("Pose Y", 0.0).getEntry();
+    m_tabOdometryPoseRotation = m_tabOdometry.add("Pose Rotation", 0.0).getEntry();
   }
 
   /**
@@ -117,6 +147,14 @@ public class Drive extends SubsystemBase {
     return (getDistanceLeft() + getDistanceRight()) / 2.0;
   }
 
+  public double getDistanceCANCoder(final double position) {
+    return EncoderHelpers.ticksToDistance(position, 360.0, Constants.Drive.Values.wheelCircumference);
+  }
+
+  public double getDistanceLeftCANCoder() {
+    return -getDistanceCANCoder(m_leftEncoder.getPosition());
+  }
+
   /**
    * Gets the left wheel distance traveled.
    * 
@@ -124,6 +162,10 @@ public class Drive extends SubsystemBase {
    */
   public double getDistanceLeft() {
     return -getEncoderDistance(m_leftMaster.getSensorCollection());
+  }
+
+  public double getDistanceRightCANCoder() {
+    return getDistanceCANCoder(m_rightEncoder.getPosition());
   }
 
   /**
@@ -188,8 +230,8 @@ public class Drive extends SubsystemBase {
    */
   public DifferentialDriveWheelSpeeds getWheelSpeeds() {
     return new DifferentialDriveWheelSpeeds(
-      getVelocityLeft(),
-      getVelocityRight()
+      getVelocityLeftCANCoder(),
+      getVelocityRightCANCoder()
     );
   }
 
@@ -208,14 +250,26 @@ public class Drive extends SubsystemBase {
     );
   }
 
+  private double getWheelVelocityCANCoder(final double velocity) {
+    return velocity / 360.0 * Constants.Drive.Values.wheelCircumference;
+  }
+
   /** Gets the linear velocity of the left wheel. */
   public double getVelocityLeft() {
     return -getWheelVelocity(m_leftMaster.getSensorCollection());
   }
 
+  public double getVelocityLeftCANCoder() {
+    return -getWheelVelocityCANCoder(m_leftEncoder.getVelocity());
+  }
+
   /** Gets the linear velocity of the right wheel. */
   public double getVelocityRight() {
     return getWheelVelocity(m_rightMaster.getSensorCollection());
+  }
+
+  public double getVelocityRightCANCoder() {
+    return getWheelVelocityCANCoder(m_rightEncoder.getVelocity());
   }
 
   /**
@@ -253,7 +307,9 @@ public class Drive extends SubsystemBase {
   /** Zeroes the left and right encoders. */
   public void zeroEncoders() {
     m_leftMaster.setSelectedSensorPosition(0);
+    m_leftEncoder.setPosition(0);
     m_rightMaster.setSelectedSensorPosition(0);
+    m_rightEncoder.setPosition(0);
   }
 
   /** Zeroes the heading of the robot. */
@@ -269,10 +325,12 @@ public class Drive extends SubsystemBase {
 
   @Override
   public void periodic() {
+    final double leftDistance = getDistanceLeftCANCoder();
+    final double rightDistance = getDistanceRightCANCoder();
     m_odometry.update(
       Rotation2d.fromDegrees(m_gyro.getAngle()),
-      getDistanceLeft(),
-      getDistanceRight()
+      leftDistance,
+      rightDistance
     );
 
     // if (SmartDashboard.getNumber("Log Level", 0) > 1) {
@@ -281,8 +339,23 @@ public class Drive extends SubsystemBase {
     //   SmartDashboard.putNumber("Rotation 2D", Rotation2d.fromDegrees(getHeading()).getDegrees());
       // SmartDashboard.putNumber("angle", Math.IEEEremainder(m_gyro.getAngle(), 360));
       Pose2d currentPose = m_odometry.getPoseMeters();
-      SmartDashboard.putNumber("Pose X", currentPose.getX());
-      SmartDashboard.putNumber("Pose Y", currentPose.getY());
+      // Odometry.add("Pose X - odometry", currentPose.getX());
+      // Odometry.add("Pose Y - odometry", currentPose.getY());
+      m_tabOdometryLeftDistance.setNumber(getDistanceLeftCANCoder());
+      m_tabOdometryRightDistance.setNumber(getDistanceRightCANCoder());
+      m_tabOdometryRightVelocity.setNumber(getVelocityRightCANCoder());
+      m_tabOdometryLeftVelocity.setNumber(getVelocityLeftCANCoder());
+      m_tabOdometryAngle.setNumber(getAngle());
+      m_tabOdometryPoseX.setNumber(currentPose.getX());
+      m_tabOdometryPoseY.setNumber(currentPose.getY());
+      m_tabOdometryPoseRotation.setNumber(currentPose.getRotation().getDegrees());
+      // Odometry.add("left cancoder distance", getDistanceLeftCANCoder());
+      // Odometry.add("left cancoder position", m_leftEncoder.getPosition());
+      // Odometry.add("right cancoder velocity", getVelocityRightCANCoder());
+      // Odometry.add("left cancoder velocity", getVelocityLeftCANCoder());
+
+
+
       SmartDashboard.putNumber("Pose Rotation", currentPose.getRotation().getDegrees());
     // }
   }

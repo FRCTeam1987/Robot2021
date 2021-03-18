@@ -7,8 +7,10 @@ package frc.robot;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.sensors.CANCoder;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -26,6 +28,7 @@ import frc.robot.commands.drive.DriveTank;
 import frc.robot.commands.drive.FindTrackWidth;
 import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.commands.drive.TeleopDriveConfigurable;
+import frc.robot.commands.drive.ZeroSensors;
 import frc.robot.commands.shooter.ShootLimeLight;
 import frc.robot.commands.shooter.ShootRPM;
 // import frc.robot.commands.shooter.Shoot;
@@ -39,6 +42,8 @@ import frc.robot.subsystems.Collector;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 import java.util.List;
 
@@ -69,10 +74,8 @@ public class RobotContainer {
 
   // Allocate Subsystems
   private final Drive m_drive = new Drive(
-    new WPI_TalonFX(Constants.Drive.Can.leftMaster),
-    new TalonFX(Constants.Drive.Can.leftSlave),
-    new WPI_TalonFX(Constants.Drive.Can.rightMaster),
-    new TalonFX(Constants.Drive.Can.rightSlave),
+    new WPI_TalonFX(Constants.Drive.Can.leftMaster), new TalonFX(Constants.Drive.Can.leftSlave), new CANCoder(Constants.Drive.Can.leftEncoder),
+    new WPI_TalonFX(Constants.Drive.Can.rightMaster), new TalonFX(Constants.Drive.Can.rightSlave), new CANCoder(Constants.Drive.Can.rightEncoder),
     new AHRS()
   );
   private final Collector m_collector = new Collector();
@@ -145,6 +148,9 @@ public class RobotContainer {
   }
   
   private void configureShuffleboard() {
+
+     final ShuffleboardTab tabShooter = Shuffleboard.getTab("Shooter");
+
     // SmartDashboard.putData("Extend Collector", new CollectorInOut(m_collector, Constants.Collector.Values.cylinderExtend));
     // SmartDashboard.putData("Retract Collector", new CollectorInOut(m_collector, Constants.Collector.Values.cylinderRetract));
     SmartDashboard.putData("Start Collect", new StartCollect(m_collector));
@@ -157,17 +163,19 @@ public class RobotContainer {
     SmartDashboard.putData("Stop All", new StopAll(m_collector, m_spindexer, m_shooter));
     SmartDashboard.putData("Feed Shooter", new FeedShooter(m_spindexer));
     SmartDashboard.putData("Accurace Next", new AccuraceChallengeGroup(m_drive, limeLight, m_shooter));
-    SmartDashboard.putData("Shoot RPM Dashboard", new ShootRPM(m_shooter));
-    SmartDashboard.putData("Shoot RPM 100", new ShootRPM(m_shooter, 100));
-    SmartDashboard.putData("Shoot RPM 1000", new ShootRPM(m_shooter, 1000));
-    SmartDashboard.putData("Shoot RPM 2000", new ShootRPM(m_shooter, 2000));
-    SmartDashboard.putData("Shoot RPM 3000", new ShootRPM(m_shooter, 3000));
-    SmartDashboard.putData("Shoot RPM 4000", new ShootRPM(m_shooter, 4000));
-    SmartDashboard.putData("Shoot RPM 4250", new ShootRPM(m_shooter, 4250));
-    SmartDashboard.putData("Shoot RPM 4500", new ShootRPM(m_shooter, 4500));
-    SmartDashboard.putData("Shoot RPM 4750", new ShootRPM(m_shooter, 4750));
-    SmartDashboard.putData("Shoot RPM 5000", new ShootRPM(m_shooter, 5000));
-    SmartDashboard.putData("Shoot Limelight", new ShootLimeLight(m_shooter, limeLight));
+    NetworkTableEntry rpmTestSetpoint = tabShooter.add("RPM Test Setpoint", 0.0).getEntry();
+    tabShooter.add("Shoot RPM Dashboard", new ShootRPM(m_shooter, rpmTestSetpoint));
+    // SmartDashboard.putData("Shoot RPM Dashboard", new ShootRPM(m_shooter));
+    tabShooter.add("Shoot RPM 100", new ShootRPM(m_shooter, 100));
+    tabShooter.add("Shoot RPM 1000", new ShootRPM(m_shooter, 1000));
+    tabShooter.add("Shoot RPM 2000", new ShootRPM(m_shooter, 2000));
+    tabShooter.add("Shoot RPM 3000", new ShootRPM(m_shooter, 3000));
+    tabShooter.add("Shoot RPM 4000", new ShootRPM(m_shooter, 4000));
+    tabShooter.add("Shoot RPM 4250", new ShootRPM(m_shooter, 4250));
+    tabShooter.add("Shoot RPM 4500", new ShootRPM(m_shooter, 4500));
+    tabShooter.add("Shoot RPM 4750", new ShootRPM(m_shooter, 4750));
+    tabShooter.add("Shoot RPM 5000", new ShootRPM(m_shooter, 5000));
+    tabShooter.add("Shoot Limelight", new ShootLimeLight(m_shooter, limeLight));
     SmartDashboard.putData("aimbot", new AimBot(m_drive, limeLight));
     SmartDashboard.putData("Agitate", new Agitate(m_spindexer, Constants.Spindexer.agitateSpeed, Constants.Spindexer.agitateDuration));
     SmartDashboard.putData("Drive Straight 1", new SequentialCommandGroup(DrivePathHelpers.driveStraightCommand(m_drive, 1.0)));
@@ -183,6 +191,7 @@ public class RobotContainer {
       new WaitCommand(1),
       new StopAll(m_collector, m_spindexer, m_shooter)
     ));
+    SmartDashboard.putData("Zero Drive", new ZeroSensors(m_drive));
 
     Command part1 = DrivePathHelpers.createOnBoardDrivePathCommand(
       m_drive,
