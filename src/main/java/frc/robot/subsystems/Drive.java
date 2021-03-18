@@ -10,6 +10,8 @@ import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import com.kauailabs.navx.frc.AHRS;
+
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -18,6 +20,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.lib.ConfigurableDriveModes;
 import frc.robot.lib.EncoderHelpers;
 
 public class Drive extends SubsystemBase {
@@ -33,6 +36,7 @@ public class Drive extends SubsystemBase {
 
   
 
+  private final ConfigurableDriveModes m_configurableDriveModes;
 
   /** Creates a new Drive. */
   public Drive(final WPI_TalonFX leftMaster, final TalonFX leftSlave, final WPI_TalonFX rightMaster, final TalonFX rightSlave, final AHRS gyro) {
@@ -66,6 +70,8 @@ public class Drive extends SubsystemBase {
     addChild("right master", m_rightMaster);
     addChild("gyro", m_gyro);
     addChild("diff drive", m_drive);
+
+    m_configurableDriveModes = new ConfigurableDriveModes(m_drive, this::setNeutralMode);
   }
 
   /**
@@ -96,6 +102,10 @@ public class Drive extends SubsystemBase {
 
   public void driveTank(final double left, final double right, final boolean squareInputs) {
     m_drive.tankDrive(left, right, squareInputs);
+  }
+
+  public void driveTeleopConfigurable(final XboxController xbox) {
+    m_configurableDriveModes.drive(xbox);
   }
 
   /**
@@ -282,5 +292,9 @@ public class Drive extends SubsystemBase {
   }
   public int getAccuracyChallengeStep() {
     return this.accuracyChallengeStep;
+  }
+
+  public void teleopInit() {
+    m_configurableDriveModes.update();
   }
 }
