@@ -29,14 +29,21 @@ public class Drive extends SubsystemBase {
   private final AHRS m_gyro;
   private final DifferentialDrive m_drive;
   private final DifferentialDriveOdometry m_odometry;
+  private int accuracyChallengeStep;
+
+  
+
 
   /** Creates a new Drive. */
   public Drive(final WPI_TalonFX leftMaster, final TalonFX leftSlave, final WPI_TalonFX rightMaster, final TalonFX rightSlave, final AHRS gyro) {
+
     m_leftMaster = leftMaster;
     m_leftSlave = leftSlave;
     m_rightMaster = rightMaster;
     m_rightSlave = rightSlave;
     m_gyro = gyro;
+
+    accuracyChallengeStep = 0;
 
     m_leftMaster.configFactoryDefault();
     m_leftMaster.configOpenloopRamp(0.05);
@@ -51,6 +58,7 @@ public class Drive extends SubsystemBase {
 
     zeroSensors();
     setCoast();
+    // setBrake();
 
     m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
@@ -267,5 +275,12 @@ public class Drive extends SubsystemBase {
       SmartDashboard.putNumber("Pose Y", currentPose.getY());
       SmartDashboard.putNumber("Pose Rotation", currentPose.getRotation().getDegrees());
     // }
+  }
+
+  public void setAccuracyChallengeStep(Integer index) {
+    this.accuracyChallengeStep = index;
+  }
+  public int getAccuracyChallengeStep() {
+    return this.accuracyChallengeStep;
   }
 }

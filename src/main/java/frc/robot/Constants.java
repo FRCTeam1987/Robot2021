@@ -47,6 +47,10 @@ public final class Constants {
 
   public static final class Drive {
     public static final class Can {
+
+      public static final int rightEncoder = 10;
+      public static final int leftEncoder = 11;
+
       public static final int leftMaster = 3;
       public static final int leftSlave = 5;
       public static final int rightMaster = 2;
@@ -62,7 +66,7 @@ public final class Constants {
       public static final double ramseteB = 2.0;
       public static final double ramseteZeta = 0.7;  // 0.15
       public static final double pVelocity = 0.175; // 0.15, 0.075
-      public static final double maxCentripetalMetersPerSecondSquared = 1.5;
+      public static final double maxCentripetalMetersPerSecondSquared = 1.75;
     }
     public static final class Values {
       public static final int encoderTicksPerRevolution = 2048;

@@ -115,7 +115,27 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // if (SmartDashboard.getNumber("Log Level", 0) > 1) {
-    //   SmartDashboard.putNumber("Shooter Actual RPM", getRPM());
+      SmartDashboard.putNumber("Shooter Actual RPM", getRPM());
     // }
+  }
+
+  // Has the shooter shot all known balls?
+  public boolean hasShotAllBalls() {
+    return true;
+  }
+
+  // Called when a ball is detected to have been shot
+  public void shotBall() {
+
+  }
+
+  // Called to set the number of balls known to be in the robot
+  public void setBallsInShooter(int balls) {
+
+  }
+
+  // Returns true when a ball is detecting to be shot
+  public boolean isBallShooting() {
+    return m_master.getSupplyCurrent() > 10.0;  // Magic number - needs to be determined
   }
 }

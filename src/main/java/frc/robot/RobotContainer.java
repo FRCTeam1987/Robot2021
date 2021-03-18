@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import frc.robot.commands.AccuraceChallengeGroup;
 import frc.robot.commands.AimBot;
 import frc.robot.commands.LoggerCommand;
 import frc.robot.commands.StopAll;
@@ -31,6 +32,7 @@ import frc.robot.commands.shooter.ShootRPM;
 import frc.robot.commands.shooter.ShootTest;
 import frc.robot.commands.spindexer.Agitate;
 import frc.robot.commands.spindexer.FeedShooter;
+import frc.robot.commands.spindexer.PrepShoot;
 import frc.robot.commands.spindexer.Spindex;
 import frc.robot.subsystems.Collector;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -58,7 +60,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
 
   private Trajectory slalomTrajectory;
-  private Trajectory bounce1, bounce2, slalom1, barrelRun;
+  private Trajectory bounce1, bounce2, slalom1, barrelRun_0, barrelRun_1;
 
   private final XboxController driver;
   private final JoystickButton buttonCollector;
@@ -89,12 +91,14 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    
     driver = new XboxController(Constants.OI.Xbox.driverID);
 
     bounce1 = DrivePathHelpers.createTrajectoryFromPathWeaverJsonFile("output/Bounce1.wpilib.json");
     bounce2 = DrivePathHelpers.createTrajectoryFromPathWeaverJsonFile("output/Bounce4.wpilib.json");
     slalom1 = DrivePathHelpers.createTrajectoryFromPathWeaverJsonFile("output/Slalom1.wpilib.json");
-    barrelRun = DrivePathHelpers.createTrajectoryFromPathWeaverJsonFile("output/BarrelRun.wpilib.json");
+    barrelRun_0 = DrivePathHelpers.createTrajectoryFromPathWeaverJsonFile("output/BarrelRun_0.wpilib.json");
+    barrelRun_1 = DrivePathHelpers.createTrajectoryFromPathWeaverJsonFile("output/BarrelRun_1.wpilib.json");
 
  
     // Configure the button bindings
@@ -151,6 +155,7 @@ public class RobotContainer {
     // SmartDashboard.putData("Shoot Test", new ShootTest(m_spindexer, m_shooter, 0.75)); //percentage for starting autonomous is .75
     SmartDashboard.putData("Stop All", new StopAll(m_collector, m_spindexer, m_shooter));
     SmartDashboard.putData("Feed Shooter", new FeedShooter(m_spindexer));
+    SmartDashboard.putData("Accurace Next", new AccuraceChallengeGroup(m_drive, limeLight, m_shooter));
     SmartDashboard.putData("Shoot RPM Dashboard", new ShootRPM(m_shooter));
     SmartDashboard.putData("Shoot RPM 100", new ShootRPM(m_shooter, 100));
     SmartDashboard.putData("Shoot RPM 1000", new ShootRPM(m_shooter, 1000));
@@ -168,18 +173,27 @@ public class RobotContainer {
     SmartDashboard.putData("Drive Straight -1", new SequentialCommandGroup(DrivePathHelpers.driveStraightCommand(m_drive, -1.0)));
     SmartDashboard.putNumber("Log Level", 0);
     SmartDashboard.putData("Find Track Width", new FindTrackWidth(m_drive));
+    SmartDashboard.putData("Prep Shoot", new PrepShoot(m_spindexer));
+    SmartDashboard.putData("Test Shoot", new SequentialCommandGroup(
+      new PrepShoot(m_spindexer),
+      new WaitCommand(1),
+      new ShootRPM(m_shooter, 5000),
+      new FeedShooter(m_spindexer),
+      new WaitCommand(1),
+      new StopAll(m_collector, m_spindexer, m_shooter)
+    ));
 
     Command part1 = DrivePathHelpers.createOnBoardDrivePathCommand(
       m_drive,
       new Pose2d(0, 0, new Rotation2d(0)),
       List.of(
-        new Translation2d(2.05, 0.0),
-        new Translation2d(2.05, -1.7),
+        new Translation2d(1.00, 0.0)
+        // new Translation2d(2.05, -1.7),
         // new Translation2d(4.05, -1.7),
-        new Translation2d(4.05, -2.2)
+        // new Translation2d(4.05, -2.2)
         // new Translation2d(1.53, 1.94)
       ),
-      new Pose2d(6.2, -2.2, new Rotation2d(0)), false);
+      new Pose2d(0.0, 0.0, new Rotation2d(0)), false);
     Command part2 = DrivePathHelpers.createOnBoardDrivePathCommand(
         m_drive,
         new Pose2d(0.0, 0.0, new Rotation2d(0)),
@@ -189,9 +203,13 @@ public class RobotContainer {
           // new Translation2d(-4.05, 1.7),
           // new Translation2d(-2.05, 1.7),
           // new Translation2d(-2.05, 0.0),
-          new Translation2d(-6.2, 1.0)
+          // new Translation2d(-6.2, 1.0)
           // new Translation2d(6.2, -2.2)
           // new Translation2d(1.53, 1.94)
+
+          new Translation2d(-6.2, 1.0)
+
+
         ),
         new Pose2d(-6.2, 2.2, new Rotation2d(0)),
         true);
@@ -205,88 +223,93 @@ public class RobotContainer {
       new Pose2d(3, 0, new Rotation2d(0)),
       false));
     
-    chooser.addOption("Curve From Docs", DrivePathHelpers.createOnBoardDrivePathCommand(m_drive,
-      new Pose2d(0.0, 0.0, new Rotation2d(0)),
-      List.of(
-        new Translation2d(1, 1),
-        new Translation2d(2, -1)
-      ),
-      new Pose2d(3, 0, new Rotation2d(0)),
-      false));
+    // chooser.addOption("Curve From Docs", DrivePathHelpers.createOnBoardDrivePathCommand(m_drive,
+    //   new Pose2d(0.0, 0.0, new Rotation2d(0)),
+    //   List.of(
+    //     new Translation2d(1, 1),
+    //     new Translation2d(2, -1)
+    //   ),
+    //   new Pose2d(3, 0, new Rotation2d(0)),
+    //   false));
     
-    chooser.addOption("Manual", new SequentialCommandGroup(
-      new ShootTest(m_spindexer, m_shooter, 0.75),
-      new WaitCommand(2.0),
-      new Spindex(m_spindexer, 0.5),
-      new WaitCommand(3.0),
-      new ShootTest(m_spindexer, m_shooter, 0.0),
-      new Spindex(m_spindexer, 0.0),
-      new StartCollect(m_collector),
-      // part1,
-      new StopCollect(m_collector),
-      // part2,
-      new ShootTest(m_spindexer, m_shooter, 0.75),
-      new WaitCommand(2.0),
-      new Spindex(m_spindexer, 0.5),
-      new WaitCommand(3.0),
-      new ShootTest(m_spindexer, m_shooter, 0.0),
-      new Spindex(m_spindexer, 0.0)
-    ));
+    // chooser.addOption("Manual", new SequentialCommandGroup(
+    //   new ShootTest(m_spindexer, m_shooter, 0.75),
+    //   new WaitCommand(2.0),
+    //   new Spindex(m_spindexer, 0.5),
+    //   new WaitCommand(3.0),
+    //   new ShootTest(m_spindexer, m_shooter, 0.0),
+    //   new Spindex(m_spindexer, 0.0),
+    //   new StartCollect(m_collector),
+    //   part1,
+    //   new StopCollect(m_collector),
+    //   // part2,
+    //   new ShootTest(m_spindexer, m_shooter, 0.75),
+    //   new WaitCommand(2.0),
+    //   new Spindex(m_spindexer, 0.5),
+    //   new WaitCommand(3.0),
+    //   new ShootTest(m_spindexer, m_shooter, 0.0),
+    //   new Spindex(m_spindexer, 0.0)
+    // ));
 
-    chooser.addOption("Shop Test", new SequentialCommandGroup(
-      new ParallelRaceGroup(
-        new SequentialCommandGroup(
-          new ShootLimeLight(m_shooter, limeLight),
-          new FeedShooter(m_spindexer),
-          new WaitCommand(2.0), // wait for balls to get shot
-          new StopAll(m_collector, m_spindexer, m_shooter),
-          new StartCollect(m_collector)
-        ),
-        new DriveTank(m_drive, 0.0, 0.0)
-      ),
-      new ParallelRaceGroup(
-        new Agitate(m_spindexer, Constants.Spindexer.agitateSpeed, Constants.Spindexer.agitateDuration),
-        new SequentialCommandGroup(
-          part1,
-          // DrivePathHelpers.driveStraightCommand(m_drive, 2.5),
-          new StopCollect(m_collector),
-          part2,
-          // DrivePathHelpers.driveStraightCommand(m_drive, -1.0),
-          new AimBot(m_drive, limeLight)
-        )
-      ),
-      new ParallelRaceGroup(
-        new SequentialCommandGroup(
-          new ShootLimeLight(m_shooter, limeLight),
-          new FeedShooter(m_spindexer),
-          new WaitCommand(2.0) // wait for balls to get shot
-        ),
-        new DriveTank(m_drive, 0.0, 0.0)
-      ),
-      new StopAll(m_collector, m_spindexer, m_shooter),
-      new LoggerCommand("END")
-    ));
+    // chooser.addOption("Shop Test", new SequentialCommandGroup(
+    //   new ParallelRaceGroup(
+    //     new SequentialCommandGroup(
+    //       new ShootLimeLight(m_shooter, limeLight),
+    //       new FeedShooter(m_spindexer),
+    //       new WaitCommand(2.0), // wait for balls to get shot
+    //       new StopAll(m_collector, m_spindexer, m_shooter),
+    //       new StartCollect(m_collector)
+    //     ),
+    //     new DriveTank(m_drive, 0.0, 0.0)
+    //   ),
+    //   new ParallelRaceGroup(
+    //     new Agitate(m_spindexer, Constants.Spindexer.agitateSpeed, Constants.Spindexer.agitateDuration),
+    //     new SequentialCommandGroup(
+    //       part1,
+    //       // DrivePathHelpers.driveStraightCommand(m_drive, 2.5),
+    //       new StopCollect(m_collector),
+    //       part2,
+    //       // DrivePathHelpers.driveStraightCommand(m_drive, -1.0),
+    //       new AimBot(m_drive, limeLight)
+    //     )
+    //   ),
+    //   new ParallelRaceGroup(
+    //     new SequentialCommandGroup(
+    //       new ShootLimeLight(m_shooter, limeLight),
+    //       new FeedShooter(m_spindexer),
+    //       new WaitCommand(2.0) // wait for balls to get shot
+    //     ),
+    //     new DriveTank(m_drive, 0.0, 0.0)
+    //   ),
+    //   new StopAll(m_collector, m_spindexer, m_shooter),
+    //   new LoggerCommand("END")
+    // ));
 
-    chooser.addOption("Slalom", DrivePathHelpers.createDrivePathCommand(m_drive, slalom1));
+    // chooser.addOption("Slalom", DrivePathHelpers.createDrivePathCommand(m_drive, slalom1));
 
-    chooser.addOption("Barrel Run", DrivePathHelpers.createDrivePathCommand(m_drive, barrelRun));
+    // // chooser.addOption("Barrel Run", DrivePathHelpers.createDrivePathCommand(m_drive, barrelRun_2));
 
-    chooser.addOption("Bounce", new SequentialCommandGroup(
-      DrivePathHelpers.createDrivePathCommand(m_drive, bounce1),
-      DrivePathHelpers.createDrivePathCommand(m_drive, bounce2)
-    ));
+    // chooser.addOption("Bounce", new SequentialCommandGroup(
+    //   DrivePathHelpers.createDrivePathCommand(m_drive, bounce1),
+    //   DrivePathHelpers.createDrivePathCommand(m_drive, bounce2)
+    // ));
+    
+    // chooser.addOption("barrelRun_2", new SequentialCommandGroup(
+    //   DrivePathHelpers.createDrivePathCommand(m_drive, barrelRun_0),
+    //   DrivePathHelpers.createDrivePathCommand(m_drive, barrelRun_1)
+    // ));
 
-    chooser.addOption("Shop Barrel", DrivePathHelpers.createOnBoardDrivePathCommand(
-      m_drive,
-      new Pose2d(0.0, 0.0, new Rotation2d(0)),
-      List.of(
-        new Translation2d(1.7, 0),
-        new Translation2d(2.2, 0.8)
-      ),
-      new Pose2d(0.0, 0.0, new Rotation2d(0)),
-      false
-      )
-    );
+    // chooser.addOption("Shop Barrel", DrivePathHelpers.createOnBoardDrivePathCommand(
+    //   m_drive,
+    //   new Pose2d(0.0, 0.0, new Rotation2d(0)),
+    //   List.of(
+    //     new Translation2d(1.7, 0),
+    //     new Translation2d(2.2, 0.8)
+    //   ),
+    //   new Pose2d(0.0, 0.0, new Rotation2d(0)),
+    //   false
+    //   )
+    // );
 
     SmartDashboard.putData("Auto", chooser);
   }
