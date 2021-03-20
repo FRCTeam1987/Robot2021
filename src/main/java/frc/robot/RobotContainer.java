@@ -193,17 +193,22 @@ public class RobotContainer {
     ));
     SmartDashboard.putData("Zero Drive", new ZeroSensors(m_drive));
 
-    Command part1 = DrivePathHelpers.createOnBoardDrivePathCommand(
+    Command barrelManual = DrivePathHelpers.createOnBoardDrivePathCommand(
       m_drive,
       new Pose2d(0, 0, new Rotation2d(0)),
       List.of(
-        new Translation2d(1.00, 0.0)
-        // new Translation2d(2.05, -1.7),
-        // new Translation2d(4.05, -1.7),
-        // new Translation2d(4.05, -2.2)
-        // new Translation2d(1.53, 1.94)
+        new Translation2d(3.4, -0.4),
+        new Translation2d(2.6, -1.6),
+        new Translation2d(2.4, 0.0),
+        new Translation2d(5.1, 0.0),
+        new Translation2d(5.0, 1.6),
+        new Translation2d(3.8, 1.3),
+        new Translation2d(4.0, 0),
+        new Translation2d(5.0, -1.5)
+        // new Translation2d(6.5, -1.5)
+        // new Translation2d(6.5, 0.0)
       ),
-      new Pose2d(0.0, 0.0, new Rotation2d(0)), false);
+      new Pose2d(6.5, -1.5, new Rotation2d(0)), false);
     Command part2 = DrivePathHelpers.createOnBoardDrivePathCommand(
         m_drive,
         new Pose2d(0.0, 0.0, new Rotation2d(0)),
@@ -295,19 +300,67 @@ public class RobotContainer {
     //   new LoggerCommand("END")
     // ));
 
-    // chooser.addOption("Slalom", DrivePathHelpers.createDrivePathCommand(m_drive, slalom1));
+    chooser.addOption("Slalom", DrivePathHelpers.createDrivePathCommand(m_drive, slalom1));
 
-    // // chooser.addOption("Barrel Run", DrivePathHelpers.createDrivePathCommand(m_drive, barrelRun_2));
+    // chooser.addOption("Barrel Run", DrivePathHelpers.createDrivePathCommand(m_drive, barrelRun_2));
 
-    // chooser.addOption("Bounce", new SequentialCommandGroup(
-    //   DrivePathHelpers.createDrivePathCommand(m_drive, bounce1),
-    //   DrivePathHelpers.createDrivePathCommand(m_drive, bounce2)
-    // ));
+    chooser.addOption("Bounce", new SequentialCommandGroup(
+      DrivePathHelpers.createDrivePathCommand(m_drive, bounce1),
+      DrivePathHelpers.createDrivePathCommand(m_drive, bounce2)
+    ));
     
-    // chooser.addOption("barrelRun_2", new SequentialCommandGroup(
-    //   DrivePathHelpers.createDrivePathCommand(m_drive, barrelRun_0),
-    //   DrivePathHelpers.createDrivePathCommand(m_drive, barrelRun_1)
-    // ));
+    chooser.addOption("barrelRun_2", new SequentialCommandGroup(
+      DrivePathHelpers.createDrivePathCommand(m_drive, barrelRun_0)
+      // DrivePathHelpers.createDrivePathCommand(m_drive, barrelRun_1)
+    ));
+
+    chooser.addOption("barrelManual", barrelManual);
+
+    chooser.addOption("barrel-record", DrivePathHelpers.createOnBoardDrivePathCommand(
+      m_drive,
+      new Pose2d(0.0, 0.0, new Rotation2d(0)),
+        List.of(
+          new Translation2d(3, 0.0),  // start barrel 1
+          new Translation2d(3.9, -1.1),
+          new Translation2d(2.5, -1.8),
+          new Translation2d(2.5, 0),  // end barrel 1
+          new Translation2d(5.4, 0.7),  // start barrel 2
+          new Translation2d(5.7, 2.2),
+          new Translation2d(4.6, 2.0),  // end barrel 2
+          new Translation2d(5.1, 0.0),
+          new Translation2d(5.8, -1.1), // start barrel 3
+          new Translation2d(7.2, -1.65),
+          // new Translation2d(7.3, -1.2),
+          new Translation2d(7.4, -0.8), // end barrel 3
+          new Translation2d(5.5, 0.0),
+          new Translation2d(4.5, 0.0),
+          new Translation2d(3.5, 0.0),
+          new Translation2d(2.5, 0.0),
+          new Translation2d(1.5, 0.0)
+          // new Translation2d(6.3, 0.0) // 
+        ),
+      new Pose2d(0.0, 0.0, new Rotation2d(-179.99)),
+      false
+    ));
+
+    chooser.addOption("slalom-record", DrivePathHelpers.createOnBoardDrivePathCommand(
+      m_drive,
+      new Pose2d(0.0, 0.0, new Rotation2d(0)),
+        List.of(
+          new Translation2d(1.1, 0.45),  // start barrel 1
+          new Translation2d(2.27, 1.45), // end switch
+          new Translation2d(5.0, 1.3),  // start switch
+          new Translation2d(6.2, 0.39), // end switch
+          new Translation2d(7.6, 0.28), // looping
+          new Translation2d(7.17, 1.5), // end loop
+          new Translation2d(6.09, 0.97),// start switch
+          new Translation2d(5.04, -0.07), // end switch
+          new Translation2d(2.03, 0.26), // start switch
+          new Translation2d(1.38, 1.01)
+        ),
+      new Pose2d(0.0, 2.0, new Rotation2d(172.0)),
+      false
+    ));
 
     // chooser.addOption("Shop Barrel", DrivePathHelpers.createOnBoardDrivePathCommand(
     //   m_drive,

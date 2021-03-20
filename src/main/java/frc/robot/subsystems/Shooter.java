@@ -115,7 +115,7 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // if (SmartDashboard.getNumber("Log Level", 0) > 1) {
-      SmartDashboard.putNumber("Shooter Actual RPM", getRPM());
+      // SmartDashboard.putNumber("Shooter Actual RPM", getRPM());
     // }
   }
 

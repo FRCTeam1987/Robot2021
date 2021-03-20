@@ -63,7 +63,7 @@ public class DrivePathHelpers {
       Constants.Drive.Controls.maxAccelerationMetersPerSecondSquared
     ).setKinematics(getKinematics())
     .addConstraint(getVoltageConstraint())
-    .addConstraint(getCentripetalAccelerationConstraint())
+    // .addConstraint(getCentripetalAccelerationConstraint())
     .setReversed(reversed);
   }
 

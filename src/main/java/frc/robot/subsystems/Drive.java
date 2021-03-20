@@ -341,11 +341,11 @@ public class Drive extends SubsystemBase {
       Pose2d currentPose = m_odometry.getPoseMeters();
       // Odometry.add("Pose X - odometry", currentPose.getX());
       // Odometry.add("Pose Y - odometry", currentPose.getY());
-      m_tabOdometryLeftDistance.setNumber(getDistanceLeftCANCoder());
-      m_tabOdometryRightDistance.setNumber(getDistanceRightCANCoder());
-      m_tabOdometryRightVelocity.setNumber(getVelocityRightCANCoder());
-      m_tabOdometryLeftVelocity.setNumber(getVelocityLeftCANCoder());
-      m_tabOdometryAngle.setNumber(getAngle());
+      // m_tabOdometryLeftDistance.setNumber(getDistanceLeftCANCoder());
+      // m_tabOdometryRightDistance.setNumber(getDistanceRightCANCoder());
+      // m_tabOdometryRightVelocity.setNumber(getVelocityRightCANCoder());
+      // m_tabOdometryLeftVelocity.setNumber(getVelocityLeftCANCoder());
+      // m_tabOdometryAngle.setNumber(getAngle());
       m_tabOdometryPoseX.setNumber(currentPose.getX());
       m_tabOdometryPoseY.setNumber(currentPose.getY());
       m_tabOdometryPoseRotation.setNumber(currentPose.getRotation().getDegrees());
@@ -356,7 +356,7 @@ public class Drive extends SubsystemBase {
 
 
 
-      SmartDashboard.putNumber("Pose Rotation", currentPose.getRotation().getDegrees());
+      // SmartDashboard.putNumber("Pose Rotation", currentPose.getRotation().getDegrees());
     // }
   }
 

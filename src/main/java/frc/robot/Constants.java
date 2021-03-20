@@ -57,12 +57,12 @@ public final class Constants {
       public static final int rightSlave = 4;
     }
     public static final class Controls {
-      public static final double sVolts = 0.672;  // kS
-      public static final double vVoltsSecondsPerMeter = 1.99;  // kV
-      public static final double aVoltsSecondsSquaredPerMeter = 0.226;  // kA
+      public static final double sVolts = 0.672; //0.672 // kS
+      public static final double vVoltsSecondsPerMeter = 1.99; //1.99 // kV
+      public static final double aVoltsSecondsSquaredPerMeter = 0.0922; //0.226 // kA
       public static final double maxVolts = 10;
-      public static final double maxSpeedMetersPerSecond = 2.5;
-      public static final double maxAccelerationMetersPerSecondSquared = 2.5;
+      public static final double maxSpeedMetersPerSecond = 2.0;
+      public static final double maxAccelerationMetersPerSecondSquared = 2.0;
       public static final double ramseteB = 2.0;
       public static final double ramseteZeta = 0.7;  // 0.15
       public static final double pVelocity = 0.175; // 0.15, 0.075
