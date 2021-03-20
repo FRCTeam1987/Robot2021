@@ -11,6 +11,7 @@ import java.util.List;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -68,9 +69,16 @@ public class DrivePathHelpers {
   }
 
   public static Command createOnBoardDrivePathCommand(final Drive drive,
-    final Pose2d startPose, final List<Translation2d> middle, final Pose2d endPose, final Boolean reversed) {
+    final Pose2d startPose, final List<Translation2d> middle, final Pose2d endPose,final Boolean reversed) {
       final Trajectory trajectory = TrajectoryGenerator.generateTrajectory(startPose, middle, endPose, getTrajectoryConfig(reversed));
       return createDrivePathCommand(drive, trajectory);
+  }
+
+  public static Command createOnBoardDrivePathCommand(final Drive drive,
+    final Pose2d startPose, final List<Translation2d> middle, final Pose2d endPose,
+    final Boolean reversed, final Boolean shouldResetOdometry) {
+      final Trajectory trajectory = TrajectoryGenerator.generateTrajectory(startPose, middle, endPose, getTrajectoryConfig(reversed));
+      return createDrivePathCommand(drive, trajectory, shouldResetOdometry);
     }
 
   public static Trajectory createTrajectoryFromPathWeaverJsonFile(final String path) {
@@ -86,6 +94,9 @@ public class DrivePathHelpers {
   }
 
   public static Command createDrivePathCommand(final Drive drive, final Trajectory trajectory) {
+    return createDrivePathCommand(drive, trajectory, true);
+  }
+  public static Command createDrivePathCommand(final Drive drive, final Trajectory trajectory, final Boolean shouldResetOdometry) {
     final RamseteController ramseteController = new RamseteController(Constants.Drive.Controls.ramseteB, Constants.Drive.Controls.ramseteZeta);
     final RamseteController disabledRamseteController = new RamseteController() {
       @Override
@@ -106,9 +117,12 @@ public class DrivePathHelpers {
     final DifferentialDriveKinematics kinematics = getKinematics();
     final PIDController leftController = new PIDController(Constants.Drive.Controls.pVelocity, 0, 0);
     final PIDController rightController = new PIDController(Constants.Drive.Controls.pVelocity, 0, 0);
+    double startTime;
     return new InstantCommand(
       () -> {
-        drive.resetOdometry(trajectory.getInitialPose());
+        if (shouldResetOdometry) {
+          drive.resetOdometry(trajectory.getInitialPose());
+        }
         drive.setBrake();
       },
       drive
