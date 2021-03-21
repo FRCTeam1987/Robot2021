@@ -22,6 +22,7 @@ import frc.robot.commands.AimBot;
 import frc.robot.commands.LoggerCommand;
 import frc.robot.commands.StopAll;
 import frc.robot.commands.challenges.AutoNav;
+import frc.robot.commands.challenges.GalacticSearch;
 import frc.robot.commands.collector.StartCollect;
 import frc.robot.commands.collector.StopCollect;
 import frc.robot.commands.drive.DrivePathHelpers;
@@ -168,14 +169,14 @@ public class RobotContainer {
     NetworkTableEntry rpmTestSetpoint = tabShooter.add("RPM Test Setpoint", 0.0).getEntry();
     tabShooter.add("Shoot RPM Dashboard", new ShootRPM(m_shooter, rpmTestSetpoint));
     // SmartDashboard.putData("Shoot RPM Dashboard", new ShootRPM(m_shooter));
-    tabShooter.add("Shoot RPM 100", new ShootRPM(m_shooter, 100));
-    tabShooter.add("Shoot RPM 1000", new ShootRPM(m_shooter, 1000));
-    tabShooter.add("Shoot RPM 2000", new ShootRPM(m_shooter, 2000));
-    tabShooter.add("Shoot RPM 3000", new ShootRPM(m_shooter, 3000));
-    tabShooter.add("Shoot RPM 4000", new ShootRPM(m_shooter, 4000));
-    tabShooter.add("Shoot RPM 4250", new ShootRPM(m_shooter, 4250));
-    tabShooter.add("Shoot RPM 4500", new ShootRPM(m_shooter, 4500));
-    tabShooter.add("Shoot RPM 4750", new ShootRPM(m_shooter, 4750));
+    // tabShooter.add("Shoot RPM 100", new ShootRPM(m_shooter, 100));
+    // tabShooter.add("Shoot RPM 1000", new ShootRPM(m_shooter, 1000));
+    // tabShooter.add("Shoot RPM 2000", new ShootRPM(m_shooter, 2000));
+    // tabShooter.add("Shoot RPM 3000", new ShootRPM(m_shooter, 3000));
+    // tabShooter.add("Shoot RPM 4000", new ShootRPM(m_shooter, 4000));
+    // tabShooter.add("Shoot RPM 4250", new ShootRPM(m_shooter, 4250));
+    // tabShooter.add("Shoot RPM 4500", new ShootRPM(m_shooter, 4500));
+    // tabShooter.add("Shoot RPM 4750", new ShootRPM(m_shooter, 4750));
     tabShooter.add("Shoot RPM 5000", new ShootRPM(m_shooter, 5000));
     tabShooter.add("Shoot Limelight", new ShootLimeLight(m_shooter, limeLight));
     SmartDashboard.putData("aimbot", new AimBot(m_drive, limeLight));
@@ -322,7 +323,7 @@ public class RobotContainer {
 
     // chooser.addOption("barrelManual", barrelManual);
 
-    chooser.addOption("barrel-record", DrivePathHelpers.createOnBoardDrivePathCommand(
+    chooser.addOption("barrel-old", DrivePathHelpers.createOnBoardDrivePathCommand(
       m_drive,
       new Pose2d(0.0, 0.0, new Rotation2d(0)),
         List.of(
@@ -349,7 +350,7 @@ public class RobotContainer {
       false
     ));
 
-    chooser.addOption("slalom-record", DrivePathHelpers.createOnBoardDrivePathCommand(
+    chooser.addOption("slalom-old", DrivePathHelpers.createOnBoardDrivePathCommand(
       m_drive,
       new Pose2d(0.0, 0.0, new Rotation2d(0)),
         List.of(
@@ -464,7 +465,11 @@ public class RobotContainer {
 
 
     chooser.addOption("Barrel Run", AutoNav.barrelRun(m_drive));
+    chooser.addOption("Barrel test", AutoNav.barrelRunTest(m_drive));
+    chooser.addOption("Slalom", AutoNav.slalom(m_drive));
     chooser.addOption("Bounce", AutoNav.bounce(m_drive));
+    // chooser.addOption("Path A Blue", GalacticSearch.PathABlue(m_drive, m_collector, m_spindexer));
+    chooser.addOption("Path A Red", GalacticSearch.PathARed(m_drive, m_collector, m_spindexer));
     // chooser.addOption("Shop Barrel", DrivePathHelpers.createOnBoardDrivePathCommand(
     //   m_drive,
     //   new Pose2d(0.0, 0.0, new Rotation2d(0)),
