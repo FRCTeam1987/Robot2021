@@ -215,4 +215,8 @@ public final class Constants {
     public final static double reduction = 1.0;
   }
 
+  public static final class Challenges {
+    public final static double PowerPortDistance = 3.0;
+  }
+
 }
