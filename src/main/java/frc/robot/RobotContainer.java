@@ -316,6 +316,17 @@ public class RobotContainer {
     //   )
     // );
 
+    // ********************************************************************
+    // *****  Galactic Search Path Commands
+    // ********************************************************************
+    //
+    //  We flip a coin to determine whether we drive the red paths
+    //  or the blue paths.  If red, we drive red A then red B.
+    //  If blue, we drive blue A then blue B.
+    //
+    // ********************************************************************
+    // ********************************************************************
+   
     // This command sequence is run when the galactic search path is blue.
     // It sets the determination to blue then runs path blue A.
 
