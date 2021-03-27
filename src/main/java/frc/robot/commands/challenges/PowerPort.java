@@ -25,7 +25,7 @@ import frc.robot.subsystems.Spindexer;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PowerPort {
-  public static SequentialCommandGroup cycle(Drive drive, Spindexer spindexer, Shooter shooter, Collector collector) {
+  public static SequentialCommandGroup cycle(Drive drive, Spindexer spindexer, Shooter shooter, Collector collector, double distance) {
     return new SequentialCommandGroup(
       new ParallelCommandGroup(
         new SequentialCommandGroup(
@@ -33,13 +33,17 @@ public class PowerPort {
           new PrepShoot(spindexer)
         ),
         new ShootRPM(shooter, 2000),
-        DrivePathHelpers.driveStraightCommand(drive, -Constants.Challenges.PowerPortDistance)
+        DrivePathHelpers.driveStraightCommand(drive, -distance)
       ),
       // TODO: Add AimBot here
       new FeedShooter(spindexer),
       new WaitCommand(1.0),  // TODO: Test this timing and add to Constants
       new StopAll(collector, spindexer, shooter),
-      DrivePathHelpers.driveStraightCommand(drive, Constants.Challenges.PowerPortDistance)
+      DrivePathHelpers.driveStraightCommand(drive, distance)
     );
+  }
+
+  public static SequentialCommandGroup cycle(Drive drive, Spindexer spindexer, Shooter shooter, Collector collector) {
+    return cycle(drive, spindexer, shooter, collector, Constants.Challenges.PowerPortDistance);
   }
 }

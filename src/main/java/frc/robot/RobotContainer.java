@@ -17,10 +17,10 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
-import frc.robot.commands.AccuraceChallengeGroup;
 import frc.robot.commands.AimBot;
 import frc.robot.commands.LoggerCommand;
 import frc.robot.commands.StopAll;
+import frc.robot.commands.challenges.Accuracy;
 import frc.robot.commands.challenges.AutoNav;
 import frc.robot.commands.challenges.GalacticSearch;
 import frc.robot.commands.challenges.PowerPort;
@@ -170,7 +170,6 @@ public class RobotContainer {
     // SmartDashboard.putData("Shoot Test", new ShootTest(m_spindexer, m_shooter, 0.75)); //percentage for starting autonomous is .75
     SmartDashboard.putData("Stop All", new StopAll(m_collector, m_spindexer, m_shooter));
     SmartDashboard.putData("Feed Shooter", new FeedShooter(m_spindexer));
-    SmartDashboard.putData("Accurace Next", new AccuraceChallengeGroup(m_drive, limeLight, m_shooter));
     NetworkTableEntry rpmTestSetpoint = tabShooter.add("RPM Test Setpoint", 0.0).getEntry();
     tabShooter.add("Shoot RPM Dashboard", new ShootRPM(m_shooter, rpmTestSetpoint));
     // SmartDashboard.putData("Shoot RPM Dashboard", new ShootRPM(m_shooter));
@@ -192,6 +191,7 @@ public class RobotContainer {
     SmartDashboard.putData("Find Track Width", new FindTrackWidth(m_drive));
     SmartDashboard.putData("Prep Shoot", new PrepShoot(m_spindexer));
     SmartDashboard.putData("Power Power Cycle", PowerPort.cycle(m_drive, m_spindexer, m_shooter, m_collector));
+    SmartDashboard.putData("Accuracy Challenge", new Accuracy(m_drive, m_spindexer, m_shooter, m_collector, driver));
     SmartDashboard.putData("Test Shoot", new SequentialCommandGroup(
       new PrepShoot(m_spindexer),
       new WaitCommand(1),
