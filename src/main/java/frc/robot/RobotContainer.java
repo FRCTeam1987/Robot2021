@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import frc.robot.commands.AimBot;
 import frc.robot.commands.LoggerCommand;
 import frc.robot.commands.StopAll;
+import frc.robot.commands.TeleopShoot;
 import frc.robot.commands.challenges.Accuracy;
 import frc.robot.commands.challenges.AutoNav;
 import frc.robot.commands.challenges.GalacticSearch;
@@ -135,11 +136,9 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
     buttonCollector
-      .whenHeld(new StartCollect(m_collector), true)
-      .whenReleased(new StopCollect(m_collector), false);
-    // buttonShooter
-    //   .whenHeld(new Shoot(limeLight, m_shooter, m_spindexer, 1000))
-    //   .whenReleased(new Shoot(limeLight, m_shooter, m_spindexer, 0));
+      .whenPressed(new StartCollect(m_collector))
+      .whenReleased(new StopCollect(m_collector));
+    buttonShooter.whileHeld(new TeleopShoot(m_drive, limeLight, m_spindexer, m_shooter));
   }
 
   /**
