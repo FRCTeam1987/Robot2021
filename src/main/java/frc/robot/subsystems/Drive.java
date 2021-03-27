@@ -37,6 +37,7 @@ public class Drive extends SubsystemBase {
   private final AHRS m_gyro;
   private final DifferentialDrive m_drive;
   private final DifferentialDriveOdometry m_odometry;
+  private Constants.Drive.Galatic.RedOrBlue m_redOrBlue;
   private int accuracyChallengeStep;
 
   private final ConfigurableDriveModes m_configurableDriveModes;
@@ -66,6 +67,7 @@ public class Drive extends SubsystemBase {
     m_rightSlave = rightSlave;
     m_rightEncoder = rightEncoder;
     m_gyro = gyro;
+    m_redOrBlue = Constants.Drive.Galatic.RedOrBlue.DontKnow;
 
     accuracyChallengeStep = 0;
 
@@ -345,7 +347,7 @@ public class Drive extends SubsystemBase {
       // m_tabOdometryRightDistance.setNumber(getDistanceRightCANCoder());
       // m_tabOdometryRightVelocity.setNumber(getVelocityRightCANCoder());
       // m_tabOdometryLeftVelocity.setNumber(getVelocityLeftCANCoder());
-      // m_tabOdometryAngle.setNumber(getAngle());
+      m_tabOdometryAngle.setNumber(getAngle());
       m_tabOdometryPoseX.setNumber(currentPose.getX());
       m_tabOdometryPoseY.setNumber(currentPose.getY());
       m_tabOdometryPoseRotation.setNumber(currentPose.getRotation().getDegrees());
@@ -369,5 +371,31 @@ public class Drive extends SubsystemBase {
 
   public void teleopInit() {
     m_configurableDriveModes.update();
+  }
+
+  // Galactic Search Path Stuff
+
+  public boolean hasGalacticBeenDone() {
+    return m_redOrBlue != Constants.Drive.Galatic.RedOrBlue.DontKnow;
+  }
+
+  public boolean isGalacticRed() {
+    return m_redOrBlue == Constants.Drive.Galatic.RedOrBlue.Red;
+  }
+
+  public boolean isGalacticBlue() {
+    return m_redOrBlue == Constants.Drive.Galatic.RedOrBlue.Blue;
+  }
+
+  public void setGalacticRedOrBlue(Constants.Drive.Galatic.RedOrBlue whichOne) {
+    m_redOrBlue = whichOne;
+  }
+
+  public Constants.Drive.Galatic.RedOrBlue getGalacticRedOrBlue() {
+    boolean isBlue =
+      Math.abs(m_gyro.getAngle() - Constants.Drive.Galatic.blueHeading) <
+      Constants.Drive.Galatic.headingTolerance;
+    return isBlue ? Constants.Drive.Galatic.RedOrBlue.Blue :
+      Constants.Drive.Galatic.RedOrBlue.Red;
   }
 }

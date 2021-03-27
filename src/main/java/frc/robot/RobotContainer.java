@@ -29,6 +29,7 @@ import frc.robot.commands.drive.DrivePathHelpers;
 import frc.robot.commands.drive.DriveTank;
 import frc.robot.commands.drive.FindTrackWidth;
 import frc.robot.commands.drive.RecordPath;
+import frc.robot.commands.drive.SetGalacticRedOrBlue;
 import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.commands.drive.TeleopDriveConfigurable;
 import frc.robot.commands.drive.ZeroSensors;
@@ -55,6 +56,7 @@ import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Spindexer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -90,7 +92,9 @@ public class RobotContainer {
   private final LimeLight limeLight = new LimeLight();
   private final Shooter m_shooter = new Shooter(
     new WPI_TalonFX(Constants.Shooter.Can.flywheelMaster),
-    new TalonFX(Constants.Shooter.Can.flywheelSlave)
+    new TalonFX(Constants.Shooter.Can.flywheelSlave1),
+    new TalonFX(Constants.Shooter.Can.flywheelSlave2),
+    new TalonFX(Constants.Shooter.Can.flywheelSlave3)
 
   );
 
@@ -470,6 +474,7 @@ public class RobotContainer {
     chooser.addOption("Bounce", AutoNav.bounce(m_drive));
     // chooser.addOption("Path A Blue", GalacticSearch.PathABlue(m_drive, m_collector, m_spindexer));
     chooser.addOption("Path A Red", GalacticSearch.PathARed(m_drive, m_collector, m_spindexer));
+    chooser.addOption("Path A Blue", GalacticSearch.PathABlue(m_drive, m_collector, m_spindexer));
     // chooser.addOption("Shop Barrel", DrivePathHelpers.createOnBoardDrivePathCommand(
     //   m_drive,
     //   new Pose2d(0.0, 0.0, new Rotation2d(0)),
@@ -481,6 +486,53 @@ public class RobotContainer {
     //   false
     //   )
     // );
+
+    // This command sequence is run when the galactic search path is blue.
+    // It sets the determination to blue then runs path blue A.
+
+    SequentialCommandGroup bluePathDetermined = new SequentialCommandGroup(
+      new SetGalacticRedOrBlue(m_drive, Constants.Drive.Galatic.RedOrBlue.Blue),
+      new LoggerCommand("Driving Blue A")
+      // GalacticSearch.PathABlue(m_drive, m_collector, m_spindexer)
+    );
+
+    // This command sequence is run when the galactic search path is red.
+    // It sets the determination to blue then runs path red A.
+
+    SequentialCommandGroup redPathDetermined = new SequentialCommandGroup(
+      new SetGalacticRedOrBlue(m_drive, Constants.Drive.Galatic.RedOrBlue.Red),
+      new LoggerCommand("Driving Red A")
+      // GalacticSearch.PathARed(m_drive, m_collector, m_spindexer)
+    );
+
+    // Question 2 is run when the coin flip needs to be determined.  It
+    // looks at the gyro angle and runs Red A or Blue A.
+    ConditionalCommand galacticQuestion2 = new ConditionalCommand(
+      bluePathDetermined,
+      redPathDetermined,
+      () -> m_drive.getGalacticRedOrBlue() == Constants.Drive.Galatic.RedOrBlue.Blue
+    );
+
+    // Question 3 is run when the driver clicks the Galactic Search button
+    // after having driven path A.
+    ConditionalCommand galacticQuestion3 = new ConditionalCommand(
+      new LoggerCommand("Driving Blue B"),
+      // GalacticSearch.PathBBlue(m_drive, m_collector, m_spindexer),
+      new LoggerCommand("Driving Red B"),
+      // GalacticSearch.PathBRed(m_drive, m_collector, m_spindexer),
+      () -> m_drive.getGalacticRedOrBlue() == Constants.Drive.Galatic.RedOrBlue.Blue
+    );
+
+    // Question 1 is run when the drive clicks the Galactic Search button.
+    // If it has been run, it runs path B for the previously determined color.
+    // If not, it makes a determination then runs path A.
+    ConditionalCommand galacticQuestion1 = new ConditionalCommand(
+      galacticQuestion3,
+      galacticQuestion2,
+      () -> m_drive.hasGalacticBeenDone()
+    );
+
+    chooser.addOption("Galactic Search", galacticQuestion1);
 
     SmartDashboard.putData("Auto", chooser);
   }
