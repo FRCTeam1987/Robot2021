@@ -11,12 +11,10 @@ import com.ctre.phoenix.sensors.CANCoder;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import frc.robot.commands.AimBot;
 import frc.robot.commands.LoggerCommand;
 import frc.robot.commands.StopAll;
@@ -28,22 +26,16 @@ import frc.robot.commands.challenges.PowerPort;
 import frc.robot.commands.collector.StartCollect;
 import frc.robot.commands.collector.StopCollect;
 import frc.robot.commands.drive.DrivePathHelpers;
-import frc.robot.commands.drive.DriveTank;
-import frc.robot.commands.drive.FindTrackWidth;
 import frc.robot.commands.drive.RecordPath;
 import frc.robot.commands.drive.SetGalacticRedOrBlue;
-import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.commands.drive.TeleopDriveConfigurable;
 import frc.robot.commands.drive.ZeroSensors;
 import frc.robot.commands.shooter.ShootLimeLight;
 import frc.robot.commands.shooter.ShootRPM;
-// import frc.robot.commands.shooter.Shoot;
-// import frc.robot.commands.shooter.ShootRPM;
-import frc.robot.commands.shooter.ShootTest;
+import frc.robot.commands.shooter.SpinDown;
 import frc.robot.commands.spindexer.Agitate;
 import frc.robot.commands.spindexer.FeedShooter;
 import frc.robot.commands.spindexer.PrepShoot;
-import frc.robot.commands.spindexer.Spindex;
 import frc.robot.subsystems.Collector;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
@@ -59,7 +51,6 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Spindexer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -106,13 +97,6 @@ public class RobotContainer {
   public RobotContainer() {
     
     driver = new XboxController(Constants.OI.Xbox.driverID);
-
-    // bounce1 = DrivePathHelpers.createTrajectoryFromPathWeaverJsonFile("output/Bounce1.wpilib.json");
-    // bounce2 = DrivePathHelpers.createTrajectoryFromPathWeaverJsonFile("output/Bounce4.wpilib.json");
-    // slalom1 = DrivePathHelpers.createTrajectoryFromPathWeaverJsonFile("output/Slalom1.wpilib.json");
-    // barrelRun_0 = DrivePathHelpers.createTrajectoryFromPathWeaverJsonFile("output/BarrelRun_0.wpilib.json");
-    // barrelRun_1 = DrivePathHelpers.createTrajectoryFromPathWeaverJsonFile("output/BarrelRun_1.wpilib.json");
-
  
     // Configure the button bindings
     buttonCollector = new JoystickButton(driver, Constants.OI.Buttons.Driver.collectorBtnId);
@@ -122,10 +106,6 @@ public class RobotContainer {
 
     configureDefaultCommands();
     configureShuffleboard();
-
-    // slalomTrajectory = DrivePathHelpers.createTrajectoryFromPathWeaverJsonFile("output/Slalom.wpilib.json");
-    // bounceLeg1 = DrivePathHelpers.createTrajectoryFromPathWeaverJsonFile("output/Leg1.wpilib.json");
-    // bounceLeg2 = DrivePathHelpers.createTrajectoryFromPathWeaverJsonFile("output/Leg2.wpilib.json");
   }
 
   /**
@@ -158,36 +138,23 @@ public class RobotContainer {
 
      final ShuffleboardTab tabShooter = Shuffleboard.getTab("Shooter");
 
-    // SmartDashboard.putData("Extend Collector", new CollectorInOut(m_collector, Constants.Collector.Values.cylinderExtend));
-    // SmartDashboard.putData("Retract Collector", new CollectorInOut(m_collector, Constants.Collector.Values.cylinderRetract));
     SmartDashboard.putData("Start Collect", new StartCollect(m_collector));
     SmartDashboard.putData("Stop Collect", new StopCollect(m_collector));
-    // SmartDashboard.putData("Start Spin", new Spindex(m_spindexer, 0.5));
-    // SmartDashboard.putData("Stop Spin", new Spindex(m_spindexer, 0));
-    // SmartDashboard.putData("Start Shoot", new Shoot(limeLight, m_shooter, m_spindexer, 0.95));
-    // SmartDashboard.putData("Stop Shoot", new Shoot(limeLight, m_shooter, m_spindexer, 0.0));
-    // SmartDashboard.putData("Shoot Test", new ShootTest(m_spindexer, m_shooter, 0.75)); //percentage for starting autonomous is .75
     SmartDashboard.putData("Stop All", new StopAll(m_collector, m_spindexer, m_shooter));
     SmartDashboard.putData("Feed Shooter", new FeedShooter(m_spindexer));
     NetworkTableEntry rpmTestSetpoint = tabShooter.add("RPM Test Setpoint", 0.0).getEntry();
+    tabShooter.add("Stop", new ShootRPM(m_shooter, 0));
+    tabShooter.add("Spin Down", new SpinDown(m_shooter));
     tabShooter.add("Shoot RPM Dashboard", new ShootRPM(m_shooter, rpmTestSetpoint));
-    // SmartDashboard.putData("Shoot RPM Dashboard", new ShootRPM(m_shooter));
-    // tabShooter.add("Shoot RPM 100", new ShootRPM(m_shooter, 100));
-    // tabShooter.add("Shoot RPM 1000", new ShootRPM(m_shooter, 1000));
-    // tabShooter.add("Shoot RPM 2000", new ShootRPM(m_shooter, 2000));
-    // tabShooter.add("Shoot RPM 3000", new ShootRPM(m_shooter, 3000));
-    // tabShooter.add("Shoot RPM 4000", new ShootRPM(m_shooter, 4000));
-    // tabShooter.add("Shoot RPM 4250", new ShootRPM(m_shooter, 4250));
-    // tabShooter.add("Shoot RPM 4500", new ShootRPM(m_shooter, 4500));
-    // tabShooter.add("Shoot RPM 4750", new ShootRPM(m_shooter, 4750));
+    tabShooter.add("Shoot RPM 3000", new ShootRPM(m_shooter, 3000));
+    tabShooter.add("Shoot RPM 3500", new ShootRPM(m_shooter, 3500));
+    tabShooter.add("Shoot RPM 4000", new ShootRPM(m_shooter, 4000));
+    tabShooter.add("Shoot RPM 4500", new ShootRPM(m_shooter, 4500));
     tabShooter.add("Shoot RPM 5000", new ShootRPM(m_shooter, 5000));
     tabShooter.add("Shoot Limelight", new ShootLimeLight(m_shooter, limeLight));
     SmartDashboard.putData("aimbot", new AimBot(m_drive, limeLight));
     SmartDashboard.putData("Agitate", new Agitate(m_spindexer, Constants.Spindexer.agitateSpeed, Constants.Spindexer.agitateDuration));
-    SmartDashboard.putData("Drive Straight 1", new SequentialCommandGroup(DrivePathHelpers.driveStraightCommand(m_drive, 1.0)));
-    SmartDashboard.putData("Drive Straight -1", new SequentialCommandGroup(DrivePathHelpers.driveStraightCommand(m_drive, -1.0)));
     SmartDashboard.putNumber("Log Level", 0);
-    SmartDashboard.putData("Find Track Width", new FindTrackWidth(m_drive));
     SmartDashboard.putData("Prep Shoot", new PrepShoot(m_spindexer));
     SmartDashboard.putData("Power Power Cycle", PowerPort.cycle(m_drive, m_spindexer, m_shooter, m_collector));
     SmartDashboard.putData("Accuracy Challenge", new Accuracy(m_drive, m_spindexer, m_shooter, m_collector, driver));
@@ -301,20 +268,8 @@ public class RobotContainer {
     chooser.addOption("Barrel test", AutoNav.barrelRunTest(m_drive));
     chooser.addOption("Slalom", AutoNav.slalom(m_drive));
     chooser.addOption("Bounce", AutoNav.bounce(m_drive));
-    // chooser.addOption("Path A Blue", GalacticSearch.PathABlue(m_drive, m_collector, m_spindexer));
     chooser.addOption("Path A Red", GalacticSearch.PathARed(m_drive, m_collector, m_spindexer));
     chooser.addOption("Path A Blue", GalacticSearch.PathABlue(m_drive, m_collector, m_spindexer));
-    // chooser.addOption("Shop Barrel", DrivePathHelpers.createOnBoardDrivePathCommand(
-    //   m_drive,
-    //   new Pose2d(0.0, 0.0, new Rotation2d(0)),
-    //   List.of(
-    //     new Translation2d(1.7, 0),
-    //     new Translation2d(2.2, 0.8)
-    //   ),
-    //   new Pose2d(0.0, 0.0, new Rotation2d(0)),
-    //   false
-    //   )
-    // );
 
     // ********************************************************************
     // *****  Galactic Search Path Commands

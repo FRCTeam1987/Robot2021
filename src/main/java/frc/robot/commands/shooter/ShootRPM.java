@@ -13,7 +13,7 @@ import frc.robot.subsystems.Shooter;
 public class ShootRPM extends CommandBase {
   
   final Shooter m_shooter;
-  NetworkTableEntry m_rpmSetpoint;
+  NetworkTableEntry m_rpmSetpoint = null;
   double m_rpm;
 
   public ShootRPM(final Shooter shooter, final double rpm) {
@@ -31,13 +31,11 @@ public class ShootRPM extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // final double dashboardRpmSetpoint = (double) m_rpmSetpoint.getNumber(0.0);
-    // if (dashboardRpmSetpoint > 10.0) {
-    // // if (Math.abs(m_rpm) < 10.0) { // for testing
-    //   m_shooter.setRPM(dashboardRpmSetpoint);
-    //   return;
-    // }
-    m_shooter.setRPM(m_rpm);
+    if (m_rpmSetpoint == null) {
+      m_shooter.setRPM(m_rpm);
+      return;
+    }
+    m_shooter.setRPM((double) m_rpmSetpoint.getNumber(0.0));
   }
 
   // Called every time the scheduler runs while the command is scheduled.

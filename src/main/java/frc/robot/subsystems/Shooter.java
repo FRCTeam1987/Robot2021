@@ -35,12 +35,10 @@ public class Shooter extends SubsystemBase {
     m_solenoid = new DoubleSolenoid(Constants.Shooter.Solenoid.extend, Constants.Shooter.Solenoid.retract);
 
     m_master.configFactoryDefault();
-    m_master.configOpenloopRamp(0.5);
-    // master.setInverted(true);
+    m_master.configOpenloopRamp(1.5);
     m_master.setNeutralMode(NeutralMode.Coast);
     m_master.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
     m_master.configClosedloopRamp(0.5);
-    m_master.configOpenloopRamp(0.1);
     m_master.config_kF(0, 0.0513); //get started umf (increases the actual base rpm exponentially or something) was.052 old BAT, new bat .0498, then was .055 for 3550 rpm, then .052
     m_master.config_kP(0, 0.25); //p = push and oscillating once it gets there
     m_master.config_kI(0, 0.0);
@@ -117,15 +115,13 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setRPM(final double rpm) {
-    //SmartDashboard.putNumber("(attemped) shooter rpm setpoint", rpm);
-    //if (Util.isWithinTolerance(rpm, m_rpmSetPoint, Constants.Shooter.rpmTolerance)){
-      //return;
-    //}
-    //double velocity = EncoderHelpers.rpmToCtreVelocity(rpm, Constants.falconTicksPerRevolution);
     double velocity = rpm * Constants.Shooter.ticksPerRotation / Constants.Shooter.milliPerMin; //1,000ms per sec, but robot cares about per 100ms, so then 60 sec/min 
-    m_master.set(TalonFXControlMode.Velocity, velocity);
+    if (Util.isWithinTolerance(velocity, 0, 10)) {
+      m_master.set(TalonFXControlMode.PercentOutput, 0);
+    } else {
+      m_master.set(TalonFXControlMode.Velocity, velocity);
+    }
     m_rpmSetPoint = rpm;
-    //SmartDashboard.putNumber("(actual) shooter rpm setpoint", rpm);
   }
 
   public void setPercent(double percent) {
@@ -140,7 +136,7 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // if (SmartDashboard.getNumber("Log Level", 0) > 1) {
-      // SmartDashboard.putNumber("Shooter Actual RPM", getRPM());
+      SmartDashboard.putNumber("Shooter Actual RPM", getRPM());
     // }
   }
 
