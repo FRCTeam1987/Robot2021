@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -19,13 +20,19 @@ import frc.robot.Util;
 public class Shooter extends SubsystemBase {
 
   private final WPI_TalonFX m_master;
-  private final TalonFX m_slave;
+  private final TalonFX m_slave1;
+  private final TalonFX m_slave2;
+  private final TalonFX m_slave3;
   private double m_rpmSetPoint;
+  private DoubleSolenoid m_solenoid;
 
   /** Creates a new Shooter. */
-  public Shooter(final WPI_TalonFX master, final TalonFX slave) {
+  public Shooter(final WPI_TalonFX master, final TalonFX slave1, final TalonFX slave2, final TalonFX slave3) {
     m_master = master;
-    m_slave = slave;
+    m_slave1 = slave1;
+    m_slave2 = slave2;
+    m_slave3 = slave3;
+    m_solenoid = new DoubleSolenoid(Constants.Shooter.Solenoid.extend, Constants.Shooter.Solenoid.retract);
 
     m_master.configFactoryDefault();
     m_master.configOpenloopRamp(0.5);
@@ -39,13 +46,31 @@ public class Shooter extends SubsystemBase {
     m_master.config_kI(0, 0.0);
     m_master.config_kD(0, 0.0); //d =  dampening for the oscillation
 
-    m_slave.configFactoryDefault();
-    m_slave.follow(master);
-    m_slave.setInverted(TalonFXInvertType.OpposeMaster);
+    m_slave1.configFactoryDefault();
+    m_slave1.setNeutralMode(NeutralMode.Coast);
+    m_slave1.follow(master);
+    m_slave1.setInverted(TalonFXInvertType.OpposeMaster);
+    m_slave2.configFactoryDefault();
+    m_slave2.setNeutralMode(NeutralMode.Coast);
+    m_slave2.follow(master);
+    m_slave2.setInverted(TalonFXInvertType.FollowMaster);
+    m_slave3.configFactoryDefault();
+    m_slave3.setNeutralMode(NeutralMode.Coast);
+    m_slave3.follow(master);
+    m_slave3.setInverted(TalonFXInvertType.OpposeMaster);
 
     stop();
 
     addChild("master", master);
+    addChild("solenoid", m_solenoid);
+  }
+
+  public void raiseHood() {
+    m_solenoid.set(Constants.Shooter.Values.cylinderExtend);
+  }
+
+  public void lowerHood() {
+    m_solenoid.set(Constants.Shooter.Values.cylinderRetract);
   }
 
   public boolean canSeeTarget(double visibility) {
