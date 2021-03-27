@@ -24,9 +24,9 @@ public class Accuracy extends SequentialCommandGroup {
       // TODO: Determine distances and cycles
       // TODO: Implement shooter hood for close shots
       PowerPort.cycle(drive, spindexer, shooter, collector, 1.0),
-      new WaitUntilCommand(() -> xbox.getXButtonPressed()),
+      new WaitUntilCommand(() -> xbox.getStartButtonPressed()),
       PowerPort.cycle(drive, spindexer, shooter, collector, 2.0),
-      new WaitUntilCommand(() -> xbox.getXButtonPressed()),
+      new WaitUntilCommand(() -> xbox.getStartButtonPressed()),
       PowerPort.cycle(drive, spindexer, shooter, collector, 3.0)
     );
   }
