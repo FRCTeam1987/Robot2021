@@ -31,12 +31,12 @@ public class ShootRPM extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    final double dashboardRpmSetpoint = (double) m_rpmSetpoint.getNumber(0.0);
-    if (dashboardRpmSetpoint > 10.0) {
-    // if (Math.abs(m_rpm) < 10.0) { // for testing
-      m_shooter.setRPM(dashboardRpmSetpoint);
-      return;
-    }
+    // final double dashboardRpmSetpoint = (double) m_rpmSetpoint.getNumber(0.0);
+    // if (dashboardRpmSetpoint > 10.0) {
+    // // if (Math.abs(m_rpm) < 10.0) { // for testing
+    //   m_shooter.setRPM(dashboardRpmSetpoint);
+    //   return;
+    // }
     m_shooter.setRPM(m_rpm);
   }
 
