@@ -28,8 +28,8 @@ public class TeleopDriveConfigurable extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_drive.driveTank(0, 0);
-    // m_drive.driveTeleopConfigurable(m_xbox);
+    // m_drive.driveTank(0, 0);
+    m_drive.driveTeleopConfigurable(m_xbox);
   }
 
   // Called once the command ends or is interrupted.
