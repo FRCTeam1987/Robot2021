@@ -25,25 +25,18 @@ import frc.robot.commands.challenges.GalacticSearch;
 import frc.robot.commands.challenges.PowerPort;
 import frc.robot.commands.collector.StartCollect;
 import frc.robot.commands.collector.StopCollect;
-import frc.robot.commands.drive.DrivePathHelpers;
 import frc.robot.commands.drive.RecordPath;
 import frc.robot.commands.drive.SetGalacticRedOrBlue;
 import frc.robot.commands.drive.TeleopDriveConfigurable;
 import frc.robot.commands.drive.ZeroSensors;
 import frc.robot.commands.shooter.ShootLimeLight;
 import frc.robot.commands.shooter.ShootRPM;
-import frc.robot.commands.shooter.SpinDown;
 import frc.robot.commands.spindexer.Agitate;
 import frc.robot.commands.spindexer.FeedShooter;
 import frc.robot.commands.spindexer.PrepShoot;
 import frc.robot.subsystems.Collector;
-import edu.wpi.first.wpilibj.geometry.Pose2d;
-import edu.wpi.first.wpilibj.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-
-import java.util.List;
 
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.LimeLight;
@@ -62,9 +55,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-
-  // private Trajectory slalomTrajectory;
-  // private Trajectory bounce1, bounce2, slalom1, barrelRun_0, barrelRun_1;
 
   private final XboxController driver;
   private final JoystickButton buttonCollector;
@@ -144,7 +134,6 @@ public class RobotContainer {
     SmartDashboard.putData("Feed Shooter", new FeedShooter(m_spindexer));
     NetworkTableEntry rpmTestSetpoint = tabShooter.add("RPM Test Setpoint", 0.0).getEntry();
     tabShooter.add("Stop", new ShootRPM(m_shooter, 0));
-    tabShooter.add("Spin Down", new SpinDown(m_shooter));
     tabShooter.add("Shoot RPM Dashboard", new ShootRPM(m_shooter, rpmTestSetpoint));
     tabShooter.add("Shoot RPM 3000", new ShootRPM(m_shooter, 3000));
     tabShooter.add("Shoot RPM 3500", new ShootRPM(m_shooter, 3500));
@@ -169,100 +158,6 @@ public class RobotContainer {
     SmartDashboard.putData("Zero Drive", new ZeroSensors(m_drive));
     SmartDashboard.putData("Record Path", new RecordPath(m_drive));
     SmartDashboard.putData("Record Keep Odometry Path", new RecordPath(m_drive, false));
-
-    chooser.addOption("barrel-old", DrivePathHelpers.createOnBoardDrivePathCommand(
-      m_drive,
-      new Pose2d(0.0, 0.0, new Rotation2d(0)),
-        List.of(
-          new Translation2d(3, 0.0),  // start barrel 1
-          new Translation2d(3.9, -1.1),
-          new Translation2d(2.5, -1.8),
-          new Translation2d(2.5, 0),  // end barrel 1
-          new Translation2d(5.4, 0.7),  // start barrel 2
-          new Translation2d(5.7, 2.2),
-          new Translation2d(4.6, 2.0),  // end barrel 2
-          new Translation2d(5.1, 0.0),
-          new Translation2d(5.8, -1.1), // start barrel 3
-          new Translation2d(7.2, -1.65),
-          // new Translation2d(7.3, -1.2),
-          new Translation2d(7.4, -0.8), // end barrel 3
-          new Translation2d(5.5, 0.0),
-          new Translation2d(4.5, 0.0),  // try removing these intermediate points
-          new Translation2d(3.5, 0.0),
-          new Translation2d(2.5, 0.0),
-          new Translation2d(1.5, 0.0)
-          // new Translation2d(6.3, 0.0) // 
-        ),
-      new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(180.0)),
-      false
-    ));
-
-    chooser.addOption("slalom-old", DrivePathHelpers.createOnBoardDrivePathCommand(
-      m_drive,
-      new Pose2d(0.0, 0.0, new Rotation2d(0)),
-        List.of(
-          new Translation2d(1.1, 0.45),  // start barrel 1
-          new Translation2d(2.27, 1.45), // end switch
-          new Translation2d(5.0, 1.3),  // start switch
-          new Translation2d(6.2, 0.39), // end switch
-          new Translation2d(7.6, 0.28), // looping
-          new Translation2d(7.17, 1.5), // end loop
-          new Translation2d(6.09, 0.97),// start switch
-          new Translation2d(5.04, -0.07), // end switch
-          new Translation2d(2.03, 0.26), // start switch
-          new Translation2d(1.38, 1.01)
-        ),
-      new Pose2d(0.0, 2.0, Rotation2d.fromDegrees(180.0)),
-      false
-    ));
-
-    chooser.addOption("TestPath", DrivePathHelpers.createOnBoardDrivePathCommand(
-      m_drive,
-      new Pose2d(0.0, 0.0, new Rotation2d(0)),
-      List.of(
-        new Translation2d(0.1807,0.0062 ),
-        new Translation2d(0.3999,0.0136 ),
-        new Translation2d(0.6990,0.0234 ),
-        new Translation2d(1.0735,0.0348 ),
-        new Translation2d(1.5189,0.0459 ),
-        new Translation2d(2.0308,0.0517 ),
-        new Translation2d(2.6044,0.0370 ),
-        new Translation2d(3.2270,-0.0586 ),
-        new Translation2d(3.7546,-0.4633 ),
-        new Translation2d(3.7805,-1.1727 ),
-        new Translation2d(3.1402,-1.5360 ),
-        new Translation2d(2.4037,-1.2476 ),
-        new Translation2d(2.4024,-0.4604 ),
-        new Translation2d(3.1856,-0.1435 ),
-        new Translation2d(4.0919,-0.1785 ),
-        new Translation2d(5.0175,-0.1250 ),
-        new Translation2d(5.8968,0.1987 ),
-        new Translation2d(6.1084,1.0240 ),
-        new Translation2d(5.2759,1.4346 ),
-        new Translation2d(4.5536,0.8897 ),
-        new Translation2d(4.8863,0.0123 ),
-        new Translation2d(5.4239,-0.7854 ),
-        new Translation2d(6.1174,-1.4298 ),
-        new Translation2d(7.0110,-1.6102 ),
-        new Translation2d(7.6317,-0.9880 ),
-        new Translation2d(7.3433,-0.2076 ),
-        new Translation2d(6.5067,-0.0375 ),
-        new Translation2d(5.6747,-0.0917 ),
-        new Translation2d(4.8785,-0.0899 ),
-        new Translation2d(4.1280,-0.0072 ),
-        new Translation2d(3.4245,0.0797 ),
-        new Translation2d(2.7685,0.1342 ),
-        new Translation2d(2.1658,0.1550 ),
-        new Translation2d(1.6223,0.1506 ),
-        new Translation2d(1.1435,0.1303 ),
-        new Translation2d(0.7338,0.1020 ),
-        new Translation2d(0.3976,0.0717 ),
-        new Translation2d(0.1392,0.0447 ),
-        new Translation2d(-0.0372,0.0243 )
-      ), 
-      new Pose2d(-0.1292,0.0132, Rotation2d.fromDegrees(180.0)), 
-      false
-    ));
 
     chooser.addOption("Barrel Run", AutoNav.barrelRun(m_drive));
     chooser.addOption("Barrel test", AutoNav.barrelRunTest(m_drive));

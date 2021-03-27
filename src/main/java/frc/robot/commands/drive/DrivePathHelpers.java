@@ -11,7 +11,6 @@ import java.util.List;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -117,7 +116,6 @@ public class DrivePathHelpers {
     final DifferentialDriveKinematics kinematics = getKinematics();
     final PIDController leftController = new PIDController(Constants.Drive.Controls.pVelocity, 0, 0);
     final PIDController rightController = new PIDController(Constants.Drive.Controls.pVelocity, 0, 0);
-    double startTime;
     return new InstantCommand(
       () -> {
         if (shouldResetOdometry) {

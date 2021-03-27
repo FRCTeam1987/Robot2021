@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.lib.ConfigurableDriveModes;
@@ -335,31 +334,15 @@ public class Drive extends SubsystemBase {
       rightDistance
     );
 
-    // if (SmartDashboard.getNumber("Log Level", 0) > 1) {
-    //   SmartDashboard.putNumber("Left Distance", getDistanceLeft());
-    //   SmartDashboard.putNumber("Right Distance", getDistanceRight());
-    //   SmartDashboard.putNumber("Rotation 2D", Rotation2d.fromDegrees(getHeading()).getDegrees());
-      // SmartDashboard.putNumber("angle", Math.IEEEremainder(m_gyro.getAngle(), 360));
-      Pose2d currentPose = m_odometry.getPoseMeters();
-      // Odometry.add("Pose X - odometry", currentPose.getX());
-      // Odometry.add("Pose Y - odometry", currentPose.getY());
-      // m_tabOdometryLeftDistance.setNumber(getDistanceLeftCANCoder());
-      // m_tabOdometryRightDistance.setNumber(getDistanceRightCANCoder());
-      // m_tabOdometryRightVelocity.setNumber(getVelocityRightCANCoder());
-      // m_tabOdometryLeftVelocity.setNumber(getVelocityLeftCANCoder());
-      m_tabOdometryAngle.setNumber(getAngle());
-      m_tabOdometryPoseX.setNumber(currentPose.getX());
-      m_tabOdometryPoseY.setNumber(currentPose.getY());
-      m_tabOdometryPoseRotation.setNumber(currentPose.getRotation().getDegrees());
-      // Odometry.add("left cancoder distance", getDistanceLeftCANCoder());
-      // Odometry.add("left cancoder position", m_leftEncoder.getPosition());
-      // Odometry.add("right cancoder velocity", getVelocityRightCANCoder());
-      // Odometry.add("left cancoder velocity", getVelocityLeftCANCoder());
-
-
-
-      // SmartDashboard.putNumber("Pose Rotation", currentPose.getRotation().getDegrees());
-    // }
+    Pose2d currentPose = m_odometry.getPoseMeters();
+    m_tabOdometryLeftDistance.setNumber(getDistanceLeftCANCoder());
+    m_tabOdometryRightDistance.setNumber(getDistanceRightCANCoder());
+    m_tabOdometryRightVelocity.setNumber(getVelocityRightCANCoder());
+    m_tabOdometryLeftVelocity.setNumber(getVelocityLeftCANCoder());
+    m_tabOdometryAngle.setNumber(getAngle());
+    m_tabOdometryPoseX.setNumber(currentPose.getX());
+    m_tabOdometryPoseY.setNumber(currentPose.getY());
+    m_tabOdometryPoseRotation.setNumber(currentPose.getRotation().getDegrees());
   }
 
   public void setAccuracyChallengeStep(Integer index) {
