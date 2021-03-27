@@ -23,6 +23,7 @@ import frc.robot.commands.LoggerCommand;
 import frc.robot.commands.StopAll;
 import frc.robot.commands.challenges.AutoNav;
 import frc.robot.commands.challenges.GalacticSearch;
+import frc.robot.commands.challenges.PowerPort;
 import frc.robot.commands.collector.StartCollect;
 import frc.robot.commands.collector.StopCollect;
 import frc.robot.commands.drive.DrivePathHelpers;
@@ -190,6 +191,7 @@ public class RobotContainer {
     SmartDashboard.putNumber("Log Level", 0);
     SmartDashboard.putData("Find Track Width", new FindTrackWidth(m_drive));
     SmartDashboard.putData("Prep Shoot", new PrepShoot(m_spindexer));
+    SmartDashboard.putData("Power Power Cycle", PowerPort.cycle(m_drive, m_spindexer, m_shooter, m_collector));
     SmartDashboard.putData("Test Shoot", new SequentialCommandGroup(
       new PrepShoot(m_spindexer),
       new WaitCommand(1),
@@ -201,131 +203,6 @@ public class RobotContainer {
     SmartDashboard.putData("Zero Drive", new ZeroSensors(m_drive));
     SmartDashboard.putData("Record Path", new RecordPath(m_drive));
     SmartDashboard.putData("Record Keep Odometry Path", new RecordPath(m_drive, false));
-
-  /*
-    Command barrelManual = DrivePathHelpers.createOnBoardDrivePathCommand(
-      m_drive,
-      new Pose2d(0, 0, new Rotation2d(0)),
-      List.of(
-        new Translation2d(3.4, -0.4),
-        new Translation2d(2.6, -1.6),
-        new Translation2d(2.4, 0.0),
-        new Translation2d(5.1, 0.0),
-        new Translation2d(5.0, 1.6),
-        new Translation2d(3.8, 1.3),
-        new Translation2d(4.0, 0),
-        new Translation2d(5.0, -1.5)
-        // new Translation2d(6.5, -1.5)
-        // new Translation2d(6.5, 0.0)
-      ),
-      new Pose2d(6.5, -1.5, new Rotation2d(0)), false);
-    Command part2 = DrivePathHelpers.createOnBoardDrivePathCommand(
-        m_drive,
-        new Pose2d(0.0, 0.0, new Rotation2d(0)),
-        List.of(
-          // new Translation2d(-6.2, 2.2),
-          // new Translation2d(-4.05, 2.2),
-          // new Translation2d(-4.05, 1.7),
-          // new Translation2d(-2.05, 1.7),
-          // new Translation2d(-2.05, 0.0),
-          // new Translation2d(-6.2, 1.0)
-          // new Translation2d(6.2, -2.2)
-          // new Translation2d(1.53, 1.94)
-
-          new Translation2d(-6.2, 1.0)
-
-
-        ),
-        new Pose2d(-6.2, 2.2, new Rotation2d(0)),
-        true);
-      */
-
-    // chooser.addOption("Small S", DrivePathHelpers.createOnBoardDrivePathCommand(m_drive,
-    //   new Pose2d(0.0, 0.0, new Rotation2d(0)),
-    //   List.of(
-    //     new Translation2d(1, 0.5),
-    //     new Translation2d(2, -0.5)
-    //   ),
-    //   new Pose2d(3, 0, new Rotation2d(0)),
-    //   false));
-    
-    // chooser.addOption("Curve From Docs", DrivePathHelpers.createOnBoardDrivePathCommand(m_drive,
-    //   new Pose2d(0.0, 0.0, new Rotation2d(0)),
-    //   List.of(
-    //     new Translation2d(1, 1),
-    //     new Translation2d(2, -1)
-    //   ),
-    //   new Pose2d(3, 0, new Rotation2d(0)),
-    //   false));
-    
-    // chooser.addOption("Manual", new SequentialCommandGroup(
-    //   new ShootTest(m_spindexer, m_shooter, 0.75),
-    //   new WaitCommand(2.0),
-    //   new Spindex(m_spindexer, 0.5),
-    //   new WaitCommand(3.0),
-    //   new ShootTest(m_spindexer, m_shooter, 0.0),
-    //   new Spindex(m_spindexer, 0.0),
-    //   new StartCollect(m_collector),
-    //   part1,
-    //   new StopCollect(m_collector),
-    //   // part2,
-    //   new ShootTest(m_spindexer, m_shooter, 0.75),
-    //   new WaitCommand(2.0),
-    //   new Spindex(m_spindexer, 0.5),
-    //   new WaitCommand(3.0),
-    //   new ShootTest(m_spindexer, m_shooter, 0.0),
-    //   new Spindex(m_spindexer, 0.0)
-    // ));
-
-    // chooser.addOption("Shop Test", new SequentialCommandGroup(
-    //   new ParallelRaceGroup(
-    //     new SequentialCommandGroup(
-    //       new ShootLimeLight(m_shooter, limeLight),
-    //       new FeedShooter(m_spindexer),
-    //       new WaitCommand(2.0), // wait for balls to get shot
-    //       new StopAll(m_collector, m_spindexer, m_shooter),
-    //       new StartCollect(m_collector)
-    //     ),
-    //     new DriveTank(m_drive, 0.0, 0.0)
-    //   ),
-    //   new ParallelRaceGroup(
-    //     new Agitate(m_spindexer, Constants.Spindexer.agitateSpeed, Constants.Spindexer.agitateDuration),
-    //     new SequentialCommandGroup(
-    //       part1,
-    //       // DrivePathHelpers.driveStraightCommand(m_drive, 2.5),
-    //       new StopCollect(m_collector),
-    //       part2,
-    //       // DrivePathHelpers.driveStraightCommand(m_drive, -1.0),
-    //       new AimBot(m_drive, limeLight)
-    //     )
-    //   ),
-    //   new ParallelRaceGroup(
-    //     new SequentialCommandGroup(
-    //       new ShootLimeLight(m_shooter, limeLight),
-    //       new FeedShooter(m_spindexer),
-    //       new WaitCommand(2.0) // wait for balls to get shot
-    //     ),
-    //     new DriveTank(m_drive, 0.0, 0.0)
-    //   ),
-    //   new StopAll(m_collector, m_spindexer, m_shooter),
-    //   new LoggerCommand("END")
-    // ));
-
-    // chooser.addOption("Slalom", DrivePathHelpers.createDrivePathCommand(m_drive, slalom1));
-
-    // chooser.addOption("Barrel Run", DrivePathHelpers.createDrivePathCommand(m_drive, barrelRun_2));
-
-    // chooser.addOption("Bounce", new SequentialCommandGroup(
-    //   DrivePathHelpers.createDrivePathCommand(m_drive, bounce1),
-    //   DrivePathHelpers.createDrivePathCommand(m_drive, bounce2)
-    // ));
-    
-    // chooser.addOption("barrelRun_2", new SequentialCommandGroup(
-    //   DrivePathHelpers.createDrivePathCommand(m_drive, barrelRun_0)
-    //   // DrivePathHelpers.createDrivePathCommand(m_drive, barrelRun_1)
-    // ));
-
-    // chooser.addOption("barrelManual", barrelManual);
 
     chooser.addOption("barrel-old", DrivePathHelpers.createOnBoardDrivePathCommand(
       m_drive,
@@ -420,53 +297,6 @@ public class RobotContainer {
       new Pose2d(-0.1292,0.0132, Rotation2d.fromDegrees(180.0)), 
       false
     ));
-
-    // chooser.addOption("Shop Record", DrivePathHelpers.createOnBoardDrivePathCommand(
-    //   m_drive,
-    //   new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)),
-    //   List.of(
-    //     new Translation2d(0.04815839868350268, -2.0094109896299883E-5),
-    //     new Translation2d(0.19778934068711249, -0.0019560029691824805),
-    //     new Translation2d(0.3988069082604023, -0.020707040313847645),
-    //     new Translation2d(0.6601155653643023, -0.08423250710903193),
-    //     new Translation2d(0.9459160428098666, -0.22390918312964211),
-    //     new Translation2d(1.1933533826705345, -0.44907311149441637),
-    //     new Translation2d(1.425409785974115, -0.6652832007584295),
-    //     new Translation2d(1.7250878042065503, -0.7752330825768285),
-    //     new Translation2d(2.0313961735485853, -0.7152434620962551),
-    //     new Translation2d(2.2281571827644004, -0.5361027414468086),
-    //     new Translation2d(2.347028242194495, -0.26888556624241133),
-    //     new Translation2d(2.416878210528717, 0.005812043561833307),
-    //     new Translation2d(2.5583018653223024, 0.25412582195103245),
-    //     new Translation2d(2.7902953111274633, 0.3998857675174201),
-    //     new Translation2d(3.041437012744251, 0.40846913683538266),
-    //     new Translation2d(3.2657274613709744, 0.29885059637838873),
-    //     new Translation2d(3.4102206589491124, 0.10886611923774657),
-    //     new Translation2d(3.473543867871484, -0.1788224603905391),
-    //     new Translation2d(3.467244525515047, -0.5167940932642798),
-    //     new Translation2d(3.3788692081068805, -0.8229820156853019),
-    //     new Translation2d(3.177744157733275, -1.0760942338442),
-    //     new Translation2d(2.8737866477185956, -1.2149148492340842),
-    //     new Translation2d(2.5328572093283115, -1.1942296836435706),
-    //     new Translation2d(2.258370909568833, -1.0265340293624254),
-    //     new Translation2d(2.1060708308453857, -0.7610010597672363),
-    //     new Translation2d(2.061089290070757, -0.46328542156618935),
-    //     new Translation2d(2.0679350634491462, -0.15677835278743427),
-    //     new Translation2d(2.0660489208786177, 0.18833894761402084),
-    //     new Translation2d(1.970070579089863, 0.5241283919047302),
-    //     new Translation2d(1.766604509062227, 0.7373551193214215),
-    //     new Translation2d(1.5119910588437815, 0.7868313607460692),
-    //     new Translation2d(1.3116548139862787, 0.7018243895270451),
-    //     new Translation2d(1.172847607977412, 0.5402763298468841),
-    //     new Translation2d(1.0397867401261314, 0.3218493523131141),
-    //     new Translation2d(0.821383274351063, 0.11076929026468148),
-    //     new Translation2d(0.5259627008956097, 0.05),
-    //     new Translation2d(0.23055714391918644, 0.0)
-    //   ),
-    //   new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(180)),
-    //   false
-    // ));
-
 
     chooser.addOption("Barrel Run", AutoNav.barrelRun(m_drive));
     chooser.addOption("Barrel test", AutoNav.barrelRunTest(m_drive));
