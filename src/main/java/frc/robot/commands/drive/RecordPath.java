@@ -84,4 +84,9 @@ public class RecordPath extends CommandBase {
   public boolean isFinished() {
     return false;
   }
+
+  @Override
+  public boolean runsWhenDisabled() {
+    return true;
+  }
 }
