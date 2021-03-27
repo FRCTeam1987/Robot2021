@@ -24,7 +24,8 @@ public class Shooter extends SubsystemBase {
   private final TalonFX m_slave2;
   private final TalonFX m_slave3;
   private double m_rpmSetPoint;
-  private DoubleSolenoid m_solenoid;
+  private DoubleSolenoid m_solenoidRaise;
+  private DoubleSolenoid m_solenoidLock;
 
   /** Creates a new Shooter. */
   public Shooter(final WPI_TalonFX master, final TalonFX slave1, final TalonFX slave2, final TalonFX slave3) {
@@ -32,7 +33,8 @@ public class Shooter extends SubsystemBase {
     m_slave1 = slave1;
     m_slave2 = slave2;
     m_slave3 = slave3;
-    m_solenoid = new DoubleSolenoid(Constants.Shooter.Solenoid.extend, Constants.Shooter.Solenoid.retract);
+    m_solenoidRaise = new DoubleSolenoid(Constants.Shooter.SolenoidRaise.extend, Constants.Shooter.SolenoidRaise.retract);
+    m_solenoidLock = new DoubleSolenoid(Constants.Shooter.SolenoidLock.extend, Constants.Shooter.SolenoidLock.retract);
 
     m_master.configFactoryDefault();
     m_master.configOpenloopRamp(1.5);
@@ -60,15 +62,28 @@ public class Shooter extends SubsystemBase {
     stop();
 
     addChild("master", master);
-    addChild("solenoid", m_solenoid);
+    addChild("Raise", m_solenoidRaise);
+    addChild("Lock", m_solenoidLock);
   }
 
   public void raiseHood() {
-    m_solenoid.set(Constants.Shooter.Values.cylinderExtend);
+    m_solenoidRaise.set(Constants.Shooter.Values.cylinderExtend);
+    
+  }
+
+  public void lockHood() {
+    m_solenoidLock.set(Constants.Shooter.Values.cylinderExtend);
+
+  }
+  
+  public void unlockHood() {
+    m_solenoidLock.set(Constants.Shooter.Values.cylinderRetract);
+
   }
 
   public void lowerHood() {
-    m_solenoid.set(Constants.Shooter.Values.cylinderRetract);
+    m_solenoidRaise.set(Constants.Shooter.Values.cylinderRetract);
+    
   }
 
   public boolean canSeeTarget(double visibility) {

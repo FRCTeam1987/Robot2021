@@ -4,15 +4,36 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class LimeLight extends SubsystemBase {
   public static final String LIMELIGHT = "limelight";
+
   /** Creates a new LimeLight. */
   public LimeLight() {
-    // NetworkTableInstance.getDefault().getTable(LIMELIGHT).getEntry("pipeline").setNumber(9);
+    final ShuffleboardTab tab = Shuffleboard.getTab("LimeLight");
+    final InstantCommand turnOnLEDsCommand = new InstantCommand(() -> {
+      turnOnLEDs();
+    });
+    turnOnLEDsCommand.runsWhenDisabled();
+    tab.add("Turn On LEDs", turnOnLEDsCommand);
+    final InstantCommand turnOffLEDsCommand = new InstantCommand(() -> {
+      turnOffLEDs();
+    });
+    turnOffLEDsCommand.runsWhenDisabled();
+    tab.add("Turn Off LEDs", turnOffLEDsCommand);
+    final NetworkTableEntry pipelineSelector = tab.add("Pipeline Selector", Constants.LimeLight.pipeline).getEntry();
+    final InstantCommand setPipelineCommand = new InstantCommand(() -> {
+      setPipeline((double) pipelineSelector.getNumber(Constants.LimeLight.pipeline));
+    });
+    setPipelineCommand.runsWhenDisabled();
+    tab.add("Set Pipeline", setPipelineCommand);
   }
 
   @Override
@@ -34,6 +55,15 @@ public class LimeLight extends SubsystemBase {
 
   public boolean canSeeTarget() {
     return getVisible() == 1;
+  }
+
+  public void init() {
+    setPipeline(Constants.LimeLight.pipeline);
+    turnOffLEDs();
+  }
+
+  public void setPipeline(final double pipeline) {
+    NetworkTableInstance.getDefault().getTable(LIMELIGHT).getEntry("pipeline").setNumber(pipeline);
   }
 
   public void turnOnLEDs(){

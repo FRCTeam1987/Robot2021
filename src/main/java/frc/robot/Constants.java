@@ -98,6 +98,8 @@ public final class Constants {
       public static final class Driver {
         public static final int collectorBtnId = XboxController.Button.kY.value;
         public static final int shooterBtnId = XboxController.Button.kX.value;
+        public static final int farShotBtnId = XboxController.Button.kBumperLeft.value;
+        public static final int closeShotBtnId = XboxController.Button.kBumperRight.value;
       }
 
       public static final class CoDriver {
@@ -127,14 +129,20 @@ public final class Constants {
       public static final int flywheelSlave3 = 11;  // FAL-404
     }
 
-    public static final class Solenoid {
-      public static final int extend = 1;
-      public static final int retract = 6;
+    public static final class SolenoidRaise {
+      public static final int extend = 6;
+      public static final int retract = 1;
+    }
+    public static final class SolenoidLock {
+      public static final int extend = 2;
+      public static final int retract = 5;
     }
 
     public static final class Values {
       public static final DoubleSolenoid.Value cylinderExtend = DoubleSolenoid.Value.kForward;
       public static final DoubleSolenoid.Value cylinderRetract = DoubleSolenoid.Value.kReverse;
+      public static final double hoodRaiseDuration = 0.7;
+      public static final double hoodLockDuration = 0.5;
     }
 
     public static final class Targeting {
@@ -215,8 +223,12 @@ public final class Constants {
     public final static double reduction = 1.0;
   }
 
+  public static final class LimeLight {
+    public final static double pipeline = 9;
+  }
+
   public static final class Challenges {
     public final static double PowerPortDistance = 3.0;
   }
-
+  
 }

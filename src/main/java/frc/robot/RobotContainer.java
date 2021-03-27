@@ -29,6 +29,12 @@ import frc.robot.commands.drive.RecordPath;
 import frc.robot.commands.drive.SetGalacticRedOrBlue;
 import frc.robot.commands.drive.TeleopDriveConfigurable;
 import frc.robot.commands.drive.ZeroSensors;
+import frc.robot.commands.shooter.ConfigClose;
+import frc.robot.commands.shooter.ConfigFar;
+import frc.robot.commands.shooter.HoodLock;
+import frc.robot.commands.shooter.HoodLower;
+import frc.robot.commands.shooter.HoodRaise;
+import frc.robot.commands.shooter.HoodUnlock;
 import frc.robot.commands.shooter.ShootLimeLight;
 import frc.robot.commands.shooter.ShootRPM;
 import frc.robot.commands.spindexer.Agitate;
@@ -59,6 +65,8 @@ public class RobotContainer {
   private final XboxController driver;
   private final JoystickButton buttonCollector;
   private final JoystickButton buttonShooter;
+  private final JoystickButton buttonFarShot;
+  private final JoystickButton buttonCloseShot;
 
   // Allocate Subsystems
   private final Drive m_drive = new Drive(
@@ -91,6 +99,8 @@ public class RobotContainer {
     // Configure the button bindings
     buttonCollector = new JoystickButton(driver, Constants.OI.Buttons.Driver.collectorBtnId);
     buttonShooter = new JoystickButton(driver, Constants.OI.Buttons.Driver.shooterBtnId);
+    buttonFarShot = new JoystickButton(driver, Constants.OI.Buttons.Driver.farShotBtnId);
+    buttonCloseShot = new JoystickButton(driver, Constants.OI.Buttons.Driver.closeShotBtnId);
 
     configureButtonBindings();
 
@@ -109,6 +119,8 @@ public class RobotContainer {
       .whenPressed(new StartCollect(m_collector))
       .whenReleased(new StopCollect(m_collector));
     buttonShooter.whileHeld(new TeleopShoot(m_drive, limeLight, m_spindexer, m_shooter));
+    buttonFarShot.whenPressed(new ConfigFar(m_shooter));
+    buttonCloseShot.whenPressed(new ConfigClose(m_shooter));
   }
 
   /**
@@ -141,6 +153,12 @@ public class RobotContainer {
     tabShooter.add("Shoot RPM 4500", new ShootRPM(m_shooter, 4500));
     tabShooter.add("Shoot RPM 5000", new ShootRPM(m_shooter, 5000));
     tabShooter.add("Shoot Limelight", new ShootLimeLight(m_shooter, limeLight));
+    tabShooter.add("Config Far", new ConfigFar(m_shooter));
+    tabShooter.add("Config Close", new ConfigClose(m_shooter));
+    tabShooter.add("Raise Hood", new HoodRaise(m_shooter));
+    tabShooter.add("Lower Hood", new HoodLower(m_shooter));
+    tabShooter.add("Unlock Hood", new HoodUnlock(m_shooter));
+    tabShooter.add("Lock Hood", new HoodLock(m_shooter));
     SmartDashboard.putData("aimbot", new AimBot(m_drive, limeLight));
     SmartDashboard.putData("Agitate", new Agitate(m_spindexer, Constants.Spindexer.agitateSpeed, Constants.Spindexer.agitateDuration));
     SmartDashboard.putNumber("Log Level", 0);
@@ -227,12 +245,17 @@ public class RobotContainer {
     SmartDashboard.putData("Auto", chooser);
   }
 
+  public void autoInit() {
+    limeLight.init();
+  }
+
   public void disabledInit() {
     // m_drive.setCoast();
   }
 
   public void teleopInit() {
     m_drive.teleopInit();
+    limeLight.init();
   }
 
 }
