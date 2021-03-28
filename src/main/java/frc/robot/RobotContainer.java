@@ -178,7 +178,6 @@ public class RobotContainer {
     SmartDashboard.putData("Record Keep Odometry Path", new RecordPath(m_drive, false));
 
     chooser.addOption("Barrel Run", AutoNav.barrelRun(m_drive));
-    chooser.addOption("Barrel test", AutoNav.barrelRunTest(m_drive));
     chooser.addOption("Slalom", AutoNav.slalom(m_drive));
     chooser.addOption("Bounce", AutoNav.bounce(m_drive));
     chooser.addOption("Path A Red", GalacticSearch.PathARed(m_drive, m_collector, m_spindexer));
