@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.commands.shooter.ShootLimeLight;
@@ -30,6 +31,7 @@ public class TeleopShoot extends SequentialCommandGroup {
     // Assumes long shot shooter hood config
     // TODO implement turning LimeLight LEDs on and off
     addCommands(
+      new InstantCommand(() -> { limeLight.turnOnLEDs(); }),
       new PrepShoot(spindexer),
       new WaitUntilCommand(limeLight::canSeeTarget),
       new AimBot(drive, limeLight),
@@ -50,7 +52,7 @@ public class TeleopShoot extends SequentialCommandGroup {
   @Override
   public void end(boolean interrupted) {
     super.end(interrupted);
-    // m_limeLight.turnOffLEDs();
+    m_limeLight.turnOffLEDs();
     m_shooter.stop();
     m_spindexer.stop();
   }
