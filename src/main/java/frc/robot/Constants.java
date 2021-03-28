@@ -229,6 +229,11 @@ public final class Constants {
 
   public static final class Challenges {
     public final static double PowerPortDistance = 3.0;
+    public final static double PowerPortShootDuration = 1.0;
+    public final static double AccuracyGreenDistance = 5.5;
+    public final static double AccuracyYellowDistance = 4.0;
+    public final static double AccuracyBlueDistance = 2.5;
+    public final static double AccuracyRedDistance = 1.0;
   }
   
 }

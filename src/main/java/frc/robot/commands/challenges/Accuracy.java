@@ -7,6 +7,9 @@ package frc.robot.commands.challenges;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.Constants;
+import frc.robot.commands.shooter.ConfigClose;
+import frc.robot.commands.shooter.ConfigFar;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Drive;
 import frc.robot.subsystems.Shooter;
@@ -23,11 +26,17 @@ public class Accuracy extends SequentialCommandGroup {
     addCommands(
       // TODO: Determine distances and cycles
       // TODO: Implement shooter hood for close shots
-      PowerPort.cycle(drive, spindexer, shooter, collector, 1.0),
+      new ConfigClose(shooter),
+      PowerPort.cycle(drive, spindexer, shooter, collector, Constants.Challenges.AccuracyGreenDistance),
       new WaitUntilCommand(() -> xbox.getStartButtonPressed()),
-      PowerPort.cycle(drive, spindexer, shooter, collector, 2.0),
+      new ConfigFar(shooter),
+      PowerPort.cycle(drive, spindexer, shooter, collector, Constants.Challenges.AccuracyYellowDistance),
       new WaitUntilCommand(() -> xbox.getStartButtonPressed()),
-      PowerPort.cycle(drive, spindexer, shooter, collector, 3.0)
+      PowerPort.cycle(drive, spindexer, shooter, collector, Constants.Challenges.AccuracyYellowDistance),
+      new WaitUntilCommand(() -> xbox.getStartButtonPressed()),
+      PowerPort.cycle(drive, spindexer, shooter, collector, Constants.Challenges.AccuracyBlueDistance),
+      new WaitUntilCommand(() -> xbox.getStartButtonPressed()),
+      PowerPort.cycle(drive, spindexer, shooter, collector, Constants.Challenges.AccuracyRedDistance)
     );
   }
 }

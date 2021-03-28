@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants;
+import frc.robot.commands.AimBot;
 import frc.robot.commands.StopAll;
 import frc.robot.commands.drive.DrivePathHelpers;
 import frc.robot.commands.shooter.ShootRPM;
@@ -34,8 +35,9 @@ public class PowerPort {
         DrivePathHelpers.driveStraightCommand(drive, -distance)
       ),
       // TODO: Add AimBot here
+      // TODO ShootLimelight
       new FeedShooter(spindexer),
-      new WaitCommand(1.0),  // TODO: Test this timing and add to Constants
+      new WaitCommand(Constants.Challenges.PowerPortShootDuration),  // TODO: Test this timing and add to Constants
       new StopAll(collector, spindexer, shooter),
       DrivePathHelpers.driveStraightCommand(drive, distance)
     );
