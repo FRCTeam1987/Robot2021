@@ -89,7 +89,7 @@ public class ConfigurableDriveModes {
       case CurvatureTriggers:
         m_differentialDrive.curvatureDrive(
           -(xbox.getTriggerAxis(Hand.kRight) - xbox.getTriggerAxis(Hand.kLeft)),
-          xbox.getX(Hand.kLeft),
+          -xbox.getX(Hand.kLeft),
           xbox.getStickButton(Hand.kLeft)
         );
         return;
