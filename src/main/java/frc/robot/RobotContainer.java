@@ -182,6 +182,8 @@ public class RobotContainer {
     chooser.addOption("Bounce", AutoNav.bounce(m_drive));
     chooser.addOption("Path A Red", GalacticSearch.PathARed(m_drive, m_collector, m_spindexer));
     chooser.addOption("Path A Blue", GalacticSearch.PathABlue(m_drive, m_collector, m_spindexer));
+    chooser.addOption("Path B Red", GalacticSearch.PathBRed(m_drive, m_collector, m_spindexer));
+    chooser.addOption("Path B Blue", GalacticSearch.PathBBlue(m_drive, m_collector, m_spindexer));
 
     // ********************************************************************
     // *****  Galactic Search Path Commands
@@ -199,8 +201,8 @@ public class RobotContainer {
 
     SequentialCommandGroup bluePathDetermined = new SequentialCommandGroup(
       new SetGalacticRedOrBlue(m_drive, Constants.Drive.Galatic.RedOrBlue.Blue),
-      new LoggerCommand("Driving Blue A")
-      // GalacticSearch.PathABlue(m_drive, m_collector, m_spindexer)
+      // new LoggerCommand("Driving Blue A")
+      GalacticSearch.PathABlue(m_drive, m_collector, m_spindexer)
     );
 
     // This command sequence is run when the galactic search path is red.
@@ -208,8 +210,8 @@ public class RobotContainer {
 
     SequentialCommandGroup redPathDetermined = new SequentialCommandGroup(
       new SetGalacticRedOrBlue(m_drive, Constants.Drive.Galatic.RedOrBlue.Red),
-      new LoggerCommand("Driving Red A")
-      // GalacticSearch.PathARed(m_drive, m_collector, m_spindexer)
+      // new LoggerCommand("Driving Red A")
+      GalacticSearch.PathARed(m_drive, m_collector, m_spindexer)
     );
 
     // Question 2 is run when the coin flip needs to be determined.  It
@@ -223,10 +225,10 @@ public class RobotContainer {
     // Question 3 is run when the driver clicks the Galactic Search button
     // after having driven path A.
     ConditionalCommand galacticQuestion3 = new ConditionalCommand(
-      new LoggerCommand("Driving Blue B"),
-      // GalacticSearch.PathBBlue(m_drive, m_collector, m_spindexer),
-      new LoggerCommand("Driving Red B"),
-      // GalacticSearch.PathBRed(m_drive, m_collector, m_spindexer),
+      // new LoggerCommand("Driving Blue B"),
+      GalacticSearch.PathBBlue(m_drive, m_collector, m_spindexer),
+      // new LoggerCommand("Driving Red B"),
+      GalacticSearch.PathBRed(m_drive, m_collector, m_spindexer),
       () -> m_drive.getGalacticRedOrBlue() == Constants.Drive.Galatic.RedOrBlue.Blue
     );
 

@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.collector.StartCollect;
+import frc.robot.commands.collector.StopCollect;
 import frc.robot.commands.drive.DrivePathHelpers;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Drive;
@@ -24,7 +25,8 @@ public class GalacticSearch{
     public static Command MakeGalaticPath(final Drive drive, final Collector collector, final Spindexer spindexer, Command path) {
         return new SequentialCommandGroup(
             new StartCollect(collector),
-            path
+            path,
+            new StopCollect(collector)
         );
     }
 
@@ -77,76 +79,119 @@ public class GalacticSearch{
     /*
     */
 
-
     public static Command PathABlue(final Drive drive, final Collector collector, final Spindexer spindexer) {
-        return MakeGalaticPath(drive, collector, spindexer,
-            DrivePathHelpers.createOnBoardDrivePathCommand(
+        return MakeGalaticPath(
             drive,
-            new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)),
-            List.of(
-            new Translation2d(0.03136311399052227, -5.197775148394984E-5),
-            new Translation2d(0.3955850268054502, -0.004374602579166811),
-            new Translation2d(0.9792785330985248, -0.04971378404394609),
-            new Translation2d(1.5878062133394688, -0.18329756636484165),
-            new Translation2d(2.1868028503888497, -0.4148468093479345),
-            new Translation2d(2.7079698300636688, -0.5963168865920362),
-            new Translation2d(3.2044916948796693, -0.6100307191244938),
-            new Translation2d(3.6883761141380873, -0.4294229099154746),
-            new Translation2d(4.048521309643953, -0.08717247138110032),
-            new Translation2d(4.209277219261146, 0.44052812091232113),
-            new Translation2d(4.063709332854421, 0.9095248506694851),
-            new Translation2d(3.7881879559097915, 1.2901268995045594),
-            new Translation2d(3.5295279339032746, 1.7092631025395264),
-            new Translation2d(3.41238112268786, 2.202507194977159),
-            new Translation2d(3.52835304752228, 2.644118228326214),
-            new Translation2d(3.8304461235127842, 2.9158739139017986),
-            new Translation2d(4.1709087949264365, 2.961050249444724),
-            new Translation2d(4.4868649439178, 2.824862321397085),
-            new Translation2d(4.891254162376598, 2.542341396345496),
-            new Translation2d(5.409348627563123, 2.2176257050335413),
-            new Translation2d(5.987631497839873, 1.940211465804292),
-            new Translation2d(6.726335646821969, 1.7772313066848062),
-            new Translation2d(7.498573358224639, 1.7622804419348403),
-            new Translation2d(8.1856100456824, 1.7922367167451188),
-            new Translation2d(8.594103128980102, 1.8094665188628614)
-            ),
-            new Pose2d(8.66001160548784, 1.8105585278949896, Rotation2d.fromDegrees(-1.2399902343749998)),
-            
-            false
-        ));
-    }
-    
-    public static Command PathBBlue(final Drive drive, final Collector collector, final Spindexer spindexer) {
-        return MakeGalaticPath(drive, collector, spindexer,
+            collector,
+            spindexer,
             DrivePathHelpers.createOnBoardDrivePathCommand(
-            drive,
-            new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)),
-            List.of(
-                new Translation2d(2.412286453576407, -0.08424905134894),
-                new Translation2d(2.013107724582363, 0.16934915644072576),
-                new Translation2d(1.7083708220440263, 0.46558548303087227),
-                new Translation2d(1.4530701120060703, 0.8100206716974084),
-                new Translation2d(1.1880589330097144, 1.1421228615417391)
-            ),
-            new Pose2d(-0.10017699598217582, 1.88433649398515839, Rotation2d.fromDegrees(-178.4120025634766)),
-            false
-        ));
+                drive,
+                new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)),
+                List.of(
+                    new Translation2d(0.0418977471670079, 5.0762956503218074E-5),
+                    new Translation2d(0.3298150252875784, -0.005978276236087719),
+                    new Translation2d(0.8475831006278447, -0.020741608935572732),
+                    new Translation2d(1.4561892577849038, -0.06619477451405716),
+                    new Translation2d(2.063299270568079, -0.13177668669982484),
+                    new Translation2d(2.694869688199307, -0.1899198771833284),
+                    new Translation2d(3.295437210394988, -0.23905929853717434),
+                    new Translation2d(3.8553029928944005, -0.21750326179289703),
+                    new Translation2d(4.329338730176148, -0.06239382442624919),
+                    new Translation2d(4.6084948095465235, 0.2466014797977163),
+                    new Translation2d(4.653948487142915, 0.6385925843499406),
+                    new Translation2d(4.4330993684986515, 0.9782337425738756),
+                    new Translation2d(4.088009024997715, 1.1919046637611337),
+                    new Translation2d(3.7280189087487146, 1.447041656822998),
+                    new Translation2d(3.4475325435195514, 1.8424287721980384),
+                    new Translation2d(3.447887332944347, 2.251282492920474),
+                    new Translation2d(3.686310225550403, 2.5090016374468482),
+                    new Translation2d(4.027071909858797, 2.6012218803184055),
+                    new Translation2d(4.502003227873482, 2.5938033166622074),
+                    new Translation2d(5.05477685965374, 2.4971583967449837),
+                    new Translation2d(5.6228907664216745, 2.362270443861871),
+                    new Translation2d(6.217316670120138, 2.273307604858079),
+                    new Translation2d(6.852775599200702, 2.293947620867465),
+                    new Translation2d(7.451207831152527, 2.401080904529521),
+                    new Translation2d(7.982038245314398, 2.529808369372587),
+                    new Translation2d(8.360885544194138, 2.641382930735979),
+                    new Translation2d(8.53528190890722, 2.7064419362762604)
+                ),
+                new Pose2d(8.561927174681387, 2.7186607286241085, Rotation2d.fromDegrees(26.78499984741211)),
+                false
+            )
+        );
     }
     
     public static Command PathBRed(final Drive drive, final Collector collector, final Spindexer spindexer) {
-        return MakeGalaticPath(drive, collector, spindexer,
-            DrivePathHelpers.createOnBoardDrivePathCommand(
+        return MakeGalaticPath(
             drive,
-            new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)),
-            List.of(
-                new Translation2d(2.412286453576407, -0.08424905134894),
-                new Translation2d(2.013107724582363, 0.16934915644072576),
-                new Translation2d(1.7083708220440263, 0.46558548303087227),
-                new Translation2d(1.4530701120060703, 0.8100206716974084),
-                new Translation2d(1.1880589330097144, 1.1421228615417391)
-            ),
-            new Pose2d(-0.10017699598217582, 1.88433649398515839, Rotation2d.fromDegrees(-178.4120025634766)),
-            false
-        ));
+            collector,
+            spindexer,
+            DrivePathHelpers.createOnBoardDrivePathCommand(
+                drive,
+                new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)),
+                List.of(
+                    new Translation2d(0.05140861777406116, -1.2527027522758118E-4),
+                    new Translation2d(0.2902987775049788, -0.004187570484562408),
+                    new Translation2d(0.6699508727029123, -0.0076336660492259435),
+                    new Translation2d(1.1208503278989383, -0.017270411966701132),
+                    new Translation2d(1.600397747332607, -0.03671808408311061),
+                    new Translation2d(2.090627260498001, -0.19037127851330649),
+                    new Translation2d(2.476689296066947, -0.5325438958901533),
+                    new Translation2d(2.831220283353694, -0.9279206186511024),
+                    new Translation2d(3.2331395683696393, -1.274294461114809),
+                    new Translation2d(3.671924701358698, -1.3932986512076662),
+                    new Translation2d(4.011150640156833, -1.1929436879635922),
+                    new Translation2d(4.243905440006696, -0.8458523778501402),
+                    new Translation2d(4.565265288824997, -0.479647467628378),
+                    new Translation2d(5.017269083769095, -0.29113501928149754),
+                    new Translation2d(5.541347628299142, -0.26181155867487593),
+                    new Translation2d(6.174955894074069, -0.25083988608213914),
+                    new Translation2d(6.847181166804145, -0.2256066405505233),
+                    new Translation2d(7.451832031086812, -0.20863791267363171),
+                    new Translation2d(7.994059789213928, -0.19932062998618152),
+                    new Translation2d(8.401773031394772, -0.17303458178433176),
+                    new Translation2d(8.678152723430621, -0.14006729351416242)
+                ),
+                new Pose2d(8.772280640686846, -0.12684250051754273, Rotation2d.fromDegrees(7.566999912261964)),
+                false
+            )
+        );
+    }
+
+    public static Command PathBBlue(final Drive drive, final Collector collector, final Spindexer spindexer) {
+        return MakeGalaticPath(
+            drive,
+            collector,
+            spindexer,
+            DrivePathHelpers.createOnBoardDrivePathCommand(
+                drive,
+                new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)),
+                List.of(
+                    new Translation2d(0.036178981346884805, 2.076405241603068E-5),
+                    new Translation2d(0.3387208335432156, -0.006129149412471196),
+                    new Translation2d(0.8494984991324188, -0.003762159972262039),
+                    new Translation2d(1.470324268883303, 0.02022379592936572),
+                    new Translation2d(2.1867969452064333, 0.02922895466837258),
+                    new Translation2d(2.9606234004969534, 0.04022236407849605),
+                    new Translation2d(3.6264706176765324, 0.06900579616736609),
+                    new Translation2d(4.174647629368991, 0.1465571926874382),
+                    new Translation2d(4.630702642147005, 0.4144325617921917),
+                    new Translation2d(5.042204992321449, 0.8363549336135957),
+                    new Translation2d(5.457661659618569, 1.2415287938019632),
+                    new Translation2d(5.870157924019754, 1.4855771862563218),
+                    new Translation2d(6.251005637033227, 1.3962274741483551),
+                    new Translation2d(6.5710196693629115, 1.0844854151753394),
+                    new Translation2d(6.900015617507868, 0.6533928608099563),
+                    new Translation2d(7.280207832151789, 0.2422906245020373),
+                    new Translation2d(7.80675829060019, 0.07755748835666731),
+                    new Translation2d(8.304494368935858, 0.07710624886687127),
+                    new Translation2d(8.794614473129299, 0.07468036969819115),
+                    new Translation2d(9.106555895063055, 0.07391099398340278)
+                ),
+                new Pose2d(9.15513183533171, 0.07451060153135668, Rotation2d.fromDegrees(1.0029999017715456)),
+                false
+            )
+        );
     }
 }

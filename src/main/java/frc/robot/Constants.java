@@ -77,7 +77,7 @@ public final class Constants {
     }
 
     public static final class Galatic {
-      public static final double blueHeading = -45.0;
+      public static final double blueHeading = -20.0;
       public static final double headingTolerance = 5.0;
 
       public enum RedOrBlue {
