@@ -81,6 +81,6 @@ public class AimBot extends CommandBase {
   }
 
   private boolean isOnTarget() {
-    return Util.isWithinTolerance(m_limelight.getXAxis(), 0, 2);
+    return Util.isWithinTolerance(m_limelight.getXAxis(), 0, 1);
   }
 }

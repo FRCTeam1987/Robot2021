@@ -72,7 +72,7 @@ public final class Constants {
       public static final double trackWidth = 0.71; // 0.693; // 12.9798;
       public static final double wheelDiameter = 0.156972; // 0.1524;  // 6 in wheel in m
       public static final double wheelCircumference = Math.PI * wheelDiameter;
-      public static final double minMovePercent = 0.275;
+      public static final double minMovePercent = 0.28;
       public static final double maxMovePercent = 0.35;
     }
 
@@ -149,45 +149,23 @@ public final class Constants {
 
       public static class TreeMapValues{
         public static class Close {
-            // public final static double ty1 = 15.09;
-            // public final static double ty2 = 12.7;
-            // public final static double ty3 = 12.0;
-            // public final static double ty4 = 10.63;
-            // public final static double ty5 = 8.75;
-            // public final static double ty6 = 6.30;
-            // public final static double ty7 = 4.83;
-            // public final static double ty8 = 4.08;;
-            public final static double ty1 = 16.47;
-            public final static double ty2 = 14.76;
-            public final static double ty3 = 12.23;
-            public final static double ty4 = 10.28;
-            public final static double ty5 = 8.26;
-            // public final static double ty9 = -0.98;
-            // public final static double ty10 = -0.83;
-            // public final static double ty11 = 0.78;
-            // public final static double ty12 = 1.57;
-            // public final static double ty13 = 3.21;
-            // public final static double ty14 = 5.19;
-            // public final static double ty15 = 8.08;
-            // public final static double ty16 = 12.55;
-            // public final static double ty17 = 16.74;
-            // public final static double ty18 = 18.88;
+            public final static double ty1 = 19.30;
+            public final static double ty2 = 12.75;
+            public final static double ty3 = 0.28;
+            public final static double ty4 = 0.00;
+            public final static double ty5 = -4.63;
+            public final static double ty6 = -7.26;
+            public final static double ty7 = -9.31;
+            public final static double ty8 = -10.6;
 
-            public final static double rpm1 = 3400;
-            public final static double rpm2 = 3400;
-            public final static double rpm3 = 3375;
-            public final static double rpm4 = 3425;
-            public final static double rpm5 = 3500;
-            // public final static double rpm9 = 3325;
-            // public final static double rpm10 = 3325;
-            // public final static double rpm11 = 3200;
-            // public final static double rpm12 = 3200;
-            // public final static double rpm13 = 3100;
-            // public final static double rpm14 = 3040;
-            // public final static double rpm15 = 3040;
-            // public final static double rpm16 = 3040;
-            // public final static double rpm17 = 3035;
-            // public final static double rpm18 = 3025;
+            public final static double rpm1 = 2300;
+            public final static double rpm2 = 2425;
+            public final static double rpm3 = 4000;
+            public final static double rpm4 = 3800;
+            public final static double rpm5 = 3850;
+            public final static double rpm6 = 3850;
+            public final static double rpm7 = 3925;
+            public final static double rpm8 = 4135;
         }
     }
 
@@ -198,19 +176,9 @@ public final class Constants {
         kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty4), new InterpolatingDouble(TreeMapValues.Close.rpm4));
         kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty2), new InterpolatingDouble(TreeMapValues.Close.rpm2));
         kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty5), new InterpolatingDouble(TreeMapValues.Close.rpm5));
-        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty6), new InterpolatingDouble(TreeMapValues.Close.rpm6));
-        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty7), new InterpolatingDouble(TreeMapValues.Close.rpm7));
-        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty8), new InterpolatingDouble(TreeMapValues.Close.rpm8));
-        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty9), new InterpolatingDouble(TreeMapValues.Close.rpm9));
-        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty10), new InterpolatingDouble(TreeMapValues.Close.rpm10));
-        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty11), new InterpolatingDouble(TreeMapValues.Close.rpm11));
-        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty12), new InterpolatingDouble(TreeMapValues.Close.rpm12));
-        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty13), new InterpolatingDouble(TreeMapValues.Close.rpm13));
-        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty14), new InterpolatingDouble(TreeMapValues.Close.rpm14));
-        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty15), new InterpolatingDouble(TreeMapValues.Close.rpm15));
-        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty16), new InterpolatingDouble(TreeMapValues.Close.rpm16));
-        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty17), new InterpolatingDouble(TreeMapValues.Close.rpm17));
-        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty18), new InterpolatingDouble(TreeMapValues.Close.rpm18));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty6), new InterpolatingDouble(TreeMapValues.Close.rpm6));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty7), new InterpolatingDouble(TreeMapValues.Close.rpm7));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty8), new InterpolatingDouble(TreeMapValues.Close.rpm8));
       }
     }
 
