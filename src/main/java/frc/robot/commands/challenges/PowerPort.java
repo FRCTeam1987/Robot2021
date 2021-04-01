@@ -11,12 +11,14 @@ import frc.robot.Constants;
 import frc.robot.commands.AimBot;
 import frc.robot.commands.StopAll;
 import frc.robot.commands.drive.DrivePathHelpers;
+import frc.robot.commands.shooter.ShootLimeLight;
 import frc.robot.commands.shooter.ShootRPM;
 import frc.robot.commands.spindexer.Agitate;
 import frc.robot.commands.spindexer.FeedShooter;
 import frc.robot.commands.spindexer.PrepShoot;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Drive;
+import frc.robot.subsystems.LimeLight;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Spindexer;
 
@@ -24,7 +26,7 @@ import frc.robot.subsystems.Spindexer;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PowerPort {
-  public static SequentialCommandGroup cycle(Drive drive, Spindexer spindexer, Shooter shooter, Collector collector, double distance) {
+  public static SequentialCommandGroup cycle(Drive drive, Spindexer spindexer, Shooter shooter, Collector collector, LimeLight limelight, double distance) {
     return new SequentialCommandGroup(
       new ParallelCommandGroup(
         new SequentialCommandGroup(
@@ -36,6 +38,8 @@ public class PowerPort {
       ),
       // TODO: Add AimBot here
       // TODO ShootLimelight
+      new AimBot(drive, limelight),
+      new ShootLimeLight(shooter, limelight),
       new FeedShooter(spindexer),
       new WaitCommand(Constants.Challenges.PowerPortShootDuration),  // TODO: Test this timing and add to Constants
       new StopAll(collector, spindexer, shooter),
@@ -43,7 +47,7 @@ public class PowerPort {
     );
   }
 
-  public static SequentialCommandGroup cycle(Drive drive, Spindexer spindexer, Shooter shooter, Collector collector) {
-    return cycle(drive, spindexer, shooter, collector, Constants.Challenges.PowerPortDistance);
+  public static SequentialCommandGroup cycle(Drive drive, Spindexer spindexer, Shooter shooter, Collector collector, LimeLight limelight) {
+    return cycle(drive, spindexer, shooter, collector, limelight, Constants.Challenges.PowerPortDistance);
   }
 }

@@ -4,10 +4,15 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.Constants;
+import frc.robot.commands.shooter.ConfigClose;
+import frc.robot.commands.shooter.ConfigFar;
 import frc.robot.commands.shooter.ShootLimeLight;
+import frc.robot.commands.shooter.ShootRPM;
 import frc.robot.commands.spindexer.FeedShooter;
 import frc.robot.commands.spindexer.PrepShoot;
 import frc.robot.subsystems.Drive;
@@ -35,7 +40,9 @@ public class TeleopShoot extends SequentialCommandGroup {
       new PrepShoot(spindexer),
       new WaitUntilCommand(limeLight::canSeeTarget),
       new AimBot(drive, limeLight),
+      // new ShootRPM(shooter, shooter::getRPMFromLimelight),
       new ShootLimeLight(shooter, limeLight),
+      new ConditionalCommand(new ConfigClose(shooter), new ConfigFar(shooter), () -> { return limeLight.getYAxis() > Constants.LimeLight.tyConfigLowThreshold; }),
       new FeedShooter(spindexer).perpetually()
     );
     m_limeLight = limeLight;

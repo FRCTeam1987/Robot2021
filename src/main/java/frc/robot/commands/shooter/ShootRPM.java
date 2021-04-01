@@ -4,6 +4,8 @@
 
 package frc.robot.commands.shooter;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Shooter;
@@ -11,6 +13,7 @@ import frc.robot.subsystems.Shooter;
 public class ShootRPM extends CommandBase {
   
   final Shooter m_shooter;
+  DoubleSupplier m_getRpm = null;
   NetworkTableEntry m_rpmSetpoint = null;
   double m_rpm;
 
@@ -26,9 +29,19 @@ public class ShootRPM extends CommandBase {
     addRequirements(m_shooter);
   }
 
+  public ShootRPM(final Shooter shooter, final DoubleSupplier getRpm) {
+    m_shooter = shooter;
+    m_getRpm = getRpm;
+    addRequirements(m_shooter);
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    // if (m_getRpm != null) {
+    //   m_shooter.setRPM(m_getRpm.getAsDouble());
+    //   return;
+    // }
     if (m_rpmSetpoint == null) {
       m_shooter.setRPM(m_rpm);
       return;

@@ -36,8 +36,8 @@ public final class Constants {
     public static final class Values {
       public static final DoubleSolenoid.Value cylinderExtend = DoubleSolenoid.Value.kForward;
       public static final DoubleSolenoid.Value cylinderRetract = DoubleSolenoid.Value.kReverse;
-      public static final double motorIn = 0.5;
-      public static final double motorOut = -0.5;
+      public static final double motorIn = 0.75;
+      public static final double motorOut = -0.75;
       public static final double motorStop = 0.0;
     }
 
@@ -59,8 +59,8 @@ public final class Constants {
       public static final double vVoltsSecondsPerMeter = 1.99; //1.99 // kV
       public static final double aVoltsSecondsSquaredPerMeter = 0.0922; //0.226 // kA
       public static final double maxVolts = 10;
-      public static final double maxSpeedMetersPerSecond = 2.0; //Galactic 1.75 - Barrel - 2.5 is constant - 2.75 is max - start slightly left of center //2.75 slalom speed
-      public static final double maxAccelerationMetersPerSecondSquared = 2.0; // Bounce Path speed - 5.0; //2.5;
+      public static final double maxSpeedMetersPerSecond = 2.5; //Galactic 1.75 - Barrel - 2.5 is constant - 2.75 is max - start slightly left of center //2.75 slalom speed
+      public static final double maxAccelerationMetersPerSecondSquared = 2.25; // Bounce Path speed - 5.0; //2.5;
       public static final double ramseteB = 2.0;
       public static final double ramseteZeta = 0.7;  // 0.15
       public static final double pVelocity = 0.175; // 0.15, 0.075
@@ -76,11 +76,11 @@ public final class Constants {
       public static final double maxMovePercent = 0.35;
     }
 
-    public static final class Galatic {
+    public static final class Galactic {
       public static final double blueHeading = -20.0;
       public static final double headingTolerance = 5.0;
 
-      public enum RedOrBlue {
+      public enum Color {
         DontKnow,
         Red,
         Blue
@@ -149,23 +149,49 @@ public final class Constants {
 
       public static class TreeMapValues{
         public static class Close {
-            public final static double ty1 = 19.30;
-            public final static double ty2 = 12.75;
-            public final static double ty3 = 0.28;
-            public final static double ty4 = 0.00;
-            public final static double ty5 = -4.63;
-            public final static double ty6 = -7.26;
-            public final static double ty7 = -9.31;
-            public final static double ty8 = -10.6;
+            // public final static double ty1 = 19.30;
+            // public final static double ty2 = 12.75;
+            // public final static double ty3 = 0.28;
+            // public final static double ty4 = 0.00;
+            // public final static double ty5 = -4.63;
+            // public final static double ty6 = -7.26;
+            // public final static double ty7 = -9.31;
+            // public final static double ty8 = -10.6;
 
-            public final static double rpm1 = 2300;
-            public final static double rpm2 = 2425;
-            public final static double rpm3 = 4000;
-            public final static double rpm4 = 3800;
-            public final static double rpm5 = 3850;
-            public final static double rpm6 = 3850;
-            public final static double rpm7 = 3925;
-            public final static double rpm8 = 4135;
+            public final static double ty1 = -9.42;
+            public final static double ty2 = -7.9;
+            public final static double ty3 = -6.8;
+            public final static double ty4 = -5.3;
+            public final static double ty5 = -3.3;
+            public final static double ty6 = -1.55;
+            public final static double ty7 = 0.1;
+            public final static double ty8 = 3.3;
+            public final static double ty9 = 5.1;
+            public final static double ty10 = 8.2;
+            public final static double ty11 = 12.5;
+            public final static double ty12 = 17.8;
+
+            // public final static double rpm1 = 2300;
+            // public final static double rpm2 = 2425;
+            // public final static double rpm3 = 4000;
+            // public final static double rpm4 = 3800;
+            // public final static double rpm5 = 3850;
+            // public final static double rpm6 = 3850;
+            // public final static double rpm7 = 3925;
+            // public final static double rpm8 = 4135;
+
+            public final static double rpm1 = 3800;
+            public final static double rpm2 = 3700;
+            public final static double rpm3 = 3700;
+            public final static double rpm4 = 3700;
+            public final static double rpm5 = 3750;
+            public final static double rpm6 = 3800;
+            public final static double rpm7 = 4750;
+            public final static double rpm8 = 2600;
+            public final static double rpm9 = 2700;
+            public final static double rpm10 = 2500;
+            public final static double rpm11 = 2400;
+            public final static double rpm12 = 2400;
         }
     }
 
@@ -193,6 +219,7 @@ public final class Constants {
 
   public static final class LimeLight {
     public final static double pipeline = 9;
+    public final static double tyConfigLowThreshold = 0.5;
   }
 
   public static final class Challenges {

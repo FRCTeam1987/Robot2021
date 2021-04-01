@@ -158,6 +158,47 @@ public class AutoNav {
         );
     }
 
+    public static Command slalomTest(final Drive drive) {
+        return DrivePathHelpers.createOnBoardDrivePathCommand(
+            drive,
+            new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)),
+            List.of(
+                new Translation2d(0.033529481962064824, 1.8706848477474468E-4),
+                new Translation2d(0.295092598992218, 0.015504501362308552),
+                new Translation2d(0.5717160477956764, 0.07636721643788319),
+                new Translation2d(0.9261039245366949, 0.3086147533387712),
+                new Translation2d(1.21234172185815, 0.8158412071860914),
+                new Translation2d(1.538435965935396, 1.3315313395909594),
+                new Translation2d(2.102707122832353, 1.760293436654788),
+                new Translation2d(2.8255070677859284, 1.9333667591081771),
+                new Translation2d(3.5837935415796167, 1.9376271264726015),
+                new Translation2d(4.35247659489068, 1.873898292531776),
+                new Translation2d(5.118350593627804, 1.6929598842613363),
+                new Translation2d(5.689445062596204, 1.2029649636967032),
+                new Translation2d(5.967768077209793, 0.4621090481227858),
+                new Translation2d(6.438608898250651, -0.19089353429881564),
+                new Translation2d(7.1901853372787885, -0.31707734816402017),
+                new Translation2d(7.829117426139421, 0.1775277317281255),
+                new Translation2d(7.882081223233324, 0.9606984056563317),
+                new Translation2d(7.30619045874609, 1.530592612209503),
+                new Translation2d(6.527399860483366, 1.4165133719780585),
+                new Translation2d(6.0178591679963676, 0.7104382033545491),
+                new Translation2d(5.532365948518209, 0.04804160602472195),
+                new Translation2d(4.768091563420258, -0.3755137392303103),
+                new Translation2d(3.93504025080736, -0.5217930701348357),
+                new Translation2d(3.072990339911477, -0.3999091422001952),
+                new Translation2d(2.2745669086128193, -0.13987301356363943),
+                new Translation2d(1.639017211207561, 0.4064697351302431),
+                new Translation2d(1.2386900736018636, 1.1827612111598957),
+                new Translation2d(0.6520555035830493, 1.7838988170910297),
+                new Translation2d(0.11720409466776642, 1.9021564862913725)
+            ),
+            new Pose2d(0.12654555086290292, 1.9031442286387172, Rotation2d.fromDegrees(-174.92399597167972)),
+            false
+        );
+    }
+
+
     public static Command bounce(final Drive drive) {
         return new SequentialCommandGroup(
             DrivePathHelpers.createOnBoardDrivePathCommand(

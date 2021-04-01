@@ -119,8 +119,8 @@ public class RobotContainer {
       .whenPressed(new StartCollect(m_collector))
       .whenReleased(new StopCollect(m_collector));
     buttonShooter.whileHeld(new TeleopShoot(m_drive, limeLight, m_spindexer, m_shooter));
-    buttonFarShot.whenPressed(new ConfigFar(m_shooter));
-    buttonCloseShot.whenPressed(new ConfigClose(m_shooter));
+    buttonFarShot.whenPressed(ConfigFar.configFarConditional(m_shooter));
+    buttonCloseShot.whenPressed(ConfigClose.configCloseConditional(m_shooter));
   }
 
   /**
@@ -163,8 +163,8 @@ public class RobotContainer {
     SmartDashboard.putData("Agitate", new Agitate(m_spindexer, Constants.Spindexer.agitateSpeed, Constants.Spindexer.agitateDuration));
     SmartDashboard.putNumber("Log Level", 0);
     SmartDashboard.putData("Prep Shoot", new PrepShoot(m_spindexer));
-    SmartDashboard.putData("Power Power Cycle", PowerPort.cycle(m_drive, m_spindexer, m_shooter, m_collector));
-    SmartDashboard.putData("Accuracy Challenge", new Accuracy(m_drive, m_spindexer, m_shooter, m_collector, driver));
+    SmartDashboard.putData("Power Power Cycle", PowerPort.cycle(m_drive, m_spindexer, m_shooter, m_collector, limeLight));
+    SmartDashboard.putData("Accuracy Challenge", new Accuracy(m_drive, m_spindexer, m_shooter, m_collector, driver, limeLight));
     SmartDashboard.putData("Test Shoot", new SequentialCommandGroup(
       new PrepShoot(m_spindexer),
       new WaitCommand(1),
@@ -179,6 +179,7 @@ public class RobotContainer {
 
     chooser.addOption("Barrel Run", AutoNav.barrelRun(m_drive));
     chooser.addOption("Slalom", AutoNav.slalom(m_drive));
+    chooser.addOption("Slalom Test", AutoNav.slalomTest(m_drive));
     chooser.addOption("Bounce", AutoNav.bounce(m_drive));
     chooser.addOption("Path A Red", GalacticSearch.PathARed(m_drive, m_collector, m_spindexer));
     chooser.addOption("Path A Blue", GalacticSearch.PathABlue(m_drive, m_collector, m_spindexer));
@@ -200,8 +201,8 @@ public class RobotContainer {
     // It sets the determination to blue then runs path blue A.
 
     SequentialCommandGroup bluePathDetermined = new SequentialCommandGroup(
-      new SetGalacticRedOrBlue(m_drive, Constants.Drive.Galatic.RedOrBlue.Blue),
-      // new LoggerCommand("Driving Blue A")
+      new SetGalacticRedOrBlue(m_drive, Constants.Drive.Galactic.Color.Blue),
+      new LoggerCommand("Driving Blue A"),
       GalacticSearch.PathABlue(m_drive, m_collector, m_spindexer)
     );
 
@@ -209,35 +210,35 @@ public class RobotContainer {
     // It sets the determination to blue then runs path red A.
 
     SequentialCommandGroup redPathDetermined = new SequentialCommandGroup(
-      new SetGalacticRedOrBlue(m_drive, Constants.Drive.Galatic.RedOrBlue.Red),
-      // new LoggerCommand("Driving Red A")
+      new SetGalacticRedOrBlue(m_drive, Constants.Drive.Galactic.Color.Red),
+      new LoggerCommand("Driving Red A"),
       GalacticSearch.PathARed(m_drive, m_collector, m_spindexer)
     );
 
     // Question 2 is run when the coin flip needs to be determined.  It
     // looks at the gyro angle and runs Red A or Blue A.
     ConditionalCommand galacticQuestion2 = new ConditionalCommand(
-      bluePathDetermined,
-      redPathDetermined,
-      () -> m_drive.getGalacticRedOrBlue() == Constants.Drive.Galatic.RedOrBlue.Blue
+      bluePathDetermined,  // true
+      redPathDetermined,   // false
+      () -> m_drive.getGalacticRedOrBlue() != Constants.Drive.Galactic.Color.Blue
     );
 
     // Question 3 is run when the driver clicks the Galactic Search button
     // after having driven path A.
     ConditionalCommand galacticQuestion3 = new ConditionalCommand(
       // new LoggerCommand("Driving Blue B"),
-      GalacticSearch.PathBBlue(m_drive, m_collector, m_spindexer),
+      GalacticSearch.PathBBlue(m_drive, m_collector, m_spindexer),  // true
       // new LoggerCommand("Driving Red B"),
-      GalacticSearch.PathBRed(m_drive, m_collector, m_spindexer),
-      () -> m_drive.getGalacticRedOrBlue() == Constants.Drive.Galatic.RedOrBlue.Blue
+      GalacticSearch.PathBRed(m_drive, m_collector, m_spindexer),  // false
+      () -> m_drive.getGalacticRedOrBlue() == Constants.Drive.Galactic.Color.Blue
     );
 
-    // Question 1 is run when the drive clicks the Galactic Search button.
+    // Question 1 is run when the driver clicks the Galactic Search button.
     // If it has been run, it runs path B for the previously determined color.
     // If not, it makes a determination then runs path A.
     ConditionalCommand galacticQuestion1 = new ConditionalCommand(
-      galacticQuestion3,
-      galacticQuestion2,
+      galacticQuestion3,  // true
+      galacticQuestion2,  // false
       () -> m_drive.hasGalacticBeenDone()
     );
 
