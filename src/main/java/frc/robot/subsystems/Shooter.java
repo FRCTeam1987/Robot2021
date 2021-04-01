@@ -11,11 +11,14 @@ import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Util;
+import frc.robot.Constants.Shooter.SolenoidRaise;
+import frc.robot.lib.InterpolatingDouble;
 
 public class Shooter extends SubsystemBase {
 
@@ -125,8 +128,13 @@ public class Shooter extends SubsystemBase {
     return m_rpmSetPoint;
   }
 
+  public boolean isHoodConfigedFar() {
+    return Constants.Shooter.Values.cylinderRetract == m_solenoidRaise.get();
+  }
+
   public double getRPMFromLimelight() {
-    return 0;
+    final double ty = NetworkTableInstance.getDefault().getTable("limelight").getEntry("ty").getDouble(0);
+    return Constants.Shooter.Targeting.kDistanceToShooterSpeedClose.getInterpolated(new InterpolatingDouble(ty)).value;
   }
 
   public void setRPM(final double rpm) {
@@ -151,7 +159,7 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // if (SmartDashboard.getNumber("Log Level", 0) > 1) {
-      SmartDashboard.putNumber("Shooter Actual RPM", getRPM());
+      // SmartDashboard.putNumber("Shooter Actual RPM", getRPM());
     // }
   }
 

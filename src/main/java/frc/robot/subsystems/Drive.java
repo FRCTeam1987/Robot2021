@@ -12,6 +12,7 @@ import com.ctre.phoenix.sensors.CANCoder;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -22,6 +23,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Util;
 import frc.robot.lib.ConfigurableDriveModes;
 import frc.robot.lib.EncoderHelpers;
 
@@ -36,7 +38,7 @@ public class Drive extends SubsystemBase {
   private final AHRS m_gyro;
   private final DifferentialDrive m_drive;
   private final DifferentialDriveOdometry m_odometry;
-  private Constants.Drive.Galatic.RedOrBlue m_redOrBlue;
+  private Constants.Drive.Galactic.Color m_redOrBlue;
   private int accuracyChallengeStep;
 
   private final ConfigurableDriveModes m_configurableDriveModes;
@@ -66,7 +68,7 @@ public class Drive extends SubsystemBase {
     m_rightSlave = rightSlave;
     m_rightEncoder = rightEncoder;
     m_gyro = gyro;
-    m_redOrBlue = Constants.Drive.Galatic.RedOrBlue.DontKnow;
+    m_redOrBlue = Constants.Drive.Galactic.Color.DontKnow;
 
     accuracyChallengeStep = 0;
 
@@ -80,6 +82,13 @@ public class Drive extends SubsystemBase {
     m_rightSlave.follow(m_rightMaster);
 
     m_drive = new DifferentialDrive(m_leftMaster, m_rightMaster);
+
+    final double navxMaxWaitTime = 5.0;
+    Timer navxTimer = new Timer();
+    navxTimer.start();
+    while(m_gyro.getByteCount() == 0 && navxTimer.get() <= navxMaxWaitTime) {
+      Timer.delay(0.01);
+    }
 
     zeroSensors();
     setCoast();
@@ -335,11 +344,11 @@ public class Drive extends SubsystemBase {
     );
 
     Pose2d currentPose = m_odometry.getPoseMeters();
-    m_tabOdometryLeftDistance.setNumber(getDistanceLeftCANCoder());
-    m_tabOdometryRightDistance.setNumber(getDistanceRightCANCoder());
-    m_tabOdometryRightVelocity.setNumber(getVelocityRightCANCoder());
-    m_tabOdometryLeftVelocity.setNumber(getVelocityLeftCANCoder());
-    m_tabOdometryAngle.setNumber(getAngle());
+    // m_tabOdometryLeftDistance.setNumber(getDistanceLeftCANCoder());
+    // m_tabOdometryRightDistance.setNumber(getDistanceRightCANCoder());
+    // m_tabOdometryRightVelocity.setNumber(getVelocityRightCANCoder());
+    // m_tabOdometryLeftVelocity.setNumber(getVelocityLeftCANCoder());
+    // m_tabOdometryAngle.setNumber(getAngle());
     m_tabOdometryPoseX.setNumber(currentPose.getX());
     m_tabOdometryPoseY.setNumber(currentPose.getY());
     m_tabOdometryPoseRotation.setNumber(currentPose.getRotation().getDegrees());
@@ -359,26 +368,24 @@ public class Drive extends SubsystemBase {
   // Galactic Search Path Stuff
 
   public boolean hasGalacticBeenDone() {
-    return m_redOrBlue != Constants.Drive.Galatic.RedOrBlue.DontKnow;
+    return m_redOrBlue != Constants.Drive.Galactic.Color.DontKnow;
   }
 
   public boolean isGalacticRed() {
-    return m_redOrBlue == Constants.Drive.Galatic.RedOrBlue.Red;
+    return m_redOrBlue == Constants.Drive.Galactic.Color.Red;
   }
 
   public boolean isGalacticBlue() {
-    return m_redOrBlue == Constants.Drive.Galatic.RedOrBlue.Blue;
+    return m_redOrBlue == Constants.Drive.Galactic.Color.Blue;
   }
 
-  public void setGalacticRedOrBlue(Constants.Drive.Galatic.RedOrBlue whichOne) {
+  public void setGalacticRedOrBlue(Constants.Drive.Galactic.Color whichOne) {
     m_redOrBlue = whichOne;
   }
 
-  public Constants.Drive.Galatic.RedOrBlue getGalacticRedOrBlue() {
-    boolean isBlue =
-      Math.abs(m_gyro.getAngle() - Constants.Drive.Galatic.blueHeading) <
-      Constants.Drive.Galatic.headingTolerance;
-    return isBlue ? Constants.Drive.Galatic.RedOrBlue.Blue :
-      Constants.Drive.Galatic.RedOrBlue.Red;
+  public Constants.Drive.Galactic.Color getGalacticRedOrBlue() {
+    boolean isBlue = Util.isWithinTolerance(m_gyro.getAngle(), Constants.Drive.Galactic.blueHeading, Constants.Drive.Galactic.headingTolerance);
+    return isBlue ? Constants.Drive.Galactic.Color.Blue :
+      Constants.Drive.Galactic.Color.Red;
   }
 }
