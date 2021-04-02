@@ -11,20 +11,18 @@ import frc.robot.subsystems.Drive;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class SetGalacticRedOrBlue extends InstantCommand {
+public class DetermineGalacticColor extends InstantCommand {
   private final Drive m_drive;
-  private final Constants.Drive.Galactic.Color m_redOrBlue;
 
-  public SetGalacticRedOrBlue(Drive drive, Constants.Drive.Galactic.Color redOrBlue) {
+  public DetermineGalacticColor(Drive drive) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_drive = drive;
     addRequirements(m_drive);
-    m_redOrBlue = redOrBlue;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_drive.setGalacticRedOrBlue(m_redOrBlue);
+    m_drive.determineGalacticColor();
   }
 }

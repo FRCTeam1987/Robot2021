@@ -25,8 +25,9 @@ import frc.robot.commands.challenges.GalacticSearch;
 import frc.robot.commands.challenges.PowerPort;
 import frc.robot.commands.collector.StartCollect;
 import frc.robot.commands.collector.StopCollect;
+import frc.robot.commands.drive.DetermineGalacticColor;
 import frc.robot.commands.drive.RecordPath;
-import frc.robot.commands.drive.SetGalacticRedOrBlue;
+import frc.robot.commands.drive.DetermineGalacticColor;
 import frc.robot.commands.drive.TeleopDriveConfigurable;
 import frc.robot.commands.drive.ZeroSensors;
 import frc.robot.commands.shooter.ConfigClose;
@@ -196,53 +197,46 @@ public class RobotContainer {
     //
     // ********************************************************************
     // ********************************************************************
+
+    SequentialCommandGroup galacticFirstRun = new SequentialCommandGroup(
+      new DetermineGalacticColor(m_drive),
+      new ConditionalCommand(
+        new SequentialCommandGroup(  // true
+          new LoggerCommand("Driving Blue A"),
+          GalacticSearch.PathABlue(m_drive, m_collector, m_spindexer)
+        ),
+        new SequentialCommandGroup(  // false
+          new LoggerCommand("Driving Red A"),
+          GalacticSearch.PathARed(m_drive, m_collector, m_spindexer)
+        ),
+        () -> m_drive.isGalacticBlue()
+      )
+    );
    
-    // This command sequence is run when the galactic search path is blue.
-    // It sets the determination to blue then runs path blue A.
-
-    SequentialCommandGroup bluePathDetermined = new SequentialCommandGroup(
-      new SetGalacticRedOrBlue(m_drive, Constants.Drive.Galactic.Color.Blue),
-      new LoggerCommand("Driving Blue A"),
-      GalacticSearch.PathABlue(m_drive, m_collector, m_spindexer)
+    ConditionalCommand galacticSecondRun = new ConditionalCommand(
+      new SequentialCommandGroup(   // true
+        new LoggerCommand("Driving Blue B"),
+        GalacticSearch.PathBBlue(m_drive, m_collector, m_spindexer)
+      ),
+      new SequentialCommandGroup(  // false
+        new LoggerCommand("Driving Red B"),
+        GalacticSearch.PathBRed(m_drive, m_collector, m_spindexer)
+      ),
+      () -> m_drive.isGalacticBlue()
     );
 
-    // This command sequence is run when the galactic search path is red.
-    // It sets the determination to blue then runs path red A.
-
-    SequentialCommandGroup redPathDetermined = new SequentialCommandGroup(
-      new SetGalacticRedOrBlue(m_drive, Constants.Drive.Galactic.Color.Red),
-      new LoggerCommand("Driving Red A"),
-      GalacticSearch.PathARed(m_drive, m_collector, m_spindexer)
-    );
-
-    // Question 2 is run when the coin flip needs to be determined.  It
-    // looks at the gyro angle and runs Red A or Blue A.
-    ConditionalCommand galacticQuestion2 = new ConditionalCommand(
-      bluePathDetermined,  // true
-      redPathDetermined,   // false
-      () -> m_drive.getGalacticRedOrBlue() != Constants.Drive.Galactic.Color.Blue
-    );
-
-    // Question 3 is run when the driver clicks the Galactic Search button
-    // after having driven path A.
-    ConditionalCommand galacticQuestion3 = new ConditionalCommand(
-      // new LoggerCommand("Driving Blue B"),
-      GalacticSearch.PathBBlue(m_drive, m_collector, m_spindexer),  // true
-      // new LoggerCommand("Driving Red B"),
-      GalacticSearch.PathBRed(m_drive, m_collector, m_spindexer),  // false
-      () -> m_drive.getGalacticRedOrBlue() == Constants.Drive.Galactic.Color.Blue
-    );
-
-    // Question 1 is run when the driver clicks the Galactic Search button.
+    // This is run when the driver clicks the Galactic Search button.
+    // It determines if path A has already run.  If it has, it runs a
+    // different command that 
     // If it has been run, it runs path B for the previously determined color.
     // If not, it makes a determination then runs path A.
-    ConditionalCommand galacticQuestion1 = new ConditionalCommand(
-      galacticQuestion3,  // true
-      galacticQuestion2,  // false
+    ConditionalCommand galacticEntryPoint = new ConditionalCommand(
+      new SequentialCommandGroup(new LoggerCommand("Galactic Second Run"), galacticSecondRun),  // true
+      new SequentialCommandGroup(new LoggerCommand("Galactic First Run"), galacticFirstRun),  // false
       () -> m_drive.hasGalacticBeenDone()
     );
 
-    chooser.addOption("Galactic Search", galacticQuestion1);
+    chooser.addOption("Galactic Search", galacticEntryPoint);
 
     SmartDashboard.putData("Auto", chooser);
   }

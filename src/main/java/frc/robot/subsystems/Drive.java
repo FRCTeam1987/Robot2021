@@ -38,7 +38,7 @@ public class Drive extends SubsystemBase {
   private final AHRS m_gyro;
   private final DifferentialDrive m_drive;
   private final DifferentialDriveOdometry m_odometry;
-  private Constants.Drive.Galactic.Color m_redOrBlue;
+  private Constants.Drive.Galactic.Color m_galacticColor;
   private int accuracyChallengeStep;
 
   private final ConfigurableDriveModes m_configurableDriveModes;
@@ -68,7 +68,7 @@ public class Drive extends SubsystemBase {
     m_rightSlave = rightSlave;
     m_rightEncoder = rightEncoder;
     m_gyro = gyro;
-    m_redOrBlue = Constants.Drive.Galactic.Color.DontKnow;
+    m_galacticColor = Constants.Drive.Galactic.Color.DontKnow;
 
     accuracyChallengeStep = 0;
 
@@ -368,24 +368,23 @@ public class Drive extends SubsystemBase {
   // Galactic Search Path Stuff
 
   public boolean hasGalacticBeenDone() {
-    return m_redOrBlue != Constants.Drive.Galactic.Color.DontKnow;
+    return m_galacticColor != Constants.Drive.Galactic.Color.DontKnow;
   }
 
   public boolean isGalacticRed() {
-    return m_redOrBlue == Constants.Drive.Galactic.Color.Red;
+    return m_galacticColor == Constants.Drive.Galactic.Color.Red;
   }
 
   public boolean isGalacticBlue() {
-    return m_redOrBlue == Constants.Drive.Galactic.Color.Blue;
+    return m_galacticColor == Constants.Drive.Galactic.Color.Blue;
   }
 
-  public void setGalacticRedOrBlue(Constants.Drive.Galactic.Color whichOne) {
-    m_redOrBlue = whichOne;
+  public void setGalacticColor(Constants.Drive.Galactic.Color color) {
+    m_galacticColor = color;
   }
 
-  public Constants.Drive.Galactic.Color getGalacticRedOrBlue() {
+  public void determineGalacticColor() {
     boolean isBlue = Util.isWithinTolerance(m_gyro.getAngle(), Constants.Drive.Galactic.blueHeading, Constants.Drive.Galactic.headingTolerance);
-    return isBlue ? Constants.Drive.Galactic.Color.Blue :
-      Constants.Drive.Galactic.Color.Red;
+    setGalacticColor(isBlue ? Constants.Drive.Galactic.Color.Blue : Constants.Drive.Galactic.Color.Red);
   }
 }
