@@ -4,6 +4,7 @@
 
 package frc.robot.commands.challenges;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -30,10 +31,10 @@ public class PowerPort {
     return new SequentialCommandGroup(
       new ParallelCommandGroup(
         new SequentialCommandGroup(
-          new Agitate(spindexer, 0.5, 0.4).withTimeout(0.75),
+          // new Agitate(spindexer, 0.5, 0.4).withTimeout(0.75),
           new PrepShoot(spindexer)
         ),
-        new ShootRPM(shooter, 2000),
+        new ShootRPM(shooter, 3700),
         DrivePathHelpers.driveStraightCommand(drive, -distance)
       ),
       // TODO: Add AimBot here
@@ -47,7 +48,27 @@ public class PowerPort {
     );
   }
 
+  public static SequentialCommandGroup cycleFirst(Drive drive, Spindexer spindexer, Shooter shooter, Collector collector, LimeLight limelight, double distance) {
+
+    return new SequentialCommandGroup(
+      // TODO: Add AimBot here
+      // TODO ShootLimelight
+      // new ShootRPM(shooter, 3500),
+      // new WaitCommand(0.75),  // Give the shooter wheels a chance to speeed up
+      new AimBot(drive, limelight),
+      new ShootLimeLight(shooter, limelight),
+      new FeedShooter(spindexer),
+      new WaitCommand(Constants.Challenges.PowerPortShootDuration),  // TODO: Test this timing and add to Constants
+      new StopAll(collector, spindexer, shooter),
+      DrivePathHelpers.driveStraightCommand(drive, distance)
+    );
+  } 
+
   public static SequentialCommandGroup cycle(Drive drive, Spindexer spindexer, Shooter shooter, Collector collector, LimeLight limelight) {
     return cycle(drive, spindexer, shooter, collector, limelight, Constants.Challenges.PowerPortDistance);
+  }
+
+  public static SequentialCommandGroup cycleFirst(Drive drive, Spindexer spindexer, Shooter shooter, Collector collector, LimeLight limelight) {
+    return cycleFirst(drive, spindexer, shooter, collector, limelight, Constants.Challenges.PowerPortDistance);
   }
 }

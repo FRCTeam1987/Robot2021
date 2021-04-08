@@ -17,19 +17,23 @@ public class AimBot extends CommandBase {
   private final Drive m_drive;
   private final LimeLight m_limelight;
   private final DigitalDebouncer m_isOnTarget;
+  private final DigitalDebouncer m_cannotSeeTarget;
 
   /** Creates a new AimBot. */
   public AimBot(final Drive drive, final LimeLight limelight) {
     m_drive = drive;
     m_limelight = limelight;
-    m_isOnTarget = new DigitalDebouncer(.25);
+    m_isOnTarget = new DigitalDebouncer(0.15);
+    m_cannotSeeTarget = new DigitalDebouncer(0.25);
     addRequirements(m_drive);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_limelight.turnOnLEDs();
     m_isOnTarget.periodic(false);
+    m_cannotSeeTarget.periodic(false);
     // m_drive.setBrake();
     m_drive.driveTank(0, 0);
   }
@@ -37,7 +41,9 @@ public class AimBot extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (m_limelight.getVisible() < 1) {
+    final boolean isVisible = m_limelight.getVisible() > 0;
+    m_cannotSeeTarget.periodic(!isVisible);
+    if (m_cannotSeeTarget.get()) {
       m_drive.driveTank(0, 0);
       return;
     }
@@ -68,12 +74,16 @@ public class AimBot extends CommandBase {
   public void end(boolean interrupted) {
     m_drive.setCoast();
     m_drive.driveTank(0, 0);
+    m_isOnTarget.periodic(true);
+    m_cannotSeeTarget.periodic(true);
+    m_drive.setBrake();
+    // m_limelight.turnOffLEDs();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_limelight.getVisible() < 1) {
+    if (m_cannotSeeTarget.get()) {
       DriverStation.reportWarning("Aim Bot - Target Not Visible - Stopping...", false);
       return true;
     }
@@ -81,6 +91,6 @@ public class AimBot extends CommandBase {
   }
 
   private boolean isOnTarget() {
-    return Util.isWithinTolerance(m_limelight.getXAxis(), 0, 1);
+    return Util.isWithinTolerance(m_limelight.getXAxis(), 0, 0.75);  //=~ 1
   }
 }

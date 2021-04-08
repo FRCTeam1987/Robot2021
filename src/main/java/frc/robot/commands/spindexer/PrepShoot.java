@@ -13,7 +13,7 @@ public class PrepShoot extends SetSpindexer {
   // private final Spindexer m_spindexer;
 
   public PrepShoot(final Spindexer spindexer) {
-    super(spindexer, 0.0, 0.0, 0.3);
+    super(spindexer, 0.0, 0.0, 0.25);
     // m_spindexer = spindexer;
     // addRequirements(m_spindexer);
     // this.withTimeout(1);

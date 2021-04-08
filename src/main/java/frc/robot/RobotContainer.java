@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.time.Instant;
+
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -12,6 +14,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -25,6 +28,7 @@ import frc.robot.commands.challenges.GalacticSearch;
 import frc.robot.commands.challenges.PowerPort;
 import frc.robot.commands.collector.StartCollect;
 import frc.robot.commands.collector.StopCollect;
+import frc.robot.commands.drive.ClearPowerPortFirstRun;
 import frc.robot.commands.drive.DetermineGalacticColor;
 import frc.robot.commands.drive.RecordPath;
 import frc.robot.commands.drive.DetermineGalacticColor;
@@ -51,6 +55,7 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Spindexer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -90,6 +95,8 @@ public class RobotContainer {
 
   );
 
+  public double powerPortTimer;
+
   private final SendableChooser<Command> chooser = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -107,6 +114,8 @@ public class RobotContainer {
 
     configureDefaultCommands();
     configureShuffleboard();
+
+    this.powerPortTimer = Timer.getFPGATimestamp();
   }
 
   /**
@@ -164,7 +173,6 @@ public class RobotContainer {
     SmartDashboard.putData("Agitate", new Agitate(m_spindexer, Constants.Spindexer.agitateSpeed, Constants.Spindexer.agitateDuration));
     SmartDashboard.putNumber("Log Level", 0);
     SmartDashboard.putData("Prep Shoot", new PrepShoot(m_spindexer));
-    SmartDashboard.putData("Power Power Cycle", PowerPort.cycle(m_drive, m_spindexer, m_shooter, m_collector, limeLight));
     SmartDashboard.putData("Accuracy Challenge", new Accuracy(m_drive, m_spindexer, m_shooter, m_collector, driver, limeLight));
     SmartDashboard.putData("Test Shoot", new SequentialCommandGroup(
       new PrepShoot(m_spindexer),
@@ -186,6 +194,20 @@ public class RobotContainer {
     chooser.addOption("Path A Blue", GalacticSearch.PathABlue(m_drive, m_collector, m_spindexer));
     chooser.addOption("Path B Red", GalacticSearch.PathBRed(m_drive, m_collector, m_spindexer));
     chooser.addOption("Path B Blue", GalacticSearch.PathBBlue(m_drive, m_collector, m_spindexer));
+
+    ConditionalCommand powerPortRunner = new ConditionalCommand(
+      new SequentialCommandGroup(
+        new ClearPowerPortFirstRun(m_drive),
+        PowerPort.cycleFirst(m_drive, m_spindexer, m_shooter, m_collector, limeLight)
+      ),
+      PowerPort.cycle(m_drive, m_spindexer, m_shooter, m_collector, limeLight),
+      () -> m_drive.isPowerPortFirstRun()
+    );
+    SmartDashboard.putData("Power Power Cycle First", new SequentialCommandGroup(
+      new InstantCommand(() -> { powerPortTimer = Timer.getFPGATimestamp(); }),
+      PowerPort.cycleFirst(m_drive, m_spindexer, m_shooter, m_collector, limeLight))
+    );
+    SmartDashboard.putData("Power Power Cycle Not First", PowerPort.cycle(m_drive, m_spindexer, m_shooter, m_collector, limeLight));
 
     // ********************************************************************
     // *****  Galactic Search Path Commands
@@ -252,6 +274,12 @@ public class RobotContainer {
   public void teleopInit() {
     m_drive.teleopInit();
     limeLight.init();
+  }
+
+  public void teleopPeriodic(final Runnable onDisable) {
+    // if (Timer.getFPGATimestamp() > powerPortTimer + 60.0) {
+    //   onDisable.run();
+    // }
   }
 
 }

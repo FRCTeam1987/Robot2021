@@ -29,7 +29,8 @@ public class ConfigurableDriveModes {
     ArcadeSticks,
     CurvatureTriggers,
     CurvatureSticks,
-    TankSticks
+    TankSticks,
+    TankTriggerTwoSpeed
   }
 
   private final DifferentialDrive m_differentialDrive;
@@ -59,6 +60,7 @@ public class ConfigurableDriveModes {
     m_driveModeChooser.addOption("Curvature - Triggers", DriveMode.CurvatureTriggers);
     m_driveModeChooser.addOption("Curvature - Sticks", DriveMode.CurvatureSticks);
     m_driveModeChooser.addOption("Tank - Sticks", DriveMode.TankSticks);
+    m_driveModeChooser.addOption("Tank - Triggers - TwoSpeed", DriveMode.TankTriggerTwoSpeed);
     m_tab.add(m_driveModeChooser);
     m_selectedDriveMode = m_driveModeChooser.getSelected();
     m_speedLimitChooser = m_tab.add("Speed Limit", 1.0).getEntry();
@@ -77,7 +79,7 @@ public class ConfigurableDriveModes {
       case ArcadeTriggers:
         m_differentialDrive.arcadeDrive(
           -(xbox.getTriggerAxis(Hand.kRight) - xbox.getTriggerAxis(Hand.kLeft)),
-          -xbox.getX(Hand.kLeft)
+          -xbox.getX(Hand.kLeft) / 2.0
         );
         return;
       case ArcadeSticks:
@@ -104,6 +106,29 @@ public class ConfigurableDriveModes {
         m_differentialDrive.tankDrive(
           xbox.getY(Hand.kLeft),
           xbox.getY(Hand.kRight),
+          true
+        );
+        return;
+      case TankTriggerTwoSpeed:
+        final double HIGH_SPEED = -0.75;
+        final double TURN_SPEED = -0.5;
+        double controllerSpeed_L = xbox.getTriggerAxis(Hand.kLeft);
+        double controllerSpeed_R = xbox.getTriggerAxis(Hand.kRight);
+        double overrideSpeed_L = 0;
+        double overrideSpeed_R = 0;
+        if(Math.abs(controllerSpeed_L) < 0.5 && Math.abs(controllerSpeed_L) > 0.1 ){
+          overrideSpeed_L = TURN_SPEED;
+        }else if(Math.abs(controllerSpeed_L) > 0.5 ){
+          overrideSpeed_L = HIGH_SPEED;
+        }
+        if(Math.abs(controllerSpeed_R) < 0.5 && Math.abs(controllerSpeed_R) > 0.1 ){
+          overrideSpeed_R = TURN_SPEED;
+        }else if(Math.abs(controllerSpeed_R) > 0.5 ){
+          overrideSpeed_R = HIGH_SPEED;
+        }
+        m_differentialDrive.tankDrive(
+          overrideSpeed_L,
+          overrideSpeed_R,
           true
         );
         return;

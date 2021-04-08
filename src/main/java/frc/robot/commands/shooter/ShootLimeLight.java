@@ -4,6 +4,7 @@
 
 package frc.robot.commands.shooter;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.lib.InterpolatingDouble;
@@ -28,12 +29,21 @@ public class ShootLimeLight extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_limelight.turnOnLEDs();
     final double y = m_limelight.getYAxis();
-    m_shooter.setRPM(Constants.Shooter.Targeting.kDistanceToShooterSpeedClose.getInterpolated(new InterpolatingDouble(y)).value);
+    final double rpm = Constants.Shooter.Targeting.kDistanceToShooterSpeedClose.getInterpolated(new InterpolatingDouble(y)).value;
+    m_shooter.setRPM(rpm);
+    SmartDashboard.putNumber("Shooting TY", y);
+    SmartDashboard.putNumber("Shooting RPM", rpm);
   }
 
   @Override
   public boolean isFinished() {
     return m_shooter.isInRPMTolerance();
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    m_limelight.turnOffLEDs();
   }
 }

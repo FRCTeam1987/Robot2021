@@ -59,12 +59,12 @@ public final class Constants {
       public static final double vVoltsSecondsPerMeter = 1.99; //1.99 // kV
       public static final double aVoltsSecondsSquaredPerMeter = 0.0922; //0.226 // kA
       public static final double maxVolts = 10;
-      public static final double maxSpeedMetersPerSecond = 2.5; //Galactic 1.75 - Barrel - 2.5 is constant - 2.75 is max - start slightly left of center //2.75 slalom speed
-      public static final double maxAccelerationMetersPerSecondSquared = 2.25; // Bounce Path speed - 5.0; //2.5;
+      public static final double maxSpeedMetersPerSecond = 2.9; // 2.7 //=-2.5; //Galactic 1.75 - Barrel - 2.5 is constant - 2.75 is max - start slightly left of center //2.75 slalom speed, bounce: 2.75, barrel: 2.7, slalom: 2.25
+      public static final double maxAccelerationMetersPerSecondSquared = 2.5; // 2.515 //=-2.25; // Bounce Path speed - 5.0; //2.5; bounce: 2.95, barrel: 2.7, slalom: 2.0
       public static final double ramseteB = 2.0;
       public static final double ramseteZeta = 0.7;  // 0.15
       public static final double pVelocity = 0.175; // 0.15, 0.075
-      public static final double maxCentripetalMetersPerSecondSquared = 2.0;
+      public static final double maxCentripetalMetersPerSecondSquared = 2.5; // 2.515 //=-2.0; bounce: 2.95, barrel: 2.7, slalom: 2.0
     }
     public static final class Values {
       public static final int encoderTicksPerRevolution = 2048;
@@ -72,8 +72,8 @@ public final class Constants {
       public static final double trackWidth = 0.71; // 0.693; // 12.9798;
       public static final double wheelDiameter = 0.156972; // 0.1524;  // 6 in wheel in m
       public static final double wheelCircumference = Math.PI * wheelDiameter;
-      public static final double minMovePercent = 0.28;
-      public static final double maxMovePercent = 0.35;
+      public static final double minMovePercent = 0.27; //=~ 0.29
+      public static final double maxMovePercent = 0.39;
     }
 
     public static final class Galactic {
@@ -118,7 +118,7 @@ public final class Constants {
     public static final double bigBlockJamCurrent = 40; // TODO test
     public static final double agitateSpeed = 0.4;
     public static final double agitateDuration = 1;
-    public static final double shootSpeed = 0.65;
+    public static final double shootSpeed = 0.95; // 0.95
   }
 
   public static final class Shooter {
@@ -165,11 +165,16 @@ public final class Constants {
             public final static double ty5 = -3.3;
             public final static double ty6 = -1.55;
             public final static double ty7 = 0.1;
-            public final static double ty8 = 3.3;
-            public final static double ty9 = 5.1;
-            public final static double ty10 = 8.2;
-            public final static double ty11 = 12.5;
-            public final static double ty12 = 17.8;
+            // public final static double ty8 = 7.15;
+            public final static double ty9 = 2.0;
+            // public final static double ty10 = 5.1; //
+            // public final static double ty11 = 6.0;
+            // public final static double ty12 = 6.5; 
+            public final static double ty13 = 7.2;
+            // public final static double ty14 = 12.5;
+            // public final static double ty15 = 17.8;
+            // public final static double ty16 = 20.9;
+            public final static double ty17 = 22.0;
 
             // public final static double rpm1 = 2300;
             // public final static double rpm2 = 2425;
@@ -187,24 +192,39 @@ public final class Constants {
             public final static double rpm5 = 3750;
             public final static double rpm6 = 3800;
             public final static double rpm7 = 4750;
-            public final static double rpm8 = 2600;
-            public final static double rpm9 = 2700;
-            public final static double rpm10 = 2500;
-            public final static double rpm11 = 2400;
-            public final static double rpm12 = 2400;
+            // public final static double rpm8 = 2450;
+            public final static double rpm9 = 2427;
+            // public final static double rpm10 = 2550;
+            // public final static double rpm11 = 2520;
+            // public final static double rpm12 = 2500;
+            public final static double rpm13 = 2427;
+            // public final static double rpm14 = 2400;
+            // public final static double rpm15 = 2400;
+            // public final static double rpm16 = 2400;
+            public final static double rpm17 = 2400;
         }
     }
 
       public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> kDistanceToShooterSpeedClose = new InterpolatingTreeMap<>();
       static {
         kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty1), new InterpolatingDouble(TreeMapValues.Close.rpm1));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty2), new InterpolatingDouble(TreeMapValues.Close.rpm2));
         kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty3), new InterpolatingDouble(TreeMapValues.Close.rpm3));
         kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty4), new InterpolatingDouble(TreeMapValues.Close.rpm4));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty2), new InterpolatingDouble(TreeMapValues.Close.rpm2));
         kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty5), new InterpolatingDouble(TreeMapValues.Close.rpm5));
         kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty6), new InterpolatingDouble(TreeMapValues.Close.rpm6));
         kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty7), new InterpolatingDouble(TreeMapValues.Close.rpm7));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty8), new InterpolatingDouble(TreeMapValues.Close.rpm8));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty8), new InterpolatingDouble(TreeMapValues.Close.rpm8));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty9), new InterpolatingDouble(TreeMapValues.Close.rpm9));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty10), new InterpolatingDouble(TreeMapValues.Close.rpm10));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty11), new InterpolatingDouble(TreeMapValues.Close.rpm11));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty12), new InterpolatingDouble(TreeMapValues.Close.rpm12));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty13), new InterpolatingDouble(TreeMapValues.Close.rpm13));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty14), new InterpolatingDouble(TreeMapValues.Close.rpm14));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty14), new InterpolatingDouble(TreeMapValues.Close.rpm14));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty15), new InterpolatingDouble(TreeMapValues.Close.rpm15));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty16), new InterpolatingDouble(TreeMapValues.Close.rpm16));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty17), new InterpolatingDouble(TreeMapValues.Close.rpm17));
       }
     }
 
@@ -223,8 +243,8 @@ public final class Constants {
   }
 
   public static final class Challenges {
-    public final static double PowerPortDistance = 3.0;
-    public final static double PowerPortShootDuration = 1.0;
+    public final static double PowerPortDistance = 2.75;
+    public final static double PowerPortShootDuration = 1.25;
     public final static double AccuracyGreenDistance = 5.5;
     public final static double AccuracyYellowDistance = 4.0;
     public final static double AccuracyBlueDistance = 2.5;

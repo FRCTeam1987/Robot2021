@@ -40,6 +40,7 @@ public class Drive extends SubsystemBase {
   private final DifferentialDriveOdometry m_odometry;
   private Constants.Drive.Galactic.Color m_galacticColor;
   private int accuracyChallengeStep;
+  private boolean powerPortFirstRun;
 
   private final ConfigurableDriveModes m_configurableDriveModes;
 
@@ -69,15 +70,16 @@ public class Drive extends SubsystemBase {
     m_rightEncoder = rightEncoder;
     m_gyro = gyro;
     m_galacticColor = Constants.Drive.Galactic.Color.DontKnow;
+    powerPortFirstRun = true;
 
     accuracyChallengeStep = 0;
 
     m_leftMaster.configFactoryDefault();
-    m_leftMaster.configOpenloopRamp(0.05);
+    m_leftMaster.configOpenloopRamp(0.25);
     m_leftSlave.configFactoryDefault();
     m_leftSlave.follow(m_leftMaster);
     m_rightMaster.configFactoryDefault();
-    m_rightMaster.configOpenloopRamp(0.5);
+    m_rightMaster.configOpenloopRamp(0.25);
     m_rightSlave.configFactoryDefault();
     m_rightSlave.follow(m_rightMaster);
 
@@ -348,7 +350,7 @@ public class Drive extends SubsystemBase {
     // m_tabOdometryRightDistance.setNumber(getDistanceRightCANCoder());
     // m_tabOdometryRightVelocity.setNumber(getVelocityRightCANCoder());
     // m_tabOdometryLeftVelocity.setNumber(getVelocityLeftCANCoder());
-    // m_tabOdometryAngle.setNumber(getAngle());
+    m_tabOdometryAngle.setNumber(getAngle());
     m_tabOdometryPoseX.setNumber(currentPose.getX());
     m_tabOdometryPoseY.setNumber(currentPose.getY());
     m_tabOdometryPoseRotation.setNumber(currentPose.getRotation().getDegrees());
@@ -363,6 +365,7 @@ public class Drive extends SubsystemBase {
 
   public void teleopInit() {
     m_configurableDriveModes.update();
+    powerPortFirstRun = true;
   }
 
   // Galactic Search Path Stuff
@@ -386,5 +389,13 @@ public class Drive extends SubsystemBase {
   public void determineGalacticColor() {
     boolean isBlue = Util.isWithinTolerance(m_gyro.getAngle(), Constants.Drive.Galactic.blueHeading, Constants.Drive.Galactic.headingTolerance);
     setGalacticColor(isBlue ? Constants.Drive.Galactic.Color.Blue : Constants.Drive.Galactic.Color.Red);
+  }
+
+  public boolean isPowerPortFirstRun() {
+    return powerPortFirstRun;
+  }
+
+  public void setPowerPortFirstRun(boolean firstRun) {
+    powerPortFirstRun = firstRun;
   }
 }
