@@ -44,6 +44,7 @@ public class AimBot extends CommandBase {
     final boolean isVisible = m_limelight.getVisible() > 0;
     m_cannotSeeTarget.periodic(!isVisible);
     if (m_cannotSeeTarget.get()) {
+      DriverStation.reportWarning("AimBot: Cannot see target!", false);
       m_drive.driveTank(0, 0);
       return;
     }
@@ -60,7 +61,7 @@ public class AimBot extends CommandBase {
       Math.min(
         Math.max(
           Math.abs(steering_adjust),
-          Constants.Drive.Values.minMovePercent
+          Constants.Drive.Values.minMovePercent // TODO Make this dynamic
         ),
         Constants.Drive.Values.maxMovePercent
       ),
@@ -77,7 +78,7 @@ public class AimBot extends CommandBase {
     m_isOnTarget.periodic(true);
     m_cannotSeeTarget.periodic(true);
     m_drive.setBrake();
-    // m_limelight.turnOffLEDs();
+    m_limelight.turnOffLEDs();
   }
 
   // Returns true when the command should end.

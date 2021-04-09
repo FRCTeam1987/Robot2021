@@ -42,7 +42,7 @@ public class TeleopShoot extends SequentialCommandGroup {
       new AimBot(drive, limeLight),
       // new ShootRPM(shooter, shooter::getRPMFromLimelight),
       new ShootLimeLight(shooter, limeLight),
-      new ConditionalCommand(new ConfigClose(shooter), new ConfigFar(shooter), () -> { return limeLight.getYAxis() > Constants.LimeLight.tyConfigLowThreshold; }),
+      new ConditionalCommand(ConfigClose.configCloseConditional(shooter), ConfigFar.configFarConditional(shooter), () -> { return limeLight.getYAxis() > Constants.LimeLight.tyConfigLowThreshold; }),
       new FeedShooter(spindexer).perpetually()
     );
     m_limeLight = limeLight;

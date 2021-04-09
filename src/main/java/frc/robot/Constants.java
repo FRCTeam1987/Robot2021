@@ -59,7 +59,7 @@ public final class Constants {
       public static final double vVoltsSecondsPerMeter = 1.99; //1.99 // kV
       public static final double aVoltsSecondsSquaredPerMeter = 0.0922; //0.226 // kA
       public static final double maxVolts = 10;
-      public static final double maxSpeedMetersPerSecond = 2.9; // 2.7 //=-2.5; //Galactic 1.75 - Barrel - 2.5 is constant - 2.75 is max - start slightly left of center //2.75 slalom speed, bounce: 2.75, barrel: 2.7, slalom: 2.25
+      public static final double maxSpeedMetersPerSecond = 2.65; // 2.7 //=-2.5; //Galactic 1.75 - Barrel - 2.5 is constant - 2.75 is max - start slightly left of center //2.75 slalom speed, bounce: 2.75, barrel: 2.7, slalom: 2.25
       public static final double maxAccelerationMetersPerSecondSquared = 2.5; // 2.515 //=-2.25; // Bounce Path speed - 5.0; //2.5; bounce: 2.95, barrel: 2.7, slalom: 2.0
       public static final double ramseteB = 2.0;
       public static final double ramseteZeta = 0.7;  // 0.15
@@ -118,7 +118,7 @@ public final class Constants {
     public static final double bigBlockJamCurrent = 40; // TODO test
     public static final double agitateSpeed = 0.4;
     public static final double agitateDuration = 1;
-    public static final double shootSpeed = 0.95; // 0.95
+    public static final double shootSpeed = 0.8; // 0.95
   }
 
   public static final class Shooter {
@@ -149,82 +149,134 @@ public final class Constants {
 
       public static class TreeMapValues{
         public static class Close {
-            // public final static double ty1 = 19.30;
-            // public final static double ty2 = 12.75;
-            // public final static double ty3 = 0.28;
-            // public final static double ty4 = 0.00;
-            // public final static double ty5 = -4.63;
-            // public final static double ty6 = -7.26;
-            // public final static double ty7 = -9.31;
-            // public final static double ty8 = -10.6;
+            public final static double ty1 = 19.30;
+            public final static double ty2 = 12.75;
+            public final static double ty03 = 7.5;
+            public final static double ty04 = 3.7;  // hood config close
+            public final static double ty05 = 1.0;  // hood config far
+            public final static double ty06 = -2.0;
+            public final static double ty07 = -3.0;
+            public final static double ty08 = -4.0;
+            public final static double ty09 = -5.0;
+            public final static double ty10 = -6.0;
+            public final static double ty11 = -7.0;
+            public final static double ty12 = -8.0;
+            public final static double ty13 = -8.66;
+            public final static double ty14 = -9.0;
+            public final static double ty15 = -10.0;
+            public final static double ty16 = -10.17;
+            public final static double ty3 = 0.28;
+            public final static double ty4 = 0.00;
+            public final static double ty5 = -4.63;
+            public final static double ty6 = -7.26;
+            public final static double ty7 = -9.31;
+            public final static double ty8 = -10.6;
 
-            public final static double ty1 = -9.42;
-            public final static double ty2 = -7.9;
-            public final static double ty3 = -6.8;
-            public final static double ty4 = -5.3;
-            public final static double ty5 = -3.3;
-            public final static double ty6 = -1.55;
-            public final static double ty7 = 0.1;
+            // public final static double ty1 = -9.42;
+            // public final static double ty2 = -7.9;
+            // public final static double ty3 = -6.8;
+            // public final static double ty4 = -5.3;
+            // public final static double ty5 = -3.3;
+            // public final static double ty6 = -1.55;
+            // public final static double ty7 = 0.1;
             // public final static double ty8 = 7.15;
-            public final static double ty9 = 2.0;
+            // public final static double ty9 = 2.0;
             // public final static double ty10 = 5.1; //
             // public final static double ty11 = 6.0;
             // public final static double ty12 = 6.5; 
-            public final static double ty13 = 7.2;
+            // public final static double ty13 = 7.2;
             // public final static double ty14 = 12.5;
             // public final static double ty15 = 17.8;
             // public final static double ty16 = 20.9;
-            public final static double ty17 = 22.0;
+            // public final static double ty17 = 22.0;
 
-            // public final static double rpm1 = 2300;
-            // public final static double rpm2 = 2425;
-            // public final static double rpm3 = 4000;
-            // public final static double rpm4 = 3800;
-            // public final static double rpm5 = 3850;
-            // public final static double rpm6 = 3850;
-            // public final static double rpm7 = 3925;
-            // public final static double rpm8 = 4135;
+            public final static double rpm1 = 2300;
+            public final static double rpm2 = 2425;
+            public final static double rpm03 = 2500;
+            public final static double rpm04 = 2600;
+            public final static double rpm05 = 3750;
+            public final static double rpm06 = 3650;
+            public final static double rpm07 = 3575;
+            public final static double rpm08 = 3650;
+            public final static double rpm09 = 3650;
+            public final static double rpm10 = 3675;
+            public final static double rpm11 = 3710;
+            public final static double rpm12 = 3760;
+            public final static double rpm13 = 3805;
+            public final static double rpm14 = 3815;
+            public final static double rpm15 = 3895;
+            public final static double rpm16 = 3915;
+            public final static double rpm3 = 4000;
+            public final static double rpm4 = 3800;
+            public final static double rpm5 = 3850;
+            public final static double rpm6 = 3850;
+            public final static double rpm7 = 3925;
+            public final static double rpm8 = 4135;
 
-            public final static double rpm1 = 3800;
-            public final static double rpm2 = 3700;
-            public final static double rpm3 = 3700;
-            public final static double rpm4 = 3700;
-            public final static double rpm5 = 3750;
-            public final static double rpm6 = 3800;
-            public final static double rpm7 = 4750;
+            // public final static double rpm1 = 3800;
+            // public final static double rpm2 = 3700;
+            // public final static double rpm3 = 3700;
+            // public final static double rpm4 = 3700;
+            // public final static double rpm5 = 3750;
+            // public final static double rpm6 = 3800;
+            // public final static double rpm7 = 4750;
             // public final static double rpm8 = 2450;
-            public final static double rpm9 = 2427;
+            // public final static double rpm9 = 2427;
             // public final static double rpm10 = 2550;
             // public final static double rpm11 = 2520;
             // public final static double rpm12 = 2500;
-            public final static double rpm13 = 2427;
+            // public final static double rpm13 = 2427;
             // public final static double rpm14 = 2400;
             // public final static double rpm15 = 2400;
             // public final static double rpm16 = 2400;
-            public final static double rpm17 = 2400;
+            // public final static double rpm17 = 2400;
         }
     }
 
       public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> kDistanceToShooterSpeedClose = new InterpolatingTreeMap<>();
       static {
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty1), new InterpolatingDouble(TreeMapValues.Close.rpm1));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty2), new InterpolatingDouble(TreeMapValues.Close.rpm2));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty3), new InterpolatingDouble(TreeMapValues.Close.rpm3));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty4), new InterpolatingDouble(TreeMapValues.Close.rpm4));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty5), new InterpolatingDouble(TreeMapValues.Close.rpm5));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty6), new InterpolatingDouble(TreeMapValues.Close.rpm6));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty7), new InterpolatingDouble(TreeMapValues.Close.rpm7));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(21.0), new InterpolatingDouble(2400.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(20.0), new InterpolatingDouble(2400.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(18.0), new InterpolatingDouble(2390.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(15.5), new InterpolatingDouble(2390.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(12.0), new InterpolatingDouble(2400.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(9.0), new InterpolatingDouble(2450.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(7.5), new InterpolatingDouble(2500.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(5.0), new InterpolatingDouble(2550.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(3.7), new InterpolatingDouble(2600.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(3.5), new InterpolatingDouble(2675.0));  // hood config close
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(2.95), new InterpolatingDouble(4100.0));  // hood config far
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(2.25), new InterpolatingDouble(3950.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(1.0), new InterpolatingDouble(3750.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-2.0), new InterpolatingDouble(3650.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-3.0), new InterpolatingDouble(3575.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-4.0), new InterpolatingDouble(3650.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-5.0), new InterpolatingDouble(3650.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-6.0), new InterpolatingDouble(3675.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-7.0), new InterpolatingDouble(3710.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-8.66), new InterpolatingDouble(3805.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-9.0), new InterpolatingDouble(3815.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-10.0), new InterpolatingDouble(3895.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-10.17), new InterpolatingDouble(3915.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-12.75), new InterpolatingDouble(4100.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty1), new InterpolatingDouble(TreeMapValues.Close.rpm1));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty2), new InterpolatingDouble(TreeMapValues.Close.rpm2));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty3), new InterpolatingDouble(TreeMapValues.Close.rpm3));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty4), new InterpolatingDouble(TreeMapValues.Close.rpm4));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty5), new InterpolatingDouble(TreeMapValues.Close.rpm5));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty6), new InterpolatingDouble(TreeMapValues.Close.rpm6));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty7), new InterpolatingDouble(TreeMapValues.Close.rpm7));
         // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty8), new InterpolatingDouble(TreeMapValues.Close.rpm8));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty9), new InterpolatingDouble(TreeMapValues.Close.rpm9));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty9), new InterpolatingDouble(TreeMapValues.Close.rpm9));
         // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty10), new InterpolatingDouble(TreeMapValues.Close.rpm10));
         // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty11), new InterpolatingDouble(TreeMapValues.Close.rpm11));
         // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty12), new InterpolatingDouble(TreeMapValues.Close.rpm12));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty13), new InterpolatingDouble(TreeMapValues.Close.rpm13));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty13), new InterpolatingDouble(TreeMapValues.Close.rpm13));
         // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty14), new InterpolatingDouble(TreeMapValues.Close.rpm14));
         // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty14), new InterpolatingDouble(TreeMapValues.Close.rpm14));
         // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty15), new InterpolatingDouble(TreeMapValues.Close.rpm15));
         // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty16), new InterpolatingDouble(TreeMapValues.Close.rpm16));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty17), new InterpolatingDouble(TreeMapValues.Close.rpm17));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty17), new InterpolatingDouble(TreeMapValues.Close.rpm17));
       }
     }
 
@@ -239,7 +291,7 @@ public final class Constants {
 
   public static final class LimeLight {
     public final static double pipeline = 9;
-    public final static double tyConfigLowThreshold = 0.5;
+    public final static double tyConfigLowThreshold = 3.25;
   }
 
   public static final class Challenges {

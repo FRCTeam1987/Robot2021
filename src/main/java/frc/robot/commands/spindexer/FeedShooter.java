@@ -13,7 +13,7 @@ import frc.robot.subsystems.Spindexer;
 public class FeedShooter extends SetSpindexer {
 
   public FeedShooter(final Spindexer spindexer) {
-    super(spindexer, 0.4, 0.9, Constants.Spindexer.shootSpeed);
+    super(spindexer, 0.6, 0.9, Constants.Spindexer.shootSpeed);
   }
 
 }

@@ -34,6 +34,7 @@ import frc.robot.commands.drive.RecordPath;
 import frc.robot.commands.drive.DetermineGalacticColor;
 import frc.robot.commands.drive.TeleopDriveConfigurable;
 import frc.robot.commands.drive.ZeroSensors;
+import frc.robot.commands.hangargames.FarAuto;
 import frc.robot.commands.shooter.ConfigClose;
 import frc.robot.commands.shooter.ConfigFar;
 import frc.robot.commands.shooter.HoodLock;
@@ -208,6 +209,10 @@ public class RobotContainer {
       PowerPort.cycleFirst(m_drive, m_spindexer, m_shooter, m_collector, limeLight))
     );
     SmartDashboard.putData("Power Power Cycle Not First", PowerPort.cycle(m_drive, m_spindexer, m_shooter, m_collector, limeLight));
+
+    //=~
+    SmartDashboard.putData("Far Auto", new FarAuto(m_drive, m_collector, m_spindexer, m_shooter, limeLight));
+    //=~
 
     // ********************************************************************
     // *****  Galactic Search Path Commands
