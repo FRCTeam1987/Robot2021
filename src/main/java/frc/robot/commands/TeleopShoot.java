@@ -39,6 +39,7 @@ public class TeleopShoot extends SequentialCommandGroup {
       new InstantCommand(() -> { limeLight.turnOnLEDs(); }),
       // new PrepShoot(spindexer),
       new WaitUntilCommand(limeLight::canSeeTarget),
+      new PrepShoot(spindexer),
       new AimBot(drive, limeLight),
       // new ShootRPM(shooter, shooter::getRPMFromLimelight),
       new ShootLimeLight(shooter, limeLight),

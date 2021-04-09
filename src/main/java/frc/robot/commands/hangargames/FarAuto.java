@@ -49,7 +49,7 @@ public class FarAuto extends SequentialCommandGroup {
       // new WaitCommand(0.25),
       new StopCollect(collector),
       new ParallelRaceGroup(
-        new Agitate(spindexer, Constants.Spindexer.agitateSpeed, Constants.Spindexer.agitateDuration),
+        new Agitate(spindexer),
         DrivePathHelpers.createOnBoardDrivePathCommand(
           drive,
           new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)),
@@ -75,19 +75,14 @@ public class FarAuto extends SequentialCommandGroup {
           true
         )
       ),
-      new ParallelRaceGroup(
-        new Agitate(spindexer, Constants.Spindexer.agitateSpeed, Constants.Spindexer.agitateDuration),
-        new AimBot(drive, limeLight)
-      ),
+      new PrepShoot(spindexer),
+      new AimBot(drive, limeLight),
       new ShootLimeLight(shooter, limeLight),
-      new ParallelCommandGroup(
-        new WaitCommand(2.0),
-        new FeedShooter(spindexer)
-      ),
+      new FeedShooter(spindexer).withTimeout(2.0),
       new StopAll(collector, spindexer, shooter),
       new StartCollect(collector),
       new ParallelRaceGroup(
-        new Agitate(spindexer, Constants.Spindexer.agitateSpeed, Constants.Spindexer.agitateDuration),
+        new Agitate(spindexer),
         DrivePathHelpers.createOnBoardDrivePathCommand(
           drive,
           new Pose2d(-2.2282320655658556, 4.6778731367343465, Rotation2d.fromDegrees(4.379989624023438)),
@@ -113,7 +108,7 @@ public class FarAuto extends SequentialCommandGroup {
       ),
       new StopCollect(collector),
       new ParallelRaceGroup(
-        new Agitate(spindexer, Constants.Spindexer.agitateSpeed, Constants.Spindexer.agitateDuration),
+        new Agitate(spindexer),
         DrivePathHelpers.createOnBoardDrivePathCommand(
           drive,
           new Pose2d(0.14939269542114436, 3.307011458388224, Rotation2d.fromDegrees(-139.84000968933105)),
@@ -137,10 +132,7 @@ public class FarAuto extends SequentialCommandGroup {
       new PrepShoot(spindexer),
       new AimBot(drive, limeLight),
       new ShootLimeLight(shooter, limeLight),
-      new ParallelCommandGroup(
-        new WaitCommand(2.0),
-        new FeedShooter(spindexer)
-      ),
+      new FeedShooter(spindexer).withTimeout(2.0),
       new StopAll(collector, spindexer, shooter)
     );
   }

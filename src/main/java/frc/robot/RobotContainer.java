@@ -74,6 +74,7 @@ public class RobotContainer {
   private final JoystickButton buttonShooter;
   private final JoystickButton buttonFarShot;
   private final JoystickButton buttonCloseShot;
+  private final JoystickButton buttonAgitate;
 
   // Allocate Subsystems
   private final Drive m_drive = new Drive(
@@ -110,6 +111,7 @@ public class RobotContainer {
     buttonShooter = new JoystickButton(driver, Constants.OI.Buttons.Driver.shooterBtnId);
     buttonFarShot = new JoystickButton(driver, Constants.OI.Buttons.Driver.farShotBtnId);
     buttonCloseShot = new JoystickButton(driver, Constants.OI.Buttons.Driver.closeShotBtnId);
+    buttonAgitate = new JoystickButton(driver, Constants.OI.Buttons.Driver.agitateBtnId);
 
     configureButtonBindings();
 
@@ -126,6 +128,8 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
+    buttonAgitate
+      .whileHeld(new Agitate(m_spindexer));
     buttonCollector
       .whenPressed(new StartCollect(m_collector))
       .whenReleased(new StopCollect(m_collector));

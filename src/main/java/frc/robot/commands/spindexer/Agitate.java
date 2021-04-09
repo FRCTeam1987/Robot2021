@@ -6,6 +6,7 @@ package frc.robot.commands.spindexer;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.subsystems.Spindexer;
 
 public class Agitate extends CommandBase {
@@ -21,6 +22,10 @@ public class Agitate extends CommandBase {
     m_speed = speed;
     m_duration = duration;
     addRequirements(m_spindexer);
+  }
+
+  public Agitate(final Spindexer spindexer) {
+    this(spindexer, Constants.Spindexer.agitateSpeed, Constants.Spindexer.agitateDuration);
   }
 
   // Called when the command is initially scheduled.

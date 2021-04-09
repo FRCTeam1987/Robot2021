@@ -100,6 +100,7 @@ public final class Constants {
         public static final int shooterBtnId = XboxController.Button.kX.value;
         public static final int farShotBtnId = XboxController.Button.kBumperLeft.value;
         public static final int closeShotBtnId = XboxController.Button.kBumperRight.value;
+        public static final int agitateBtnId = XboxController.Button.kA.value;
       }
 
       public static final class CoDriver {
