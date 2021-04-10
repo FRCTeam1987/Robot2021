@@ -12,7 +12,6 @@ import frc.robot.Constants;
 import frc.robot.commands.shooter.ConfigClose;
 import frc.robot.commands.shooter.ConfigFar;
 import frc.robot.commands.shooter.ShootLimeLight;
-import frc.robot.commands.shooter.ShootRPM;
 import frc.robot.commands.spindexer.FeedShooter;
 import frc.robot.commands.spindexer.PrepShoot;
 import frc.robot.subsystems.Drive;

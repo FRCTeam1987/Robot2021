@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
-import frc.robot.commands.shooter.ConfigClose;
 import frc.robot.commands.shooter.ConfigFar;
 import frc.robot.subsystems.Collector;
 import frc.robot.subsystems.Drive;

@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import java.time.Instant;
-
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -31,7 +29,6 @@ import frc.robot.commands.collector.StopCollect;
 import frc.robot.commands.drive.ClearPowerPortFirstRun;
 import frc.robot.commands.drive.DetermineGalacticColor;
 import frc.robot.commands.drive.RecordPath;
-import frc.robot.commands.drive.DetermineGalacticColor;
 import frc.robot.commands.drive.TeleopDriveConfigurable;
 import frc.robot.commands.drive.ZeroSensors;
 import frc.robot.commands.hangargames.FarAuto;
@@ -131,9 +128,12 @@ public class RobotContainer {
     buttonAgitate
       .whileHeld(new Agitate(m_spindexer));
     buttonCollector
-      .whenPressed(new StartCollect(m_collector))
-      .whenReleased(new StopCollect(m_collector));
-    buttonShooter.whileHeld(new TeleopShoot(m_drive, limeLight, m_spindexer, m_shooter));
+      .whenPressed((new StartCollect(m_collector).andThen(new Agitate(m_spindexer))))
+      .whenReleased(
+        new StopCollect(m_collector).andThen(new StopAll(m_collector, m_spindexer, m_shooter)));
+    buttonShooter
+      .whenPressed(new TeleopShoot(m_drive, limeLight, m_spindexer, m_shooter))
+      .whenReleased(ConfigFar.configFarConditional(m_shooter));
     buttonFarShot.whenPressed(ConfigFar.configFarConditional(m_shooter));
     buttonCloseShot.whenPressed(ConfigClose.configCloseConditional(m_shooter));
   }

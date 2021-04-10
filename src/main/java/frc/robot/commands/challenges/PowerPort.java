@@ -4,7 +4,6 @@
 
 package frc.robot.commands.challenges;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -14,7 +13,6 @@ import frc.robot.commands.StopAll;
 import frc.robot.commands.drive.DrivePathHelpers;
 import frc.robot.commands.shooter.ShootLimeLight;
 import frc.robot.commands.shooter.ShootRPM;
-import frc.robot.commands.spindexer.Agitate;
 import frc.robot.commands.spindexer.FeedShooter;
 import frc.robot.commands.spindexer.PrepShoot;
 import frc.robot.subsystems.Collector;
