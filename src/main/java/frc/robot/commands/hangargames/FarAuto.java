@@ -9,8 +9,11 @@ import java.util.List;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.AimBot;
 import frc.robot.commands.StopAll;
 import frc.robot.commands.collector.StartCollect;
@@ -41,8 +44,9 @@ public class FarAuto extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
+      new InstantCommand(() -> limeLight.setPipeline(9.0)),
       new StartCollect(collector),
-      DrivePathHelpers.driveStraightCommand(drive, 2.0),
+      DrivePathHelpers.driveStraightCommand(drive, 2.6),
       // new WaitCommand(0.25),
       new StopCollect(collector),
       new ParallelRaceGroup(
@@ -51,54 +55,59 @@ public class FarAuto extends SequentialCommandGroup {
           drive,
           new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)),
           List.of(
-            new Translation2d(-0.035450471349925586, 5.944452561349999E-4),
-            new Translation2d(-0.27842679045931, 0.012242149890922408),
-            new Translation2d(-0.6240635965938064, 0.05564713677919099),
-            new Translation2d(-0.9893544915883036, 0.1939284963326707),
-            new Translation2d(-1.3116753796957028, 0.48950747934155486),
-            new Translation2d(-1.5375234547010699, 0.930747284712866),
-            new Translation2d(-1.6212379706156892, 1.434677069570948),
-            new Translation2d(-1.6242475623711847, 1.9141477069394743),
-            new Translation2d(-1.610355540167418, 2.4556824858547373),
-            new Translation2d(-1.5940366359033196, 2.9468076076951206),
-            new Translation2d(-1.5771392606980974, 3.3971930287781227),
-            new Translation2d(-1.5687494792694983, 3.8148327198418506),
-            new Translation2d(-1.6154566850867098, 4.2248313179129955),
-            new Translation2d(-1.7445887942360472, 4.486742436197851),
-            new Translation2d(-1.9248092504568042, 4.616490706356302),
-            new Translation2d(-2.051853357892612, 4.652056996199755)
+            new Translation2d(-0.05550115008478476, 1.8394408605086314E-4),
+            new Translation2d(-0.2458827703012238, 0.010776621819167212),
+            new Translation2d(-0.5464428110977673, 0.06051834753587001),
+            new Translation2d(-0.9025490047524852, 0.22395987649317617),
+            new Translation2d(-1.20818749259906, 0.5199441165934529),
+            new Translation2d(-1.3866368641226983, 0.9232454535313881),
+            new Translation2d(-1.4931383973040968, 1.4553686333444316),
+            new Translation2d(-1.5896194880904537, 2.060348514268685),
+            new Translation2d(-1.6475622575487603, 2.646350494565739),
+            new Translation2d(-1.6633664136529807, 3.249034470521058),
+            new Translation2d(-1.6650149605581859, 3.8147050907193463),
+            new Translation2d(-1.6662488932573052, 4.3375222610477495),
+            new Translation2d(-1.6800961213098373, 4.812531070715421),
+            new Translation2d(-1.7914561394768453, 5.156403978379423),
+            new Translation2d(-2.0151469281789147, 5.395622120179954),
+            new Translation2d(-2.2575446214762613, 5.502268689388504)
           ),
-          new Pose2d(-2.118601988207358, 4.655475168206258, Rotation2d.fromDegrees(0.7400054931640624)),
+new Pose2d(-2.3652379731062765, 5.513766053596661, Rotation2d.fromDegrees(6.2290029525756845)),
           true
         )
       ),
-      new PrepShoot(spindexer),
-      new AimBot(drive, limeLight),
+      new ParallelRaceGroup(
+        new Agitate(spindexer),
+        new AimBot(drive, limeLight)
+      ),
       new ShootLimeLight(shooter, limeLight),
-      new FeedShooter(spindexer).withTimeout(2.0),
+      new ParallelCommandGroup(
+        new FeedShooter(spindexer),
+        new WaitCommand(2.0)
+      ),
       new StopAll(collector, spindexer, shooter),
       new StartCollect(collector),
       new ParallelRaceGroup(
         new Agitate(spindexer),
         DrivePathHelpers.createOnBoardDrivePathCommand(
           drive,
-          new Pose2d(-2.2282320655658556, 4.6778731367343465, Rotation2d.fromDegrees(4.379989624023438)),
-          List.of(
-            new Translation2d(-2.190117985295738, 4.680792663428301),
-            new Translation2d(-1.900806146660265, 4.706484744059248),
-            new Translation2d(-1.4792248384194795, 4.754002027055002),
-            new Translation2d(-1.0172297925221654, 4.823436258418594),
-            new Translation2d(-0.5454751578645527, 4.894808109776567),
-            new Translation2d(-0.08090529594991519, 4.942459823763969),
-            new Translation2d(0.30361495691902507, 4.889316827703687),
-            new Translation2d(0.594620099122985, 4.706924808979446),
-            new Translation2d(0.7337938833833635, 4.450635747147415),
-            new Translation2d(0.7420200886350184, 4.175281598439769),
-            new Translation2d(0.6633797099748981, 3.915465520491286),
-            new Translation2d(0.499209712780859, 3.6488276304082032),
-            new Translation2d(0.28739832160596895, 3.4279186234373946)
-          ),
-          new Pose2d(0.14952924853327357, 3.3071296470470877, Rotation2d.fromDegrees(-139.4200096130371)),
+          new Pose2d(-2.3649985986820647, 5.513792143589033, Rotation2d.fromDegrees(6.219000816345214)),
+            List.of(
+              new Translation2d(-2.309505262914631, 5.521159048775289),
+              new Translation2d(-2.0438094321346476, 5.551723140441807),
+              new Translation2d(-1.6733743916668813, 5.6090745984451145),
+              new Translation2d(-1.2385473588081422, 5.703835507522106),
+              new Translation2d(-0.8024849096224365, 5.8113748504688045),
+              new Translation2d(-0.3744164232611161, 5.874367884394817),
+              new Translation2d(0.06677763121965183, 5.814858410433653),
+              new Translation2d(0.43466642728232185, 5.59976742094826),
+              new Translation2d(0.6436903026624545, 5.283306644930623),
+              new Translation2d(0.673202301187954, 4.977271673092282),
+              new Translation2d(0.5957795721784652, 4.72205576252892),
+              new Translation2d(0.42687884942416265, 4.474076554600488),
+              new Translation2d(0.2424564765784037, 4.305857678091895)
+            ),
+new Pose2d(0.1732638118538688, 4.257655330094851, Rotation2d.fromDegrees(-146.54100036621094)),
           false,
           false
         )
@@ -108,20 +117,17 @@ public class FarAuto extends SequentialCommandGroup {
         new Agitate(spindexer),
         DrivePathHelpers.createOnBoardDrivePathCommand(
           drive,
-          new Pose2d(0.14939269542114436, 3.307011458388224, Rotation2d.fromDegrees(-139.84000968933105)),
-          List.of(
-            new Translation2d(0.18407824875336606, 3.337842754798023),
-            new Translation2d(0.3270913715975922, 3.4913856061366992),
-            new Translation2d(0.4828835264752854, 3.779106114860245),
-            new Translation2d(0.5199485823045806, 4.144517411672494),
-            new Translation2d(0.3671381703187995, 4.532608790281743),
-            new Translation2d(0.04205599275278059, 4.825219637995374),
-            new Translation2d(-0.36655590031271135, 4.941779849143629),
-            new Translation2d(-0.8188858267511132, 4.909585928688051),
-            new Translation2d(-1.2133560363304683, 4.824187713649674),
-            new Translation2d(-1.4479701786839725, 4.790483259769166)
-          ),
-          new Pose2d(-1.4646466894321337, 4.789085225326773, Rotation2d.fromDegrees(4.440002441406264)),
+          new Pose2d(0.17331403388233796, 4.257688519671991, Rotation2d.fromDegrees(-146.54100036621094)),
+            List.of(
+            new Translation2d(0.1952998507031909, 4.272988097037664),
+            new Translation2d(0.36384362316291036, 4.444479326387576),
+            new Translation2d(0.5224752771886959, 4.815322007128506),
+            new Translation2d(0.466521605935213, 5.230373111924653),
+            new Translation2d(0.17252771135707914, 5.567877837540999),
+            new Translation2d(-0.1965888134921414, 5.693202752930731),
+            new Translation2d(-0.4888647909382599, 5.686103098592013)
+            ),
+          new Pose2d(-0.6835851230386165, 5.660754023667665, Rotation2d.fromDegrees(5.998999595642091)),
           true,
           false
         )
@@ -129,7 +135,10 @@ public class FarAuto extends SequentialCommandGroup {
       new PrepShoot(spindexer),
       new AimBot(drive, limeLight),
       new ShootLimeLight(shooter, limeLight),
-      new FeedShooter(spindexer).withTimeout(2.0),
+      new ParallelCommandGroup(
+        new FeedShooter(spindexer),
+        new WaitCommand(2.0)
+      ),
       new StopAll(collector, spindexer, shooter)
     );
   }

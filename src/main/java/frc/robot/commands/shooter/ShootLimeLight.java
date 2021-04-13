@@ -32,7 +32,8 @@ public class ShootLimeLight extends CommandBase {
     m_limelight.turnOnLEDs();
     final double y = m_limelight.getYAxis();
     final double rpm = Constants.Shooter.Targeting.kDistanceToShooterSpeedClose.getInterpolated(new InterpolatingDouble(y)).value;
-    m_shooter.setRPM(rpm);
+    final double rpmHangar = rpm + 50.0;
+    m_shooter.setRPM(rpmHangar);
     SmartDashboard.putNumber("Shooting TY", y);
     SmartDashboard.putNumber("Shooting RPM", rpm);
   }

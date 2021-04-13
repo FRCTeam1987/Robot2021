@@ -73,7 +73,7 @@ public class AimBot extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_drive.setCoast();
+    // m_drive.setCoast();
     m_drive.driveTank(0, 0);
     m_isOnTarget.periodic(true);
     m_cannotSeeTarget.periodic(true);
@@ -92,6 +92,6 @@ public class AimBot extends CommandBase {
   }
 
   private boolean isOnTarget() {
-    return Util.isWithinTolerance(m_limelight.getXAxis(), 0, 0.75);  //=~ 1
+    return Util.isWithinTolerance(m_limelight.getXAxis(), 0, 1.0);  //=~ 1
   }
 }
