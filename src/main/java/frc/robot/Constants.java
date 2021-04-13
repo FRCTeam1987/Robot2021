@@ -96,11 +96,11 @@ public final class Constants {
 
     public static final class Buttons {
       public static final class Driver {
-        public static final int collectorBtnId = XboxController.Button.kY.value;
-        public static final int shooterBtnId = XboxController.Button.kX.value;
-        public static final int farShotBtnId = XboxController.Button.kBumperLeft.value;
-        public static final int closeShotBtnId = XboxController.Button.kBumperRight.value;
-        public static final int agitateBtnId = XboxController.Button.kA.value;
+        public static final XboxController.Button collectorBtnId = XboxController.Button.kY;
+        public static final XboxController.Button shooterBtnId = XboxController.Button.kX;
+        public static final XboxController.Button farShotBtnId = XboxController.Button.kBumperLeft;
+        public static final XboxController.Button closeShotBtnId = XboxController.Button.kBumperRight;
+        public static final XboxController.Button agitateBtnId = XboxController.Button.kA;
       }
 
       public static final class CoDriver {
