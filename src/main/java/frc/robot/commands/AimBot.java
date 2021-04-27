@@ -23,8 +23,8 @@ public class AimBot extends CommandBase {
   public AimBot(final Drive drive, final LimeLight limelight) {
     m_drive = drive;
     m_limelight = limelight;
-    m_isOnTarget = new DigitalDebouncer(0.15);
-    m_cannotSeeTarget = new DigitalDebouncer(0.25);
+    m_isOnTarget = new DigitalDebouncer(0.25);
+    m_cannotSeeTarget = new DigitalDebouncer(0.5);
     addRequirements(m_drive);
   }
 

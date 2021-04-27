@@ -101,7 +101,10 @@ public class EightBallTrench extends SequentialCommandGroup {
           false
         )
       ),
-      new WaitCommand(0.75),  // agitate before shooting
+      new ParallelRaceGroup(
+        new WaitCommand(0.75),
+        new Agitate(spindexer)
+        ), // agitate before shooting
       new ParallelCommandGroup(
         new PrepShoot(spindexer),
         new AimBot(drive, limeLight)

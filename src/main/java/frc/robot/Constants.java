@@ -117,7 +117,7 @@ public final class Constants {
     }
     public static final double compliantSpeed = 0.95;
     public static final double bigBlockJamCurrent = 40; // TODO test
-    public static final double agitateSpeed = 0.4;
+    public static final double agitateSpeed = 0.6; //0.4
     public static final double agitateDuration = 1;
     public static final double shootSpeed = 0.8; // 0.95
   }

@@ -33,6 +33,7 @@ public class Agitate extends CommandBase {
   public void initialize() {
     m_direction = 1;
     m_switchTimestamp = Timer.getFPGATimestamp();
+    m_spindexer.setBigBlock(m_speed * m_direction);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

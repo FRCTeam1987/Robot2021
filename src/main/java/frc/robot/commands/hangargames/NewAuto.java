@@ -95,6 +95,10 @@ public class NewAuto extends SequentialCommandGroup {
           false
         )
       ),
+      new ParallelRaceGroup(
+        new WaitCommand(0.75),
+        new Agitate(spindexer)
+        ),
       new ParallelCommandGroup(
         new PrepShoot(spindexer),
         new AimBot(drive, limeLight)
