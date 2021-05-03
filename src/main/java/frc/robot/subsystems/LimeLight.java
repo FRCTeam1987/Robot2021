@@ -59,7 +59,7 @@ public class LimeLight extends SubsystemBase {
 
   public void init() {
     setPipeline(Constants.LimeLight.pipeline);
-    turnOffLEDs();
+    // turnOffLEDs();
   }
 
   public void setPipeline(final double pipeline) {

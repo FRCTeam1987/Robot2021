@@ -127,6 +127,17 @@ public class Drive extends SubsystemBase {
   }
 
   /**
+   * Drives the robot using arcade controls.
+   * 
+   * @param speed The commanded forward speed.
+   * @param rotate The commanded rotation.
+   * @param squaredInputs True to scale input, false otherwise.
+   */
+  public void driveArcade(final double speed, final double rotate, final boolean squaredInputs) {
+    m_drive.arcadeDrive(speed, rotate, squaredInputs);
+  }
+
+  /**
    * Controls the left and right sides of the drive directly with voltages.
    * 
    * @param left The commanded left output voltage.

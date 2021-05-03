@@ -11,7 +11,6 @@ import com.ctre.phoenix.sensors.CANCoder;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
@@ -25,12 +24,14 @@ import frc.robot.commands.challenges.Accuracy;
 import frc.robot.commands.challenges.AutoNav;
 import frc.robot.commands.challenges.GalacticSearch;
 import frc.robot.commands.challenges.PowerPort;
-import frc.robot.commands.collector.CollectorInOut;
 import frc.robot.commands.collector.StartCollect;
 import frc.robot.commands.collector.StopCollect;
+import frc.robot.commands.drive.AimBot2;
+import frc.robot.commands.drive.AimBot3;
 import frc.robot.commands.drive.ClearPowerPortFirstRun;
 import frc.robot.commands.drive.DetermineGalacticColor;
 import frc.robot.commands.drive.RecordPath;
+import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.commands.drive.TeleopDriveConfigurable;
 import frc.robot.commands.drive.ZeroSensors;
 import frc.robot.commands.hangargames.EightBallTrench;
@@ -73,11 +74,8 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
 
   private final XboxController driver;
-  private JoystickButton buttonCollector;
-  private JoystickButton buttonShooter;
-  private JoystickButton buttonFarShot;
-  private JoystickButton buttonCloseShot;
-  private JoystickButton buttonAgitate;
+  private final JoystickButton buttonCollector;
+  private final JoystickButton buttonShooter;
 
   // Allocate Subsystems
   private final Drive m_drive = new Drive(
@@ -99,25 +97,20 @@ public class RobotContainer {
     new TalonFX(Constants.Shooter.Can.flywheelSlave3)
 
   );
-  public double powerPortTimer;
 
   private final SendableChooser<Command> chooser = new SendableChooser<>();
-  private final SendableChooser<XboxController.Button> collectorChooser = new SendableChooser<>();
-  private final SendableChooser<XboxController.Button> shooterChooser = new SendableChooser<>();
-  private final SendableChooser<XboxController.Button> agitateChooser = new SendableChooser<>();
-  private final SendableChooser<XboxController.Button> raiseHoodChooser = new SendableChooser<>();
-  private final SendableChooser<XboxController.Button> lowerHoodChooser = new SendableChooser<>();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     
     driver = new XboxController(Constants.OI.Xbox.driverID);
 
+    buttonCollector = new JoystickButton(driver, Constants.OI.Buttons.Driver.collectorBtnId.value);
+    buttonShooter = new JoystickButton(driver, Constants.OI.Buttons.Driver.shooterBtnId.value);
+
     configureShuffleboard();
     configureButtonBindings();
     configureDefaultCommands();
-    
-    this.powerPortTimer = Timer.getFPGATimestamp();
   }
 
   /**
@@ -127,14 +120,6 @@ public class RobotContainer {
    * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
    */
   private void configureButtonBindings() {
-    CommandScheduler.getInstance().clearButtons();
-    buttonCollector = new JoystickButton(driver, collectorChooser.getSelected().value);
-    buttonShooter = new JoystickButton(driver, shooterChooser.getSelected().value);
-    // buttonFarShot = new JoystickButton(driver, lowerHoodChooser.getSelected().value);
-    // buttonCloseShot = new JoystickButton(driver, raiseHoodChooser.getSelected().value);
-    buttonAgitate = new JoystickButton(driver, agitateChooser.getSelected().value);
-    buttonAgitate
-      .whileHeld(new Agitate(m_spindexer));
     buttonCollector
       .whenPressed((new StartCollect(m_collector).andThen(new Agitate(m_spindexer))))
       .whenReleased(
@@ -142,8 +127,6 @@ public class RobotContainer {
     buttonShooter
       .whenPressed(new TeleopShoot(m_drive, limeLight, m_spindexer, m_shooter))
       .whenReleased(ConfigFar.configFarConditional(m_shooter));
-    buttonFarShot.whenPressed(ConfigFar.configFarConditional(m_shooter));
-    buttonCloseShot.whenPressed(ConfigClose.configCloseConditional(m_shooter));
   }
 
   /**
@@ -156,53 +139,13 @@ public class RobotContainer {
   }
 
   private void configureDefaultCommands() {
-    m_drive.setDefaultCommand(new TeleopDriveConfigurable(m_drive, driver));
+    m_drive.setDefaultCommand(new TeleopDrive(m_drive, driver));
     // m_spindexer.setDefaultCommand(new Agitate(m_spindexer));
   }
   
   private void configureShuffleboard() {
 
     final ShuffleboardTab tabShooter = Shuffleboard.getTab("Shooter");
-
-    collectorChooser.setDefaultOption(Constants.OI.Buttons.Driver.collectorBtnId.name(), Constants.OI.Buttons.Driver.collectorBtnId);
-    collectorChooser.addOption(XboxController.Button.kA.name(), XboxController.Button.kA);
-    collectorChooser.addOption(XboxController.Button.kB.name(), XboxController.Button.kB);
-    collectorChooser.addOption(XboxController.Button.kX.name(), XboxController.Button.kX);
-    collectorChooser.addOption(XboxController.Button.kBumperLeft.name(), XboxController.Button.kBumperLeft);
-    collectorChooser.addOption(XboxController.Button.kBumperRight.name(), XboxController.Button.kBumperRight);
-    SmartDashboard.putData("CollectorChooser", collectorChooser);
-
-    shooterChooser.setDefaultOption(Constants.OI.Buttons.Driver.shooterBtnId.name(), Constants.OI.Buttons.Driver.shooterBtnId);
-    shooterChooser.addOption(XboxController.Button.kY.name(), XboxController.Button.kY);
-    shooterChooser.addOption(XboxController.Button.kA.name(), XboxController.Button.kA);
-    shooterChooser.addOption(XboxController.Button.kB.name(), XboxController.Button.kB); 
-    shooterChooser.addOption(XboxController.Button.kBumperLeft.name(), XboxController.Button.kBumperLeft);
-    shooterChooser.addOption(XboxController.Button.kBumperRight.name(), XboxController.Button.kBumperRight);
-    SmartDashboard.putData("ShooterChooser", shooterChooser);
-
-    agitateChooser.setDefaultOption(Constants.OI.Buttons.Driver.agitateBtnId.name(), Constants.OI.Buttons.Driver.agitateBtnId);
-    agitateChooser.addOption(XboxController.Button.kY.name(), XboxController.Button.kY);
-    agitateChooser.addOption(XboxController.Button.kX.name(), XboxController.Button.kX);
-    agitateChooser.addOption(XboxController.Button.kB.name(), XboxController.Button.kB);
-    agitateChooser.addOption(XboxController.Button.kBumperLeft.name(), XboxController.Button.kBumperLeft);
-    agitateChooser.addOption(XboxController.Button.kBumperRight.name(), XboxController.Button.kBumperRight);
-    SmartDashboard.putData("AgitateChooser", agitateChooser);
-
-    // lowerHoodChooser.setDefaultOption(Constants.OI.Buttons.Driver.farShotBtnId.name(), Constants.OI.Buttons.Driver.farShotBtnId);
-    // lowerHoodChooser.addOption(XboxController.Button.kY.name(), XboxController.Button.kY);
-    // lowerHoodChooser.addOption(XboxController.Button.kX.name(), XboxController.Button.kX);
-    // lowerHoodChooser.addOption(XboxController.Button.kA.name(), XboxController.Button.kA);
-    // lowerHoodChooser.addOption(XboxController.Button.kB.name(), XboxController.Button.kB);
-    // lowerHoodChooser.addOption(XboxController.Button.kBumperRight.name(), XboxController.Button.kBumperRight);
-    // SmartDashboard.putData("LowerHoodChooser", lowerHoodChooser);
-
-    // raiseHoodChooser.setDefaultOption(Constants.OI.Buttons.Driver.closeShotBtnId.name(), Constants.OI.Buttons.Driver.closeShotBtnId);
-    // raiseHoodChooser.addOption(XboxController.Button.kY.name(), XboxController.Button.kY);
-    // raiseHoodChooser.addOption(XboxController.Button.kX.name(), XboxController.Button.kX);
-    // raiseHoodChooser.addOption(XboxController.Button.kA.name(), XboxController.Button.kA);
-    // raiseHoodChooser.addOption(XboxController.Button.kB.name(), XboxController.Button.kB);
-    // raiseHoodChooser.addOption(XboxController.Button.kBumperLeft.name(), XboxController.Button.kBumperLeft);
-    // SmartDashboard.putData("RaiseHoodChooser", raiseHoodChooser);
 
     SmartDashboard.putData("Start Collect", new StartCollect(m_collector));
     SmartDashboard.putData("Stop Collect", new StopCollect(m_collector));
@@ -245,6 +188,8 @@ public class RobotContainer {
     SmartDashboard.putData("Collector Run", new InstantCommand(() -> { m_collector.setRollerPercent(Constants.Collector.Values.motorIn); }, m_collector));
     SmartDashboard.putData("Collector Reverse", new InstantCommand(() -> { m_collector.setRollerPercent(-Constants.Collector.Values.motorIn); }, m_collector));
     SmartDashboard.putData("Collector Stop", new InstantCommand(() -> { m_collector.setRollerPercent(0); }, m_collector));
+    SmartDashboard.putData("AimBot2", new AimBot2(m_drive, limeLight));
+    SmartDashboard.putData("AimBot3", new AimBot3(m_drive, limeLight));
 
 
     chooser.addOption("Barrel Run", AutoNav.barrelRun(m_drive));
@@ -260,19 +205,19 @@ public class RobotContainer {
     chooser.addOption("8 Ball Trench", new EightBallTrench(m_drive, m_collector, m_spindexer, m_shooter, limeLight));
     chooser.addOption("No Collector", new NoCollector(m_drive, m_collector, m_spindexer, m_shooter, limeLight));
 
-    ConditionalCommand powerPortRunner = new ConditionalCommand(
-      new SequentialCommandGroup(
-        new ClearPowerPortFirstRun(m_drive),
-        PowerPort.cycleFirst(m_drive, m_spindexer, m_shooter, m_collector, limeLight)
-      ),
-      PowerPort.cycle(m_drive, m_spindexer, m_shooter, m_collector, limeLight),
-      () -> m_drive.isPowerPortFirstRun()
-    );
-    SmartDashboard.putData("Power Power Cycle First", new SequentialCommandGroup(
-      new InstantCommand(() -> { powerPortTimer = Timer.getFPGATimestamp(); }),
-      PowerPort.cycleFirst(m_drive, m_spindexer, m_shooter, m_collector, limeLight))
-    );
-    SmartDashboard.putData("Power Power Cycle Not First", PowerPort.cycle(m_drive, m_spindexer, m_shooter, m_collector, limeLight));
+    // ConditionalCommand powerPortRunner = new ConditionalCommand(
+    //   new SequentialCommandGroup(
+    //     new ClearPowerPortFirstRun(m_drive),
+    //     PowerPort.cycleFirst(m_drive, m_spindexer, m_shooter, m_collector, limeLight)
+    //   ),
+    //   PowerPort.cycle(m_drive, m_spindexer, m_shooter, m_collector, limeLight),
+    //   () -> m_drive.isPowerPortFirstRun()
+    // );
+    // SmartDashboard.putData("Power Power Cycle First", new SequentialCommandGroup(
+    //   new InstantCommand(() -> { powerPortTimer = Timer.getFPGATimestamp(); }),
+    //   PowerPort.cycleFirst(m_drive, m_spindexer, m_shooter, m_collector, limeLight))
+    // );
+    // SmartDashboard.putData("Power Power Cycle Not First", PowerPort.cycle(m_drive, m_spindexer, m_shooter, m_collector, limeLight));
 
     //=~
     SmartDashboard.putData("Far Auto", new FarAuto(m_drive, m_collector, m_spindexer, m_shooter, limeLight));
@@ -343,13 +288,6 @@ public class RobotContainer {
   public void teleopInit() {
     m_drive.teleopInit();
     limeLight.init();
-    configureButtonBindings();
-  }
-
-  public void teleopPeriodic(final Runnable onDisable) {
-    // if (Timer.getFPGATimestamp() > powerPortTimer + 60.0) {
-    //   onDisable.run();
-    // }
   }
 
 }
