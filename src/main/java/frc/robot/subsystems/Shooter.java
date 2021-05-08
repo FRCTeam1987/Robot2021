@@ -13,6 +13,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Util;
@@ -25,8 +26,8 @@ public class Shooter extends SubsystemBase {
   private final TalonFX m_slave2;
   private final TalonFX m_slave3;
   private double m_rpmSetPoint;
-  private DoubleSolenoid m_solenoidRaise;
   private DoubleSolenoid m_solenoidLock;
+  private DoubleSolenoid m_solenoidPto;
 
   /** Creates a new Shooter. */
   public Shooter(final WPI_TalonFX master, final TalonFX slave1, final TalonFX slave2, final TalonFX slave3) {
@@ -34,16 +35,16 @@ public class Shooter extends SubsystemBase {
     m_slave1 = slave1;
     m_slave2 = slave2;
     m_slave3 = slave3;
-    m_solenoidRaise = new DoubleSolenoid(Constants.Shooter.SolenoidRaise.extend, Constants.Shooter.SolenoidRaise.retract);
     m_solenoidLock = new DoubleSolenoid(Constants.Shooter.SolenoidLock.extend, Constants.Shooter.SolenoidLock.retract);
+    m_solenoidPto = new DoubleSolenoid(Constants.Shooter.SolenoidPto.extend, Constants.Shooter.SolenoidPto.retract);
 
     m_master.configFactoryDefault();
     m_master.configOpenloopRamp(1.5);
     m_master.setNeutralMode(NeutralMode.Coast);
     m_master.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor, 0, 10);
     m_master.configClosedloopRamp(0.5);
-    m_master.config_kF(0, 0.0513); //get started umf (increases the actual base rpm exponentially or something) was.052 old BAT, new bat .0498, then was .055 for 3550 rpm, then .052
-    m_master.config_kP(0, 0.25); //p = push and oscillating once it gets there
+    m_master.config_kF(0, 0.052); //get started umf (increases the actual base rpm exponentially or something) was.052 old BAT, new bat .0498, then was .055 for 3550 rpm, then .052
+    m_master.config_kP(0, 0.3); //p = push and oscillating once it gets there
     m_master.config_kI(0, 0.0);
     m_master.config_kD(0, 0.0); //d =  dampening for the oscillation
 
@@ -62,19 +63,16 @@ public class Shooter extends SubsystemBase {
 
     stop();
 
-    addChild("master", master);
-    addChild("Raise", m_solenoidRaise);
-    addChild("Lock", m_solenoidLock);
-  }
+    lockHood();
+    disengagePto();
 
-  public void raiseHood() {
-    m_solenoidRaise.set(Constants.Shooter.Values.cylinderExtend);
-    
+    addChild("master", master);
+    addChild("Lock", m_solenoidLock);
+    addChild("PTO", m_solenoidPto);
   }
 
   public void lockHood() {
     m_solenoidLock.set(Constants.Shooter.Values.cylinderExtend);
-
   }
   
   public void unlockHood() {
@@ -82,9 +80,12 @@ public class Shooter extends SubsystemBase {
 
   }
 
-  public void lowerHood() {
-    m_solenoidRaise.set(Constants.Shooter.Values.cylinderRetract);
-    
+  public void engagePto() {
+    m_solenoidPto.set(Constants.Shooter.Values.cylinderRetract);
+  }
+
+  public void disengagePto() {
+    m_solenoidPto.set(Constants.Shooter.Values.cylinderExtend);
   }
 
   public boolean canSeeTarget(double visibility) {
@@ -127,7 +128,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean isHoodConfigedFar() {
-    return Constants.Shooter.Values.cylinderRetract == m_solenoidRaise.get();
+    return true;
   }
 
   public double getRPMFromLimelight() {
@@ -157,7 +158,7 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic() {
     // if (SmartDashboard.getNumber("Log Level", 0) > 1) {
-      // SmartDashboard.putNumber("Shooter Actual RPM", getRPM());
+      SmartDashboard.putNumber("Shooter Actual RPM", getRPM());
     // }
   }
 
@@ -179,5 +180,9 @@ public class Shooter extends SubsystemBase {
   // Returns true when a ball is detecting to be shot
   public boolean isBallShooting() {
     return m_master.getSupplyCurrent() > 10.0;  // Magic number - needs to be determined
+  }
+
+  public void setPercentRamp(final double duration) {
+    m_master.configOpenloopRamp(duration);
   }
 }

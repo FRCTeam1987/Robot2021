@@ -32,9 +32,9 @@ import frc.robot.subsystems.Spindexer;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class NewAuto extends SequentialCommandGroup {
+public class SixBallTrench extends SequentialCommandGroup {
   /** Creates a new FarAuto. */
-  public NewAuto(
+  public SixBallTrench(
     final Drive drive,
     final Collector collector,
     final Spindexer spindexer,
@@ -58,22 +58,22 @@ public class NewAuto extends SequentialCommandGroup {
           drive,
           new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)),
           List.of(
-          new Translation2d(0.03467288657946717, 2.374940945609765E-4),
-          new Translation2d(0.3749186273916362, 0.048341225566454954),
-          new Translation2d(0.8211413260312612, 0.32710485496444924),
-          new Translation2d(1.1421757285239116, 0.7926732238913893),
-          new Translation2d(1.530158836112883, 1.2514571818179008),
-          new Translation2d(2.10582354177961, 1.513220733217175),
-          new Translation2d(2.7584534342336067, 1.575231133787987),
-          new Translation2d(3.3522202961833703, 1.564091018371087),
-          new Translation2d(3.9712455316836226, 1.5476515085368672),
-          new Translation2d(4.4630466843924035, 1.547775028814714)
+            new Translation2d(0.03467288657946717, 2.374940945609765E-4),
+            new Translation2d(0.3749186273916362, 0.048341225566454954),
+            new Translation2d(0.8211413260312612, 0.32710485496444924),
+            new Translation2d(1.1421757285239116, 0.7926732238913893),
+            new Translation2d(1.530158836112883, 1.2514571818179008),
+            new Translation2d(2.10582354177961, 1.513220733217175),
+            new Translation2d(2.7584534342336067, 1.575231133787987),
+            new Translation2d(3.3522202961833703, 1.564091018371087),
+            new Translation2d(3.9712455316836226, 1.5476515085368672),
+            new Translation2d(4.4630466843924035, 1.547775028814714)
           ),
           new Pose2d(4.646943189558377, 1.5495210636957784, Rotation2d.fromDegrees(0.548004150390625)),
           false
         )
       ),
-      new WaitCommand(1),
+      // new WaitCommand(1),
       new StopCollect(collector),
       new ParallelRaceGroup(
         new Agitate(spindexer),

@@ -36,7 +36,7 @@ public final class Constants {
     public static final class Values {
       public static final DoubleSolenoid.Value cylinderExtend = DoubleSolenoid.Value.kForward;
       public static final DoubleSolenoid.Value cylinderRetract = DoubleSolenoid.Value.kReverse;
-      public static final double motorIn = 0.65;
+      public static final double motorIn = 0.45;
       public static final double motorOut = -0.75;
       public static final double motorStop = 0.0;
     }
@@ -61,10 +61,10 @@ public final class Constants {
       public static final double maxVolts = 10;
       public static final double maxSpeedMetersPerSecond = 2.5; // 2.7 //=-2.5; //Galactic 1.75 - Barrel - 2.5 is constant - 2.75 is max - start slightly left of center //2.75 slalom speed, bounce: 2.75, barrel: 2.7, slalom: 2.25
       public static final double maxAccelerationMetersPerSecondSquared = 2.25; // 2.515 //=-2.25; // Bounce Path speed - 5.0; //2.5; bounce: 2.95, barrel: 2.7, slalom: 2.0
-      public static final double ramseteB = 2.0;
+      public static final double ramseteB = 1.5;
       public static final double ramseteZeta = 0.7;  // 0.15
       public static final double pVelocity = 0.175; // 0.15, 0.075
-      public static final double maxCentripetalMetersPerSecondSquared = 2.25; // 2.515 //=-2.0; bounce: 2.95, barrel: 2.7, slalom: 2.0
+      public static final double maxCentripetalMetersPerSecondSquared = 1.75; // 2.515 //=-2.0; bounce: 2.95, barrel: 2.7, slalom: 2.0
     }
     public static final class Values {
       public static final int encoderTicksPerRevolution = 2048;
@@ -72,7 +72,7 @@ public final class Constants {
       public static final double trackWidth = 0.71; // 0.693; // 12.9798;
       public static final double wheelDiameter = 0.156972; // 0.1524;  // 6 in wheel in m
       public static final double wheelCircumference = Math.PI * wheelDiameter;
-      public static final double minMovePercent = 0.27; //=~ 0.29
+      public static final double minMovePercent = 0.28; //=~ 0.29
       public static final double maxMovePercent = 0.39;
     }
 
@@ -91,20 +91,25 @@ public final class Constants {
   public static final class OI {
     public static final class Xbox {
       public static final int driverID = 0;
+      public static final int coDriverID = 1;
       public static final double deadBandThreshold = 0.25;
     }
 
     public static final class Buttons {
       public static final class Driver {
-        public static final XboxController.Button collectorBtnId = XboxController.Button.kY;
-        public static final XboxController.Button shooterBtnId = XboxController.Button.kX;
-        public static final XboxController.Button farShotBtnId = XboxController.Button.kBumperLeft;
-        public static final XboxController.Button closeShotBtnId = XboxController.Button.kBumperRight;
-        public static final XboxController.Button agitateBtnId = XboxController.Button.kA;
+        public static final XboxController.Button collectorBtnId = XboxController.Button.kB;
+        public static final XboxController.Button shooterBtnId = XboxController.Button.kY;
+        // public static final XboxController.Button farShotBtnId = XboxController.Button.kBumperLeft;
+        // public static final XboxController.Button closeShotBtnId = XboxController.Button.kBumperRight;
       }
 
       public static final class CoDriver {
-
+        // public static final XboxController.Button climberUp = XboxController.Button.kY;
+        // public static final XboxController.Button climberDn = XboxController.Button.kA;
+        // public static final XboxController.Button climberPto = XboxController.Button.kX;
+        public static final XboxController.Button climberRelease = XboxController.Button.kX;
+        public static final XboxController.Button climb = XboxController.Button.kY;
+        public static final XboxController.Button agitateBtnId = XboxController.Button.kA;
       }
     }
   }
@@ -119,7 +124,7 @@ public final class Constants {
     public static final double bigBlockJamCurrent = 40; // TODO test
     public static final double agitateSpeed = 0.6; //0.4
     public static final double agitateDuration = 1;
-    public static final double shootSpeed = 0.8; // 0.95
+    public static final double shootSpeed = 0.7; // 0.95
   }
 
   public static final class Shooter {
@@ -137,6 +142,10 @@ public final class Constants {
     public static final class SolenoidLock {
       public static final int extend = 2;
       public static final int retract = 5;
+    }
+    public static final class SolenoidPto {
+      public static final int extend = 1;  // just a guess
+      public static final int retract = 6; // just a guess
     }
 
     public static final class Values {
@@ -236,31 +245,39 @@ public final class Constants {
 
       public static InterpolatingTreeMap<InterpolatingDouble, InterpolatingDouble> kDistanceToShooterSpeedClose = new InterpolatingTreeMap<>();
       static {
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(21.0), new InterpolatingDouble(2400.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(20.0), new InterpolatingDouble(2400.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(18.0), new InterpolatingDouble(2390.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(15.5), new InterpolatingDouble(2390.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(12.0), new InterpolatingDouble(2400.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(9.0), new InterpolatingDouble(2450.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(7.5), new InterpolatingDouble(2500.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(5.0), new InterpolatingDouble(2550.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(3.7), new InterpolatingDouble(2600.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(3.5), new InterpolatingDouble(2675.0));  // hood config close
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(2.95), new InterpolatingDouble(4100.0));  // hood config far
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(2.25), new InterpolatingDouble(3950.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(1.0), new InterpolatingDouble(3750.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(0.75), new InterpolatingDouble(3850.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-2.0), new InterpolatingDouble(3650.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-3.0), new InterpolatingDouble(3575.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-4.0), new InterpolatingDouble(3650.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-5.0), new InterpolatingDouble(3650.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-6.0), new InterpolatingDouble(3675.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-7.0), new InterpolatingDouble(3710.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-8.66), new InterpolatingDouble(3805.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-9.0), new InterpolatingDouble(3815.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-10.0), new InterpolatingDouble(3895.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-10.17), new InterpolatingDouble(3915.0));
-        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-12.75), new InterpolatingDouble(4100.0));
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(2.95), new InterpolatingDouble(3550.0));  // hood config far
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(3.05), new InterpolatingDouble(3525.0));  // hood config far
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(0.05), new InterpolatingDouble(3400.0));  // hood config far
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-1.66), new InterpolatingDouble(3425.0));  // hood config far
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-3.37), new InterpolatingDouble(3500.0));  // hood config far
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-4.47), new InterpolatingDouble(3600.0));  // hood config far
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-6.39), new InterpolatingDouble(3650.0));  // hood config far
+        kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-7.91), new InterpolatingDouble(3750.0));  // hood config far
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-12.75), new InterpolatingDouble(4100.0));uble(21.0), new InterpolatingDouble(2400.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(20.0), new InterpolatingDouble(2400.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(18.0), new InterpolatingDouble(2390.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(15.5), new InterpolatingDouble(2390.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(12.0), new InterpolatingDouble(2400.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(9.0), new InterpolatingDouble(2450.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(7.5), new InterpolatingDouble(2500.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(5.0), new InterpolatingDouble(2550.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(3.7), new InterpolatingDouble(2600.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(3.5), new InterpolatingDouble(2675.0));  // hood config close
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(2.95), new InterpolatingDouble(4100.0));  // hood config far
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(2.25), new InterpolatingDouble(3950.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(1.0), new InterpolatingDouble(3750.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(0.75), new InterpolatingDouble(3850.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-2.0), new InterpolatingDouble(3650.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-3.0), new InterpolatingDouble(3575.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-4.0), new InterpolatingDouble(3650.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-5.0), new InterpolatingDouble(3650.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-6.0), new InterpolatingDouble(3675.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-7.0), new InterpolatingDouble(3710.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-8.66), new InterpolatingDouble(3805.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-9.0), new InterpolatingDouble(3815.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-10.0), new InterpolatingDouble(3895.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-10.17), new InterpolatingDouble(3915.0));
+        // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(-12.75), new InterpolatingDouble(4100.0));
         // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty1), new InterpolatingDouble(TreeMapValues.Close.rpm1));
         // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty2), new InterpolatingDouble(TreeMapValues.Close.rpm2));
         // kDistanceToShooterSpeedClose.put(new InterpolatingDouble(TreeMapValues.Close.ty3), new InterpolatingDouble(TreeMapValues.Close.rpm3));
@@ -282,6 +299,8 @@ public final class Constants {
       }
     }
 
+    public final static double climberUpPercent = 0.25;  // just a guess
+    public final static double climberDnPercent = -0.25;  // just a guess
 
     public final static double angleTolerance = 1.0;
     public final static double angleErrorToSpinUp = 5.0;

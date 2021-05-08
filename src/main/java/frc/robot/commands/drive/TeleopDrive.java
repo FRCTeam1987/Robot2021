@@ -24,10 +24,12 @@ public class TeleopDrive extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double move = m_xbox.getTriggerAxis(Hand.kRight) - m_xbox.getTriggerAxis(Hand.kLeft);
+    double move = -(m_xbox.getTriggerAxis(Hand.kRight) - m_xbox.getTriggerAxis(Hand.kLeft));
     double rotate = -m_xbox.getX(Hand.kLeft); //invert turning
+    boolean isQuickTurn = m_xbox.getStickButton(Hand.kLeft);
 
-    m_drive.driveArcade(-move, rotate);
+    m_drive.driveCurvature(move, rotate, isQuickTurn);
+
   }
 
   // Returns true when the command should end.

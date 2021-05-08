@@ -21,9 +21,15 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj.system.LinearSystem;
+import edu.wpi.first.wpilibj.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.system.plant.LinearSystemId;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpiutil.math.numbers.N2;
 import frc.robot.Constants;
 import frc.robot.Util;
+import frc.robot.Constants.Drive.Controls;
 import frc.robot.lib.ConfigurableDriveModes;
 import frc.robot.lib.EncoderHelpers;
 
@@ -53,6 +59,20 @@ public class Drive extends SubsystemBase {
   private final NetworkTableEntry m_tabOdometryPoseX;
   private final NetworkTableEntry m_tabOdometryPoseY;
   private final NetworkTableEntry m_tabOdometryPoseRotation;
+
+
+  // Simulation
+  private final LinearSystem<N2, N2, N2> m_drivetrainSystem = LinearSystemId.identifyDrivetrainSystem(
+    1.98, 0.2, 1.5, 0.3
+  );
+  private final DifferentialDrivetrainSim m_drivetrainSimulator = new DifferentialDrivetrainSim(
+    m_drivetrainSystem,
+    DCMotor.getFalcon500(4),
+    8,
+    Constants.Drive.Values.trackWidth,
+    Constants.Drive.Values.wheelDiameter / 2.0,
+    null
+  );
 
 
   /** Creates a new Drive. */
@@ -124,6 +144,10 @@ public class Drive extends SubsystemBase {
    */
   public void driveArcade(final double speed, final double rotate) {
     m_drive.arcadeDrive(speed, rotate);
+  }
+
+  public void driveCurvature(final double speed, final double rotate, final boolean isQuickTurn) {
+    m_drive.curvatureDrive(speed, rotate, isQuickTurn);
   }
 
   /**
@@ -377,6 +401,7 @@ public class Drive extends SubsystemBase {
   public void teleopInit() {
     m_configurableDriveModes.update();
     powerPortFirstRun = true;
+    setBrake();
   }
 
   // Galactic Search Path Stuff

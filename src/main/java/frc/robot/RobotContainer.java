@@ -12,6 +12,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -36,15 +37,13 @@ import frc.robot.commands.drive.TeleopDriveConfigurable;
 import frc.robot.commands.drive.ZeroSensors;
 import frc.robot.commands.hangargames.EightBallTrench;
 import frc.robot.commands.hangargames.FarAuto;
-import frc.robot.commands.hangargames.NewAuto;
+import frc.robot.commands.hangargames.SixBallTrench;
 import frc.robot.commands.hangargames.NoCollector;
-import frc.robot.commands.shooter.ConfigClose;
-import frc.robot.commands.shooter.ConfigFar;
+import frc.robot.commands.shooter.EngagePto;
 import frc.robot.commands.shooter.HoodLock;
-import frc.robot.commands.shooter.HoodLower;
-import frc.robot.commands.shooter.HoodRaise;
 import frc.robot.commands.shooter.HoodUnlock;
 import frc.robot.commands.shooter.ShootLimeLight;
+import frc.robot.commands.shooter.ShootPercent;
 import frc.robot.commands.shooter.ShootRPM;
 import frc.robot.commands.spindexer.Agitate;
 import frc.robot.commands.spindexer.FeedShooter;
@@ -74,8 +73,15 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 public class RobotContainer {
 
   private final XboxController driver;
+  private final XboxController coDriver;
   private final JoystickButton buttonCollector;
   private final JoystickButton buttonShooter;
+  private final JoystickButton buttonAgitate;
+  // private final JoystickButton buttonClimberUp;
+  // private final JoystickButton buttonClimberDn;
+  // private final JoystickButton buttonClimberPto;
+  private final JoystickButton buttonClimberRelease;
+  private final JoystickButton buttonClimb;
 
   // Allocate Subsystems
   private final Drive m_drive = new Drive(
@@ -104,9 +110,16 @@ public class RobotContainer {
   public RobotContainer() {
     
     driver = new XboxController(Constants.OI.Xbox.driverID);
+    coDriver = new XboxController(Constants.OI.Xbox.coDriverID);
 
     buttonCollector = new JoystickButton(driver, Constants.OI.Buttons.Driver.collectorBtnId.value);
     buttonShooter = new JoystickButton(driver, Constants.OI.Buttons.Driver.shooterBtnId.value);
+    buttonAgitate = new JoystickButton(coDriver, Constants.OI.Buttons.CoDriver.agitateBtnId.value);
+    // buttonClimberUp = new JoystickButton(coDriver, Constants.OI.Buttons.CoDriver.climberUp.value);
+    // buttonClimberDn = new JoystickButton(coDriver, Constants.OI.Buttons.CoDriver.climberDn.value);
+    // buttonClimberPto = new JoystickButton(coDriver, Constants.OI.Buttons.CoDriver.climberPto.value);
+    buttonClimberRelease = new JoystickButton(coDriver, Constants.OI.Buttons.CoDriver.climberRelease.value);
+    buttonClimb = new JoystickButton(coDriver, Constants.OI.Buttons.CoDriver.climb.value);
 
     configureShuffleboard();
     configureButtonBindings();
@@ -126,7 +139,46 @@ public class RobotContainer {
         new StopCollect(m_collector).andThen(new StopAll(m_collector, m_spindexer, m_shooter)));
     buttonShooter
       .whenPressed(new TeleopShoot(m_drive, limeLight, m_spindexer, m_shooter))
-      .whenReleased(ConfigFar.configFarConditional(m_shooter));
+      .whenReleased(new StopAll(m_collector, m_spindexer, m_shooter));
+    buttonAgitate.whileHeld(new Agitate(m_spindexer));
+
+    SmartDashboard.putData("t-lock", new InstantCommand(() -> { m_shooter.lockHood(); }, m_shooter));
+    SmartDashboard.putData("t-unlock", new InstantCommand(() -> { m_shooter.unlockHood(); }, m_shooter));
+    SmartDashboard.putData("t-en-pto", new InstantCommand(() -> { m_shooter.engagePto(); }, m_shooter));
+    SmartDashboard.putData("t-disen-pto", new InstantCommand(() -> { m_shooter.disengagePto(); }, m_shooter));
+    SmartDashboard.putData("t-percent+", new InstantCommand(() -> { m_shooter.setPercent(0.5); }, m_shooter));
+    SmartDashboard.putData("t-percent-", new InstantCommand(() -> { m_shooter.setPercent(-0.25); }, m_shooter));
+    buttonClimberRelease.whenPressed(new InstantCommand(() -> { m_shooter.unlockHood(); }, m_shooter));
+    buttonClimb
+      .whenPressed(
+        new SequentialCommandGroup(
+          new InstantCommand(() -> { m_shooter.unlockHood(); }, m_shooter),
+          new InstantCommand(() -> { m_shooter.engagePto(); }, m_shooter),
+          new InstantCommand(() -> { m_shooter.setPercentRamp(0.25); }, m_shooter),
+          new WaitCommand(0.2),
+          new InstantCommand(() -> { m_shooter.setPercent(0.75); }, m_shooter)
+        )
+      )
+      .whenReleased(
+        new SequentialCommandGroup(
+          new ShootPercent(m_shooter, 0.0),
+          new InstantCommand(() -> { m_shooter.lockHood(); }, m_shooter),
+          new InstantCommand(() -> { m_shooter.disengagePto(); }, m_shooter)
+        )
+      );
+    // buttonClimberPto.whenPressed(new EngagePto(m_shooter));
+    // buttonClimberUp
+    //   .whenPressed(
+    //     new SequentialCommandGroup(
+    //       new InstantCommand(() -> { m_shooter.unlockHood(); }, m_shooter),
+    //       new EngagePto(m_shooter),
+    //       new ShootPercent(m_shooter, Constants.Shooter.climberUpPercent)
+    //     )
+    //   )
+    //   .whenReleased(new ShootPercent(m_shooter, 0.0));
+    // buttonClimberDn
+    //   .whenPressed(new ShootPercent(m_shooter, Constants.Shooter.climberDnPercent))
+    //   .whenReleased(new ShootPercent(m_shooter, 0.0));
   }
 
   /**
@@ -160,10 +212,6 @@ public class RobotContainer {
     tabShooter.add("Shoot RPM 4500", new ShootRPM(m_shooter, 4500));
     tabShooter.add("Shoot RPM 5000", new ShootRPM(m_shooter, 5000));
     tabShooter.add("Shoot Limelight", new ShootLimeLight(m_shooter, limeLight));
-    tabShooter.add("Config Far", new ConfigFar(m_shooter));
-    tabShooter.add("Config Close", new ConfigClose(m_shooter));
-    tabShooter.add("Raise Hood", new HoodRaise(m_shooter));
-    tabShooter.add("Lower Hood", new HoodLower(m_shooter));
     tabShooter.add("Unlock Hood", new HoodUnlock(m_shooter));
     tabShooter.add("Lock Hood", new HoodLock(m_shooter));
     SmartDashboard.putData("aimbot", new AimBot(m_drive, limeLight));
@@ -201,7 +249,7 @@ public class RobotContainer {
     chooser.addOption("Path B Red", GalacticSearch.PathBRed(m_drive, m_collector, m_spindexer));
     chooser.addOption("Path B Blue", GalacticSearch.PathBBlue(m_drive, m_collector, m_spindexer));
     chooser.addOption("FarAuto", new FarAuto(m_drive, m_collector, m_spindexer, m_shooter, limeLight));
-    chooser.addOption("NewAuto", new NewAuto(m_drive, m_collector, m_spindexer, m_shooter, limeLight));
+    chooser.addOption("6 Ball Trench", new SixBallTrench(m_drive, m_collector, m_spindexer, m_shooter, limeLight));
     chooser.addOption("8 Ball Trench", new EightBallTrench(m_drive, m_collector, m_spindexer, m_shooter, limeLight));
     chooser.addOption("No Collector", new NoCollector(m_drive, m_collector, m_spindexer, m_shooter, limeLight));
 
